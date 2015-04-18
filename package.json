@@ -1,0 +1,24 @@
+{
+  "name": "c4se-web",
+  "version": "0.0.1",
+  "description": "c4se's main Web site.",
+  "main": "gulpfile.js",
+  "scripts": {
+    "test": "gulp test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ne-sachirou/c4se-web.git"
+  },
+  "author": "ne_Sachirou <utakata.c4se@gmail.com>",
+  "license": "GPL-3.0+",
+  "bugs": {
+    "url": "https://github.com/ne-sachirou/c4se-web/issues"
+  },
+  "homepage": "https://github.com/ne-sachirou/c4se-web",
+  "devDependencies": {
+    "gulp": "~3.8.11",
+    "gulp-jscs": "^1.4.0",
+    "gulp-jshint": "~1.9.4"
+  }
+}

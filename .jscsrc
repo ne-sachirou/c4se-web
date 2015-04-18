@@ -1,0 +1,9 @@
+// vim:ft=json:
+{
+  "disallowTrailingWhitespace": true,
+  "maximumLineLength": 120,
+  "requireCamelCaseOrUpperCaseIdentifiers": true,
+  "requireParenthesesAroundIIFE": true,
+  "validateIndentation": 2,
+  "validateQuoteMarks": "'"
+}

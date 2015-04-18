@@ -1,0 +1,24 @@
+{
+  "name": "c4se-web",
+  "version": "0.0.1",
+  "homepage": "https://github.com/ne-sachirou/c4se-web",
+  "authors": [
+    "ne_Sachirou <utakata.c4se@gmail.com>"
+  ],
+  "description": "c4se's main Web site.",
+  "main": "lib/layout.js",
+  "moduleType": [
+    "globals"
+  ],
+  "license": "GPL-3.0+",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "normalize-css": "~3.0.2"
+  }
+}

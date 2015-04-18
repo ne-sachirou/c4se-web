@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="ranyuen/di" default="main">
+    <target name="main">
+        <!-- <phingcall target="build"/> -->
+        <phingcall target="test"/>
+    </target>
+
+    <target name="test">
+        <!-- PHP lint -->
+        <apply executable="php" checkreturn="true">
+            <arg value="-l"/>
+            <fileset dir=".">
+                <include name="index.php"/>
+                <include name="src/**/*.php"/>
+                <include name="tests/**/*.php"/>
+            </fileset>
+        </apply>
+        <!-- PHP-CS-Fixer -->
+        <foreach list="index.php, src/, tests/" param="dir" target="test-cs-fixer"/>
+        <!-- PHP Mess Detector -->
+        <exec executable="vendor/bin/phpmd" passthru="true" checkreturn="true">
+            <arg value="src/"/>
+            <arg value="text"/>
+            <arg value="phpmd.xml"/>
+        </exec>
+        <!-- PHP_CodeSniffer -->
+        <exec executable="vendor/bin/phpcbf" passthru="true">
+            <arg value="--standard=phpcs.xml"/>
+            <arg value="--extensions=php"/>
+            <arg value="src/"/>
+        </exec>
+        <exec executable="vendor/bin/phpcs" passthru="true" checkreturn="true">
+            <arg value="--standard=phpcs.xml"/>
+            <arg value="--extensions=php"/>
+            <arg value="src/"/>
+        </exec>
+        <!-- PHPUnit -->
+        <exec command="vendor/bin/phpunit" passthru="true" checkreturn="true"/>
+    </target>
+
+    <target name="test-cs-fixer">
+        <exec executable="vendor/bin/php-cs-fixer" passthru="true">
+            <arg value="fix"/>
+            <arg value="${dir}"/>
+        </exec>
+    </target>
+
+    <!-- <target name="build" depends=""/> -->
+</project>

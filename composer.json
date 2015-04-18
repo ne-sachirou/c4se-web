@@ -1,0 +1,25 @@
+{
+    "name": "ne-sachirou/c4se-web",
+    "description": "c4se's main Web site.",
+    "license": "GPL-3.0+",
+    "authors": [
+        {
+            "name": "Sachirou Inoue",
+            "email": "utakata.c4se@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+      "php": ">=5.4.0"
+    },
+    "require-dev": {
+        "fabpot/php-cs-fixer": "~2.0@dev",
+        "phing/phing": "~2.10",
+        "phpmd/phpmd": "~2.2",
+        "phpunit/phpunit": "~4.5",
+        "squizlabs/php_codesniffer": "~2.3"
+    },
+    "autoload": {
+      "psr-4": {"App\\": "lib/App/"}
+    }
+}

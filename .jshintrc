@@ -1,0 +1,22 @@
+// vim:ft=json:
+{
+  // Enforcing options
+  "curly": true,
+  "eqeqeq": true,
+  "forin": true,
+  "noarg": true,
+  "undef": true,
+  "unused": true,
+  "strict": true,
+  "trailing": true,
+  "maxparams": 7,
+  "maxdepth": 4,
+  "maxstatements": 12,
+  "maxcomplexity": 10,
+
+  // Relaxing options
+  "validthis": true,
+
+  // Environments
+  "devel": true
+}
