@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="ranyuen/di" default="main">
+<project name="c4se-web" default="main">
     <target name="main">
         <!-- <phingcall target="build"/> -->
         <phingcall target="test"/>

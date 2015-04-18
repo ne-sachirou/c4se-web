@@ -1,4 +1,4 @@
-Requiments
+Requirments
 ==
 - PHP >=5.4
 - Composer
