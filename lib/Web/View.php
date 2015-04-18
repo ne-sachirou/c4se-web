@@ -8,16 +8,28 @@ class View
 
     public function __construct($path, $option)
     {
-        $this->content = file_get_contents($path);
+        $this->content = "src/views/$path.html";
         if (isset($option['layout'])) {
-            $this->layout = file_get_contents($option['layout']);
+            $this->layout = file_get_contents("src/views/{$option['layout']}.html");
         }
+    }
+
+    public function isFound()
+    {
+        return is_readable($this->content);
     }
 
     public function render()
     {
+        $content = file_get_contents($this->content);
+        $content = $this->renderPart($content);
+        return $this->renderPart($this->layout, ['content' => $content]);
+    }
+
+    private function renderPart($content, $params = [])
+    {
         $loader = new \Twig_Loader_Array(['current' => '']);
-        $loader->setTemplate('current', $this->layout);
+        $loader->setTemplate('current', $content);
         $loader = new \Twig_Loader_Chain(
             [
                 $loader,
@@ -33,6 +45,6 @@ class View
         //         }
         //     )
         // );
-        return $engine->render('current', ['content' => $this->content]);
+        return $engine->render('current', $params);
     }
 }

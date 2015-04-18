@@ -1,16 +1,29 @@
 <?php
 namespace Web\Controller;
 
+use Ranyuen\Little\Exception\NotFound;
 use Web\View;
 
 class IndexController
 {
     /**
-     * @Route('/')
+     * @Route('/:path*?')
      */
-    public function index()
+    public function page($path = 'index')
     {
-        $view = new View('src/views/index.html', ['layout' => 'src/views/layout.html']);
+        $view = new View($path, ['layout' => 'layout']);
+        if (!$view->isFound()) {
+            throw new NotFound();
+        }
+        return $view->render();
+    }
+
+    /**
+     * @Route(error=404)
+     */
+    public function notFound()
+    {
+        $view = new View('error404', ['layout' => 'layout']);
         return $view->render();
     }
 }
