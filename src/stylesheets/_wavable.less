@@ -1,0 +1,23 @@
+@import '_helpers';
+
+.keyframes(wavable-waving; {
+     0% { left : 0; }
+    25% { left : -3px; }
+    50% { left : 0; }
+    57% { left : 3px; }
+   100% { left : 0; }
+});
+
+.wavable_background {
+  height   : 1px;
+  left     : 0;
+  position : absolute;
+  z-index  : -1000;
+
+  &-waving {
+    .vendor(animation-duration, 0.3s);
+    .vendor(animation-iteration-count, infinite);
+    .vendor(animation-name, wavable-waving);
+    transition-timing-function : ease-in-out;
+  }
+}

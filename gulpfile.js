@@ -1,11 +1,11 @@
 /* jshint node:true */
 'use strict';
 var cp = require('child_process');
-var concat  = require('gulp-concat'),
-    gulp    = require('gulp'),
-    less    = require('gulp-less'),
+var gulp    = require('gulp'),
+    concat  = require('gulp-concat'),
     jscs    = require('gulp-jscs'),
     jshint  = require('gulp-jshint'),
+    less    = require('gulp-less'),
     traceur = require('gulp-traceur'),
     uglify  = require('gulp-uglifyjs'),
     merge   = require('merge-stream');
@@ -15,7 +15,7 @@ var SRCS = {
 
 gulp.task('copy-assets', function () {
   return gulp.src([
-      'node_modules/gulp-traceur/node_modules/traceur/bin/traceur-runtime.js',
+      traceur.RUNTIME_PATH,
     ]).
     pipe(gulp.dest('lib/assets'));
 });
@@ -24,13 +24,16 @@ gulp.task('js-build', function () {
   return merge([
     {
       src : [
+        'src/javascripts/_wavable.js',
         'src/javascripts/index.js',
       ],
       dest : 'index.js'
     }
   ].map(function (set) {
     return gulp.src(set.src).
-      pipe(traceur()).
+      pipe(traceur({
+        modules : 'inline',
+      })).
       pipe(concat(set.dest)).
       pipe(uglify({
         outSourceMap : true,
