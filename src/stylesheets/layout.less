@@ -1,0 +1,38 @@
+@charset 'utf-8';
+@import (less) '../bower_components/normalize-css/normalize.css';
+
+body {
+  background : black;
+  color      : white;
+  margin     : 0;
+}
+
+a {
+  color               : #aaf;
+  transition-duration : 0.3s;
+
+  &:hover {
+    color           : #f66;
+    text-decoration : underline overline;
+  }
+}
+
+.main {
+  &_content {
+    margin : 0.5em;
+
+    p { text-indent : 0.8em; }
+
+    & > h1 { text-align : center; }
+  }
+
+  &_footer {
+    border-top : 1px solid gray;
+    color      : gray;
+    font-size  : smaller;
+    margin-top : 3em;
+    text-align : center;
+
+    a { color : gray; }
+  }
+}

@@ -18,7 +18,12 @@
   "homepage": "https://github.com/ne-sachirou/c4se-web",
   "devDependencies": {
     "gulp": "~3.8.11",
+    "gulp-concat": "^2.5.2",
     "gulp-jscs": "^1.4.0",
-    "gulp-jshint": "~1.9.4"
+    "gulp-jshint": "~1.9.4",
+    "gulp-less": "^3.0.2",
+    "gulp-traceur": "^0.17.1",
+    "gulp-uglifyjs": "^0.6.1",
+    "merge-stream": "^0.1.7"
   }
 }

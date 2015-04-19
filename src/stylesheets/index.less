@@ -1,0 +1,55 @@
+@charset 'utf-8';
+
+.keyframes(@name; @frames) {
+     @-moz-keyframes @name { @frames(); }
+      @-ms-keyframes @name { @frames(); }
+  @-webkit-keyframes @name { @frames(); }
+          @keyframes @name { @frames(); }
+}
+
+.vendor(@property, @value) {
+   -khtml-@{property} : @value;
+     -moz-@{property} : @value;
+      -ms-@{property} : @value;
+       -o-@{property} : @value;
+  -webkit-@{property} : @value;
+          @{property} : @value;
+}
+
+.index {
+  display         : flex;
+  justify-content : space-between;
+  position        : relative;
+
+  &_item {
+    background    : #111;
+    border-radius : 2px;
+    padding       : 0.5em;
+
+    h1 { font-size : larger; }
+
+    &-waving {
+    }
+  }
+}
+
+.keyframes(wavable-waving; {
+     0% { left : 0; }
+    25% { left : -3px; }
+    50% { left : 0; }
+    57% { left : 3px; }
+  1000% { left : 0; }
+});
+
+.wavable_background {
+  height   : 1px;
+  position : absolute;
+  z-index  : -1000;
+
+  &-waving {
+    .vendor(animation-duration, 0.3s);
+    .vendor(animation-iteration-count, infinite);
+    .vendor(animation-name, wavable-waving);
+    transition-timing-function : ease-in-out;
+  }
+}

@@ -3,8 +3,14 @@
 <head>
   <meta charset="UTF-8"/>
   <title>c4se</title>
+  <link rel="stylesheet" href="/lib/assets/layout.css"/>
+  <script src="/lib/assets/traceur-runtime.js"></script>
 </head>
 <body>
-  {{content | raw}}
+  <article class="main_content">{{content | raw}}</article>
+  <footer class="main_footer">
+    <p><a href="/">c4se</a></p>
+    <p><a href="https://github.com/ne-sachirou/c4se-web">Source code of this Web site.</a></p>
+  </footer>
 </body>
 </html>
