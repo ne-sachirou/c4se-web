@@ -53,10 +53,7 @@ gulp.task('jshint', function () {
 });
 
 gulp.task('less', function () {
-  gulp.src([
-      'src/stylesheets/index.less',
-      'src/stylesheets/layout.less',
-    ]).
+  gulp.src(['src/stylesheets/!(_)*.less']).
     pipe(less({
       compress  : true,
       sourceMap : true,
@@ -77,7 +74,7 @@ gulp.task('php-test', function (done) {
 
 gulp.task('watch', function () {
   gulp.watch(SRCS.js, ['js-build', 'js-test']);
-  gulp.watch('src/stylesheets/*', ['less']);
+  gulp.watch('src/stylesheets/*.less', ['less']);
   gulp.watch(['index.php', 'lib/**/**.php', 'tests/**/**.php'], ['php-test']);
 });
 

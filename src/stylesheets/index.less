@@ -1,20 +1,5 @@
 @charset 'utf-8';
-
-.keyframes(@name; @frames) {
-     @-moz-keyframes @name { @frames(); }
-      @-ms-keyframes @name { @frames(); }
-  @-webkit-keyframes @name { @frames(); }
-          @keyframes @name { @frames(); }
-}
-
-.vendor(@property, @value) {
-   -khtml-@{property} : @value;
-     -moz-@{property} : @value;
-      -ms-@{property} : @value;
-       -o-@{property} : @value;
-  -webkit-@{property} : @value;
-          @{property} : @value;
-}
+@import '_helpers';
 
 .index {
   display         : flex;
@@ -27,9 +12,6 @@
     padding       : 0.5em;
 
     h1 { font-size : larger; }
-
-    &-waving {
-    }
   }
 }
 

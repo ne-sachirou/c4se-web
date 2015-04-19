@@ -15,6 +15,7 @@
   "maxcomplexity": 10,
 
   // Relaxing options
+  "esnext": true,
   "validthis": true,
 
   // Environments
