@@ -2,28 +2,34 @@
 @import (less) '../bower_components/normalize-css/normalize.css';
 
 body {
-  background : black;
-  color      : white;
-  margin     : 0;
+  background     : rgb( 55,  61,  73);
+  color          : rgb(160, 170, 191);
+  font-family    : 'Source Sans Pro', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size      : 9pt;
+  letter-spacing : 1px;
+  line-height    : 13pt;
+  margin         : 0;
 }
 
 a {
-  color               : #aaf;
-  transition-duration : 0.3s;
+  color                      : inherit;
+  transition-duration        : 0.4s;
+  transition-timing-function : ease-in-out;
 
   &:hover {
-    color           : #f66;
+    color           : rgb( 53, 215, 187);
     text-decoration : underline overline;
   }
 }
 
 .main {
   &_content {
-    margin : 0.5em;
+    margin : 0.4em;
 
-    p { text-indent : 0.8em; }
-
-    & > h1 { text-align : center; }
+    p {
+      margin      : 0.4em 0;
+      text-indent : 0.6em;
+    }
   }
 
   &_footer {
@@ -32,7 +38,5 @@ a {
     font-size  : smaller;
     margin-top : 3em;
     text-align : center;
-
-    a { color : gray; }
   }
 }

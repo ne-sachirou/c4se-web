@@ -11,6 +11,9 @@ class IndexController
      */
     public function page($path = 'index')
     {
+        if ('/' === mb_substr($path, -1)) {
+            $path .= 'index';
+        }
         $view = new View($path, ['layout' => 'layout']);
         if (!$view->isFound()) {
             throw new NotFound();

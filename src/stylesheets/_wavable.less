@@ -1,22 +1,29 @@
 @import '_helpers';
 
 .keyframes(wavable-waving; {
-     0% { left : 0; }
-    25% { left : -3px; }
-    50% { left : 0; }
-    57% { left : 3px; }
-   100% { left : 0; }
+     0% { left :  0; }
+   8.3% { left : -3px; }
+  16.7% { left :  0; }
+    25% { left :  3px; }
+  33.3% { left :  0; }
+  41.6% { left : -2px; }
+    50% { left :  0; }
+  58.3% { left : -2px; }
+  66.7% { left :  0; }
+    75% { left : -1px; }
+  83.3% { left :  0; }
+  91.6% { left :  1px; }
+   100% { left :  0; }
 });
 
 .wavable_background {
   height   : 1px;
-  left     : 0;
   position : absolute;
   z-index  : -1000;
 
   &-waving {
-    .vendor(animation-duration, 0.3s);
-    .vendor(animation-iteration-count, infinite);
+    .vendor(animation-duration, 0.9s);
+    .vendor(animation-iteration-count, 1);
     .vendor(animation-name, wavable-waving);
     transition-timing-function : ease-in-out;
   }

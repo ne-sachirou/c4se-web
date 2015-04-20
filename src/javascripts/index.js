@@ -1,4 +1,5 @@
 /* jshint browser:true, strict:false */
+
 import {Wavable} from './_wavable.js';
 
 class UiIndex {
