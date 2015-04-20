@@ -11,7 +11,7 @@ function setStyle(node, rules) {
     if ('-' === prop[0]) {
       prop = prop.slice(1);
       const upperCase = prop[0].toUpperCase() + prop.slice(1);
-      node.style[`moz${upperCase}`]    = rules[`-${prop}`];
+      node.style[`Moz${upperCase}`]    = rules[`-${prop}`];
       node.style[`ms${upperCase}`]     = rules[`-${prop}`];
       node.style[`webkit${upperCase}`] = rules[`-${prop}`];
     }
