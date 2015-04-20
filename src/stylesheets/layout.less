@@ -1,9 +1,10 @@
 @charset 'utf-8';
 @import (less) '../bower_components/normalize-css/normalize.css';
+@import '_helpers';
 
 body {
-  background     : rgb( 55,  61,  73);
-  color          : rgb(160, 170, 191);
+  background     : @background_color;
+  color          : @front_color;
   font-family    : 'Source Sans Pro', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-size      : 9pt;
   letter-spacing : 1px;
@@ -17,14 +18,16 @@ a {
   transition-timing-function : ease-in-out;
 
   &:hover {
-    color           : rgb( 53, 215, 187);
+    color           : @active_color;
     text-decoration : underline overline;
   }
 }
 
 .main {
+  position : relative;
+
   &_content {
-    margin : 0.4em;
+    margin : 0 2mm 0 14mm;
 
     p {
       margin      : 0.4em 0;
@@ -38,5 +41,59 @@ a {
     font-size  : smaller;
     margin-top : 3em;
     text-align : center;
+  }
+
+  &_menu {
+    background                 : @background_color;
+    box-shadow                 : 1px 0 1px black;
+    height                     : 100%;
+    left                       : -48mm;
+    position                   : fixed;
+    top                        : 0;
+    transition-duration        : 0.3s;
+    transition-property        : left;
+    transition-timing-function : ease-in-out;
+    width                      : 6cm;
+
+    &_toggleBtn {
+      cursor                     : pointer;
+      font-size                  : 9mm;
+      margin-left                : 48mm;
+      height                     : 12mm;
+      line-height                : 12mm;
+      text-align                 : center;
+      transform                  : rotate(0);
+      width                      : 12mm;
+
+      &, &_inner {
+        transition-duration        : 0.4s;
+        transition-property        : transform;
+        transition-timing-function : ease-in-out;
+      }
+
+      &_inner:hover { transform : scale(1.1); }
+    }
+
+    ul {
+      margin  : 0;
+      padding : 0;
+    }
+
+    li {
+      display : block;
+      height  : 12mm;
+
+      a {
+        display         : block;
+        line-height     : 12mm;
+        padding-left    : 2mm;
+        text-decoration : none;
+
+        &:hover {
+          background : @active_color;
+          color      : @background_color;
+        }
+      }
+    }
   }
 }

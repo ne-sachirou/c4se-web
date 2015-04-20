@@ -24,11 +24,17 @@ gulp.task('js-build', function () {
   return merge([
     {
       src : [
+        'src/javascripts/layout.js',
+      ],
+      dest : 'layout.js'
+    },
+    {
+      src : [
         'src/javascripts/_wavable.js',
         'src/javascripts/index.js',
       ],
       dest : 'index.js'
-    }
+    },
   ].map(function (set) {
     return gulp.src(set.src).
       pipe(traceur({
