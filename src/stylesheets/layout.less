@@ -26,8 +26,20 @@ a {
 .main {
   position : relative;
 
+  &_content, &_footer {
+    left     : 12mm;
+    position : relative;
+    width    : calc(100% - 12mm);
+  }
+
+  &_content, &_footer, &_menu {
+    transition-duration        : 0.3s;
+    transition-property        : left;
+    transition-timing-function : ease-in-out;
+  }
+
   &_content {
-    margin : 0 2mm 0 14mm;
+    margin : 0 3px;
 
     p {
       margin      : 0.4em 0;
@@ -50,9 +62,6 @@ a {
     left                       : -48mm;
     position                   : fixed;
     top                        : 0;
-    transition-duration        : 0.3s;
-    transition-property        : left;
-    transition-timing-function : ease-in-out;
     width                      : 6cm;
 
     &_toggleBtn {
