@@ -23,7 +23,8 @@ export class Wavable {
   /**
    * @param {HTMLElement} target
    */
-  constructor(target) {
+  constructor(target, direction = ['horizontal', 'vertical'][Math.floor(Math.random() * 2)]) {
+    this.direction          = direction;
     this.wavableBackgrounds = [];
     this._appendBackgrounds(target);
     setStyle(target, {
@@ -34,11 +35,11 @@ export class Wavable {
 
   wave() {
     for (let background of this.wavableBackgrounds) {
-      background.classList.add('wavable_background-waving');
+      background.classList.add(`wavable_${this.direction}Background-waving`);
     }
     window.setTimeout(() => {
       for (let background of this.wavableBackgrounds) {
-        background.classList.remove('wavable_background-waving');
+        background.classList.remove(`wavable_${this.direction}Background-waving`);
       }
     }, 900);
   }
@@ -56,24 +57,34 @@ export class Wavable {
             parseInt(style.paddingRight) +
             parseInt(style.marginRight);
     var fragment = document.createDocumentFragment();
-    for (let i = 0, iz = height; i < iz; ++i) {
-      var div = this._createBackground(width, style.backgroundColor, i);
+    for (let i = 0, iz = this.direction === 'horizontal' ? height : width; i < iz; ++i) {
+      var div = this._createBackground(this.direction === 'horizontal' ? width : height, style.backgroundColor, i);
       fragment.appendChild(div);
       this.wavableBackgrounds.push(div);
     }
     target.appendChild(fragment);
   }
 
-  _createBackground(width, backgroundColor, i) {
+  _createBackground(length, backgroundColor, i) {
     var div = document.createElement('div');
-    div.classList.add('wavable_background');
+    div.classList.add(`wavable_${this.direction}Background`);
     setStyle(div, {
-      '-animationDelay' : `${i / 300}s`,
+      '-animationDelay' : `${i / length / 6}s`,
       backgroundColor   : backgroundColor,
-      left              : 0,
-      top               : `${i}px`,
-      width             : `${width}px`,
     });
+    if (this.direction === 'horizontal') {
+      setStyle(div, {
+        left  : 0,
+        top   : `${i}px`,
+        width : `${length}px`,
+      });
+    } else {
+      setStyle(div, {
+        height : `${length}px`,
+        left   : `${i}px`,
+        top    : 0,
+      });
+    }
     return div;
   }
 }
