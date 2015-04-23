@@ -2,10 +2,10 @@
 
 class UiMenu {
   constructor() {
-    this.mainContent   = document.querySelector('.main_content');
-    this.mainFooter    = document.querySelector('.main_footer');
-    this.menu          = document.querySelector('.main_menu');
-    this.menuToggleBtn = this.menu.querySelector('.main_menu_toggleBtn');
+    this.mainContent   = document.querySelector('.page_content');
+    this.mainFooter    = document.querySelector('.page_footer');
+    this.menu          = document.querySelector('.page_menu');
+    this.menuToggleBtn = this.menu.querySelector('.page_menu_toggleBtn');
     this.isOpen        = false;
     this.menuToggleBtn.addEventListener('click', () => {
       if (this.isOpen) {

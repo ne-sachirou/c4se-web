@@ -3,13 +3,17 @@
 @import '_helpers';
 
 body {
+  .vendor(font-smoothing, antialiased);
+  .vendor(osx-font-smoothing, grayscale);
   background     : @background_color;
   color          : @front_color;
-  font-family    : 'Source Sans Pro', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-family    : 'Source Sans Pro', 'Helvetica Neue', Helvetica, Arial, 'ヒラギノ角ゴ ProN W3', 'Hiragino Kaku Gothic ProN', Meiryo, sans-serif;
   font-size      : 9pt;
+  font-weight    : normal;
   letter-spacing : 1px;
   line-height    : 13pt;
   margin         : 0;
+  text-rendering : optimizeLegibility;
 }
 
 a {
@@ -23,7 +27,7 @@ a {
   }
 }
 
-.main {
+.page {
   position : relative;
 
   &_content, &_footer {
@@ -34,7 +38,7 @@ a {
   }
 
   &_content, &_footer, &_menu {
-    transition-duration        : 0.3s;
+    transition-duration        : 0.4s;
     transition-property        : left;
     transition-timing-function : ease-in-out;
   }
@@ -57,23 +61,23 @@ a {
   }
 
   &_menu {
-    background                 : @background_color;
-    box-shadow                 : 1px 0 1px black;
-    height                     : 100%;
-    left                       : -48mm;
-    position                   : fixed;
-    top                        : 0;
-    width                      : 6cm;
+    background : @background_color;
+    box-shadow : 1px 0 1px black;
+    height     : 100%;
+    left       : -48mm;
+    position   : fixed;
+    top        : 0;
+    width      : 6cm;
 
     &_toggleBtn {
-      cursor                     : pointer;
-      font-size                  : 9mm;
-      margin-left                : 48mm;
-      height                     : 12mm;
-      line-height                : 12mm;
-      text-align                 : center;
-      transform                  : rotate(0);
-      width                      : 12mm;
+      cursor      : pointer;
+      font-size   : 9mm;
+      margin-left : 48mm;
+      height      : 12mm;
+      line-height : 12mm;
+      text-align  : center;
+      transform   : rotate(0);
+      width       : 12mm;
 
       &, &_inner {
         transition-duration        : 0.4s;

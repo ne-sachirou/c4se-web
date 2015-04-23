@@ -7,8 +7,11 @@ class UiIndex {
     this.indexItems = Array.from(document.querySelectorAll('.index_item'));
     this.indexItems.forEach((indexItem) => {
       var wavable = new Wavable(indexItem);
-      indexItem.addEventListener('mouseover', () => wavable.wave());
-      indexItem.addEventListener('click'    , () => wavable.wave());
+      indexItem.addEventListener('mouseover', (evt) => {
+        evt.stopPropagation();
+        wavable.wave();
+      });
+      indexItem.addEventListener('click', () => wavable.wave());
     });
   }
 }

@@ -69,7 +69,7 @@ export class Wavable {
     var div = document.createElement('div');
     div.classList.add(`wavable_${this.direction}Background`);
     setStyle(div, {
-      '-animationDelay' : `${i / length / 6}s`,
+      '-animationDelay' : `${i / 300}s`,
       backgroundColor   : backgroundColor,
     });
     if (this.direction === 'horizontal') {
