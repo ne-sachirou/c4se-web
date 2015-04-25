@@ -77,13 +77,12 @@ class UiTopMenuRightItem {
   constructor(node) {
     this.isOpen = false;
     this.node   = node;
+    this.anchor = this.node.querySelector('a');
     this.ul     = this.node.querySelector('ul')
     if (this.ul) {
-      this.ul.style.display = 'none';
-      var anchor = this.node.querySelector('a');
-      anchor.classList.add('fa');
-      anchor.classList.add('fa-caret-down');
-      anchor.addEventListener('click', (evt) => {
+      this.anchor.classList.add('fa');
+      this.anchor.classList.add('fa-caret-down');
+      this.anchor.addEventListener('click', (evt) => {
         evt.stopPropagation();
         if (this.isOpen) {
           this.close();
@@ -97,12 +96,18 @@ class UiTopMenuRightItem {
   open() {
     this.isOpen           = true;
     this.ul.style.display = 'block';
+    this.anchor.classList.remove('fa-caret-down');
+    this.anchor.classList.add('fa-caret-up');
     EventRouter.emit('openLayoutTopMenuRightItem', [this]);
+    requestAnimationFrame(() => this.ul.style.opacity = 1);
   }
 
   close() {
     this.isOpen           = false;
-    this.ul.style.display = 'none';
+    this.ul.style.opacity = 0;
+    this.anchor.classList.remove('fa-caret-up');
+    this.anchor.classList.add('fa-caret-down');
+    setTimeout(() => this.ul.style.display = 'none', 400);
   }
 }
 
