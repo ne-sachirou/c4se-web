@@ -8,6 +8,11 @@ class UiLayout {
     this.footer   = document.querySelector('.page_footer');
     this.topMenu  = new UiTopMenu();
     this.sideMenu = new UiSideMenu();
+    document.body.addEventListener('click', () => {
+      for (let rightItem of this.topMenu.rightItems) {
+        rightItem.close();
+      }
+    });
     EventRouter.on('toggleLayoutSideMenu', () => {
       if (this.sideMenu.isOpen) {
         this.content.style.left = '0';
@@ -66,6 +71,7 @@ class UiTopMenuRightItem {
       this.anchor.classList.add('fa');
       this.anchor.classList.add('fa-caret-down');
       this.anchor.addEventListener('click', (evt) => {
+        evt.preventDefault();
         evt.stopPropagation();
         if (this.isOpen) {
           this.close();
