@@ -1,6 +1,5 @@
 /* jshint browser:true, strict:false */
 
-// {{{ EventRouter
 var EventRouter = {
   listeners : {},
 
@@ -19,7 +18,6 @@ var EventRouter = {
     this.listeners[name].push(listener);
   }
 };
-// }}} EventRouter
 
 class UiLayout {
   constructor() {
@@ -47,7 +45,19 @@ class UiTopMenu {
   constructor() {
     this.node              = document.querySelector('.page_topMenu');
     this.leftSideToggleBtn = document.querySelector('.page_topMenu_left_sideToggleBtn');
+    this.rightItems        = [];
     this.leftSideToggleBtn.addEventListener('click', () => EventRouter.emit('toggleLayoutSideMenu'));
+    for (let rightItem of Array.from(this.node.querySelectorAll('.page_topMenu_right > ul > li'))) {
+      this.rightItems.push(new UiTopMenuRightItem(rightItem));
+    }
+    EventRouter.on('openLayoutTopMenuRightItem', (openingRightItem) => {
+      for (let rightItem of this.rightItems) {
+        if (rightItem === openingRightItem) {
+          continue;
+        }
+        rightItem.close();
+      }
+    });
   }
 
   whenOpenSideMenu() {
@@ -63,6 +73,39 @@ class UiTopMenu {
   }
 }
 
+class UiTopMenuRightItem {
+  constructor(node) {
+    this.isOpen = false;
+    this.node   = node;
+    this.ul     = this.node.querySelector('ul')
+    if (this.ul) {
+      this.ul.style.display = 'none';
+      var anchor = this.node.querySelector('a');
+      anchor.classList.add('fa');
+      anchor.classList.add('fa-caret-down');
+      anchor.addEventListener('click', (evt) => {
+        evt.stopPropagation();
+        if (this.isOpen) {
+          this.close();
+        } else {
+          this.open();
+        }
+      });
+    }
+  }
+
+  open() {
+    this.isOpen           = true;
+    this.ul.style.display = 'block';
+    EventRouter.emit('openLayoutTopMenuRightItem', [this]);
+  }
+
+  close() {
+    this.isOpen           = false;
+    this.ul.style.display = 'none';
+  }
+}
+
 class UiSideMenu {
   constructor() {
     this.isOpen = false;
@@ -70,12 +113,12 @@ class UiSideMenu {
   }
 
   open() {
-    this.isOpen = true;
+    this.isOpen          = true;
     this.node.style.left = '0';
   }
 
   close() {
-    this.isOpen = false;
+    this.isOpen          = false;
     this.node.style.left = '-48mm';
   }
 }

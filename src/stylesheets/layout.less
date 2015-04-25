@@ -113,11 +113,39 @@ a {
         padding : 0;
       }
 
-      li {
+      & > ul > li {
         .page_topMenu_elm;
-        padding : 0 2mm;
+        padding  : 0 2mm;
+        position : relative;
 
-        a { .page_topMenu_elm; }
+        & > a { .page_topMenu_elm; }
+
+        ul {
+          background : @widget_bg_color;
+          box-shadow : 1px 1px 1px black;
+          color      : @widget_front_color;
+          position   : absolute;
+          right      : 0;
+          top        : 12mm;
+          width      : 60mm;
+        }
+
+        li {
+          display      : block;
+          height       : 12mm;
+
+          a {
+            display         : block;
+            line-height     : 12mm;
+            padding-left    : 2mm;
+            text-decoration : none;
+
+            &:hover {
+              background : @widget_active_color;
+              color      : @widget_bg_color;
+            }
+          }
+        }
       }
     }
   }
