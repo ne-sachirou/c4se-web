@@ -5,7 +5,7 @@ export function rand(min, max) {
 }
 
 Array.prototype.sample = function () {
-  return this[rand(0, this.length - 1)];
+  return this[rand(0, this.length)];
 };
 
 export function Range(min, max) {
