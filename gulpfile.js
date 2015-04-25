@@ -1,17 +1,30 @@
 /* jshint node:true */
 'use strict';
 var cp = require('child_process');
-var gulp    = require('gulp'),
-    concat  = require('gulp-concat'),
-    jscs    = require('gulp-jscs'),
-    jshint  = require('gulp-jshint'),
-    less    = require('gulp-less'),
-    traceur = require('gulp-traceur'),
-    uglify  = require('gulp-uglifyjs'),
-    merge   = require('merge-stream');
+var del      = require('del'),
+    gulp     = require('gulp'),
+    concat   = require('gulp-concat'),
+    imagemin = require('gulp-imagemin'),
+    jscs     = require('gulp-jscs'),
+    jshint   = require('gulp-jshint'),
+    less     = require('gulp-less'),
+    traceur  = require('gulp-traceur'),
+    uglify   = require('gulp-uglifyjs'),
+    merge    = require('merge-stream');
 var SRCS = {
-      js : ['*.js', 'src/javascripts/**/**.js'],
+      js  : ['*.js', 'src/javascripts/**/**.js'],
+      img : 'src/images/*',
     };
+
+gulp.task('clean', function (done) {
+  del(['lib/assets/**'], function (err, paths) {
+    if (err) {
+      return done(err);
+    }
+    console.log('Del ' + paths.join(', '));
+    done();
+  });
+});
 
 gulp.task('copy-assets', function () {
   return merge([
@@ -31,6 +44,15 @@ gulp.task('copy-assets', function () {
   ].map(function (set) {
     return gulp.src(set.src).pipe(gulp.dest('lib/assets' + set.dest));
   }));
+});
+
+gulp.task('imagemin', function () {
+  return gulp.src(SRCS.img).
+    pipe(imagemin({
+      optimizationLevel : 7,
+      progressive       : true,
+    })).
+    pipe(gulp.dest('lib/assets'));
 });
 
 gulp.task('js-build', function () {
@@ -104,11 +126,12 @@ gulp.task('php-test', function (done) {
 });
 
 gulp.task('watch', function () {
+  gulp.watch(SRCS.img, ['imagemin']);
   gulp.watch(SRCS.js, ['js-build', 'js-test']);
   gulp.watch('src/stylesheets/*.less', ['less']);
   gulp.watch(['index.php', 'lib/**/**.php', 'tests/**/**.php'], ['php-test']);
 });
 
-gulp.task('build', ['copy-assets', 'js-build', 'less']);
+gulp.task('build', ['copy-assets', 'imagemin', 'js-build', 'less']);
 gulp.task('js-test', ['jscs', 'jshint']);
 gulp.task('test', ['js-test', 'php-test']);

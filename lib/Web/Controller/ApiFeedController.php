@@ -10,7 +10,7 @@ class ApiFeedController
      */
     function fetch($url, $count = 7) {
         $count = (int) $count;
-        $feed  = file_get_contents('http://c4se.hatenablog.com/feed');
+        $feed  = file_get_contents($url);
         if (!$feed) {
             throw new NotFound();
         }
@@ -23,8 +23,8 @@ class ApiFeedController
                 'title'     => (string) $entry->title,
                 'link'      => (string) $entry->link->attributes()['href'],
                 'summary'   => (string) $entry->summary,
-                'published' => (string) $entry->published,
-                'updated'   => (string) $entry->updated,
+                'published' => (string) ($entry->published ?: $entry->issued),
+                'updated'   => (string) ($entry->updated ?: $entry->modified),
             ];
             ++$i;
             if ($i > $count) {
