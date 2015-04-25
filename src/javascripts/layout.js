@@ -61,7 +61,7 @@ class UiTopMenuRightItem {
     this.isOpen = false;
     this.node   = node;
     this.anchor = this.node.querySelector('a');
-    this.ul     = this.node.querySelector('ul')
+    this.ul     = this.node.querySelector('ul');
     if (this.ul) {
       this.anchor.classList.add('fa');
       this.anchor.classList.add('fa-caret-down');

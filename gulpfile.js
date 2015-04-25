@@ -50,6 +50,13 @@ gulp.task('js-build', function () {
       ],
       dest : 'index.js'
     },
+    {
+      src : [
+        'src/javascripts/_baselib.js',
+        'src/javascripts/feed.js',
+      ],
+      dest : 'feed.js'
+    },
   ].map(function (set) {
     return gulp.src(set.src).
       pipe(traceur({
