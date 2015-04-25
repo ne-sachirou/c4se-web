@@ -84,10 +84,11 @@ a {
     top        : 0;
 
     &_left {
+      font-size : 5mm;
+
       &_sideToggleBtn {
         .page_topMenu_elm;
         cursor                     : pointer;
-        font-size                  : 7mm;
         text-align                 : center;
         transition-duration        : @default_transition_duration;
         transition-property        : transform;
@@ -95,11 +96,12 @@ a {
         width                      : 12mm;
 
         &:hover { transform : scale(1.1); }
+
+        &.fa-times:hover { transform : scale(1.1) rotate(180deg); }
       }
 
       &_siteName {
         .page_topMenu_elm;
-        font-size      : 5mm;
         letter-spacing : 0.8mm;
 
         a { .page_topMenu_elm; }

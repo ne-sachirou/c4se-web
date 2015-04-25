@@ -50,14 +50,14 @@ class UiTopMenu {
 
   whenOpenSideMenu() {
     this.node.style.left = '60mm';
-    this.leftSideToggleBtn.classList.remove('fa-compass');
+    this.leftSideToggleBtn.classList.remove('fa-chevron-right');
     this.leftSideToggleBtn.classList.add('fa-times');
   }
 
   whenCloseSideMenu() {
     this.node.style.left = '0';
     this.leftSideToggleBtn.classList.remove('fa-times');
-    this.leftSideToggleBtn.classList.add('fa-compass');
+    this.leftSideToggleBtn.classList.add('fa-chevron-right');
   }
 }
 
