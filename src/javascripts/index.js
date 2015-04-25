@@ -9,7 +9,6 @@ class UiIndex {
   }
 
   _setAsWavable(items) {
-    console.log(items);
     Array.from(items).forEach((item) => {
       var wavable = new Wavable(item);
       item.addEventListener('mouseover', (evt) => {
