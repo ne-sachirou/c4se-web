@@ -13,7 +13,7 @@
         "php": ">=5.4.0",
         "hafriedlander/php-peg": "dev-master@dev",
         "ranyuen/di": "~0.2",
-        "ranyuen/little": "~0.1",
+        "ranyuen/little": "~0.1@dev",
         "twig/twig": "~1.18"
     },
     "require-dev": {

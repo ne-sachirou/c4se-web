@@ -9,7 +9,8 @@ class ApiFeedController
      * @Route('/api/feed')
      */
     function fetch($url, $count = 7) {
-        $feed = file_get_contents('http://c4se.hatenablog.com/feed');
+        $count = (int) $count;
+        $feed  = file_get_contents('http://c4se.hatenablog.com/feed');
         if (!$feed) {
             throw new NotFound();
         }
