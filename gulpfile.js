@@ -37,12 +37,14 @@ gulp.task('js-build', function () {
   return merge([
     {
       src : [
+        'src/javascripts/_baselib.js',
         'src/javascripts/layout.js',
       ],
       dest : 'layout.js'
     },
     {
       src : [
+        'src/javascripts/_baselib.js',
         'src/javascripts/_wavable.js',
         'src/javascripts/index.js',
       ],

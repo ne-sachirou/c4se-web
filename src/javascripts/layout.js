@@ -1,23 +1,6 @@
 /* jshint browser:true, strict:false */
 
-var EventRouter = {
-  listeners : {},
-
-  emit : function (name, params, me) {
-    params = params || [];
-    me     = me     || null;
-    this.listeners[name].forEach(function (listener) {
-      listener.apply(me, params);
-    });
-  },
-
-  on : function (name, listener) {
-    if (!this.listeners[name]) {
-      this.listeners[name] = [];
-    }
-    this.listeners[name].push(listener);
-  }
-};
+import {EventRouter} from './_baselib.js';
 
 class UiLayout {
   constructor() {

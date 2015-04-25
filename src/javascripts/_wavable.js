@@ -1,29 +1,12 @@
 /* jshint browser:true, strict:false */
 
-/**
- * @param {HTMLElement} node
- * @param {Hash}        rules
- *
- * @return void
- */
-function setStyle(node, rules) {
-  for (let prop of Object.keys(rules)) {
-    if ('-' === prop[0]) {
-      prop = prop.slice(1);
-      const upperCase = prop[0].toUpperCase() + prop.slice(1);
-      node.style[`Moz${upperCase}`]    = rules[`-${prop}`];
-      node.style[`ms${upperCase}`]     = rules[`-${prop}`];
-      node.style[`webkit${upperCase}`] = rules[`-${prop}`];
-    }
-    node.style[prop] = rules[prop];
-  }
-}
+import {setStyle} from './_baselib.js';
 
 export class Wavable {
   /**
    * @param {HTMLElement} target
    */
-  constructor(target, direction = ['horizontal', 'vertical'][Math.floor(Math.random() * 2)]) {
+  constructor(target, direction = ['horizontal', 'vertical'].sample()) {
     this.direction          = direction;
     this.wavableBackgrounds = [];
     this._appendBackgrounds(target);

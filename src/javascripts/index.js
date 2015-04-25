@@ -1,5 +1,6 @@
 /* jshint browser:true, strict:false */
 
+import {rand, Range} from './_baselib.js';
 import {Wavable} from './_wavable.js';
 
 class UiIndex {
@@ -11,8 +12,7 @@ class UiIndex {
   }
 
   _setAsWavable(items) {
-    items = Array.from(items);
-    items.forEach((item) => {
+    Array.from(items).forEach((item) => {
       var wavable = new Wavable(item);
       this.wavables.push(wavable);
       item.addEventListener('mouseover', (evt) => {
@@ -24,8 +24,8 @@ class UiIndex {
   }
 
   waveRandom() {
-    this.wavables[Math.floor(Math.random() * this.wavables.length)].wave();
-    window.setTimeout(() => this.waveRandom(), Math.floor(Math.random() * 10) * 1000);
+    this.wavables.sample().wave();
+    window.setTimeout(() => this.waveRandom(), Range(1, 10).sample() * 1000);
   }
 }
 
