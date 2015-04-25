@@ -99,7 +99,7 @@ class UiTopMenuRightItem {
     this.anchor.classList.remove('fa-caret-down');
     this.anchor.classList.add('fa-caret-up');
     EventRouter.emit('openLayoutTopMenuRightItem', [this]);
-    requestAnimationFrame(() => this.ul.style.opacity = 1);
+    window.requestAnimationFrame(() => this.ul.style.opacity = 1);
   }
 
   close() {
@@ -107,7 +107,7 @@ class UiTopMenuRightItem {
     this.ul.style.opacity = 0;
     this.anchor.classList.remove('fa-caret-up');
     this.anchor.classList.add('fa-caret-down');
-    setTimeout(() => this.ul.style.display = 'none', 400);
+    window.setTimeout(() => this.ul.style.display = 'none', 400);
   }
 }
 
