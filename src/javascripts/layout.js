@@ -15,8 +15,8 @@ class UiLayout {
         this.topMenu.whenCloseSideMenu();
         this.sideMenu.close();
       } else {
-        this.content.style.left = '48mm';
-        this.footer.style.left  = '48mm';
+        this.content.style.left = '60mm';
+        this.footer.style.left  = '60mm';
         this.topMenu.whenOpenSideMenu();
         this.sideMenu.open();
       }
@@ -44,7 +44,7 @@ class UiTopMenu {
   }
 
   whenOpenSideMenu() {
-    this.node.style.left = '48mm';
+    this.node.style.left = '60mm';
     this.leftSideToggleBtn.classList.remove('fa-compass');
     this.leftSideToggleBtn.classList.add('fa-times');
   }
@@ -107,7 +107,7 @@ class UiSideMenu {
 
   close() {
     this.isOpen          = false;
-    this.node.style.left = '-48mm';
+    this.node.style.left = '-60mm';
   }
 }
 
