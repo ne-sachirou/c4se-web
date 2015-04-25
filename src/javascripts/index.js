@@ -4,14 +4,19 @@ import {Wavable} from './_wavable.js';
 
 class UiIndex {
   constructor() {
-    this.indexItems = Array.from(document.querySelectorAll('.index_item'));
-    this.indexItems.forEach((indexItem) => {
-      var wavable = new Wavable(indexItem);
-      indexItem.addEventListener('mouseover', (evt) => {
+    this._setAsWavable(document.querySelectorAll('.index_item'));
+    this._setAsWavable(document.querySelectorAll('.profileIndex_item'));
+  }
+
+  _setAsWavable(items) {
+    console.log(items);
+    Array.from(items).forEach((item) => {
+      var wavable = new Wavable(item);
+      item.addEventListener('mouseover', (evt) => {
         evt.stopPropagation();
         wavable.wave();
       });
-      indexItem.addEventListener('click', () => wavable.wave());
+      item.addEventListener('click', () => wavable.wave());
     });
   }
 }

@@ -2,7 +2,9 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>c4se</title>
+  <link rel="stylesheet" href="/lib/assets/fonts/font-awesome.min.css"/>
   <link rel="stylesheet" href="/lib/assets/layout.css"/>
   <script src="/lib/assets/traceur-runtime.js"></script>
 </head>
@@ -12,15 +14,25 @@
     <p><a href="/">c4se</a></p>
     <p><a href="https://github.com/ne-sachirou/c4se-web">Source code of this Web site.</a></p>
   </footer>
-  <nav class="page_menu">
-    <div class="page_menu_toggleBtn"><div class="page_menu_toggleBtn_inner">»</div></div>
-    <ul>
-      <li><a href="/">c4se</a></li>
-      <li><a href="/funisaya/">FuniSaya</a></li>
-      <li><a href="/yuraru/">yUraru yUsin / 兩河世界</a></li>
-      <li><a href="/yoko_kana/">橫假名</a></li>
-      <li><a href="/vertical_latin/">縦Latin / Latin縦活字</a></li>
-    </ul>
+  <div class="page_topMenu">
+    <div class="page_topMenu_left">
+      <div class="page_topMenu_left_sideToggleBtn fa fa-compass"></div>
+      <div class="page_topMenu_left_siteName"><a href="/">c4se</a></div>
+    </div>
+    <nav class="page_topMenu_right">
+      <ul>
+        <li>
+          <a href="#">Projects</a>
+          <ul style="display:none">
+            <li><a href="/funisaya/">FuniSaya</a></li>
+            <li><a href="/yuraru/">yUraru yUsin / 兩河世界</a></li>
+            <li><a href="/yoko_kana/">橫假名</a></li>
+            <li><a href="/vertical_latin/">縦Latin / Latin縦活字</a></li>
+          </ul>
+      </ul>
+    </nav>
+  </div>
+  <nav class="page_sideMenu">
   </nav>
   <script src="/lib/assets/layout.js"></script>
 </body>

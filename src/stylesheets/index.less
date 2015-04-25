@@ -1,17 +1,19 @@
 @charset 'utf-8';
 @import '_wavable';
 
-.index {
+.cards() {
   display   : flex;
   flex-wrap : wrap;
   position  : relative;
 
   &_item {
-    background : white;
-    color      : black;
+    background : @widget_bg_color;
+    color      : @widget_front_color;
     padding    : 0.8em 3em;
     width      : 7cm;
 
     h1 { font-size : large; }
   }
 }
+
+.index, .profileIndex { .cards; }

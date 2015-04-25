@@ -14,10 +14,23 @@ var SRCS = {
     };
 
 gulp.task('copy-assets', function () {
-  return gulp.src([
-      traceur.RUNTIME_PATH,
-    ]).
-    pipe(gulp.dest('lib/assets'));
+  return merge([
+    {
+      src  : [
+        traceur.RUNTIME_PATH,
+      ],
+      dest : ''
+    },
+    {
+      src  : [
+        'src/bower_components/font-awsome/css/font-awesome.min.css',
+        'src/bower_components/font-awsome/fonts/*',
+      ],
+      dest : '/fonts'
+    },
+  ].map(function (set) {
+    return gulp.src(set.src).pipe(gulp.dest('lib/assets' + set.dest));
+  }));
 });
 
 gulp.task('js-build', function () {
