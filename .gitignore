@@ -1,5 +1,5 @@
 /build/
-!.gitkeep
+!.keep
 .php_cs.cache
 
 # Created by https://www.gitignore.io

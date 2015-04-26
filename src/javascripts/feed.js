@@ -15,7 +15,7 @@ function h(elmName, attrs, childs) {
 }
 
 function showFeed(target) {
-  var count = target.dataset.feedCount,
+  var count = parseInt(target.dataset.feedCount),
       req   = new XMLHttpRequest();
   req.open('GET', `/api/feed?url=${encodeURIComponent(target.dataset.feedUrl)}&count=${count}`);
   req.send();

@@ -2,6 +2,7 @@
 namespace Web\Controller;
 
 use Ranyuen\Little\Exception\NotFound;
+use Ranyuen\Little\Exception\UnprocessableEntity;
 
 class ApiFeedController
 {
@@ -10,6 +11,9 @@ class ApiFeedController
      */
     function fetch($url, $count = 7) {
         $count = (int) $count;
+        if (filter_var($url, FILTER_VALIDATE_URL) === false || !preg_match('#\Ahttps?://#', $url)) {
+            throw new UnprocessableEntity();
+        }
         $feed  = file_get_contents($url);
         if (!$feed) {
             throw new NotFound();
