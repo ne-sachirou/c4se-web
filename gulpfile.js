@@ -31,6 +31,7 @@ gulp.task('copy-assets', function () {
     {
       src  : [
         traceur.RUNTIME_PATH,
+        'src/fonts/*',
       ],
       dest : ''
     },

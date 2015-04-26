@@ -9,12 +9,12 @@ class ApiFeedController
     /**
      * @Route('/api/feed')
      */
-    function fetch($url, $count = 7) {
+    public function fetch($url, $count = 7) {
         $count = (int) $count;
         if (filter_var($url, FILTER_VALIDATE_URL) === false || !preg_match('#\Ahttps?://#', $url)) {
             throw new UnprocessableEntity();
         }
-        $feed  = file_get_contents($url);
+        $feed = file_get_contents($url);
         if (!$feed) {
             throw new NotFound();
         }
