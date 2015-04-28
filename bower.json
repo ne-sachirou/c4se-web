@@ -20,6 +20,7 @@
   ],
   "dependencies": {
     "normalize-css": "~3.0.2",
-    "font-awsome": "~4.3.0"
+    "font-awsome": "~4.3.0",
+    "TAKETORI-JS": "https://github.com/cmonos/TAKETORI-JS.git"
   }
 }

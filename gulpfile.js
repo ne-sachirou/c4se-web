@@ -32,6 +32,8 @@ gulp.task('copy-assets', function () {
       src  : [
         traceur.RUNTIME_PATH,
         'src/fonts/*',
+        'src/bower_components/TAKETORI-JS/taketori.js',
+        'src/bower_components/TAKETORI-JS/taketori.css',
       ],
       dest : ''
     },
@@ -79,6 +81,13 @@ gulp.task('js-build', function () {
         'src/javascripts/feed.js',
       ],
       dest : 'feed.js'
+    },
+    {
+      src : [
+        'src/javascripts/_baselib.js',
+        'src/javascripts/vertical_latin.js',
+      ],
+      dest : 'vertical_latin.js'
     },
   ].map(function (set) {
     return gulp.src(set.src).
