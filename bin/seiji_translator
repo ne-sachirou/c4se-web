@@ -1,5 +1,7 @@
 #!/usr/bin/env php
 <?php
+require __DIR__.'/../vendor/autoload.php';
+use SeiJi\SeiJiTranslator;
 
 function help()
 {
@@ -14,7 +16,19 @@ if (!isset($argv[1])) {
   help();
   exit;
 }
-$filename = $argv[1];
-$translator = \Seiji\SeijiTranslator();
-$translator->translateFile($filename);
+set_error_handler(function ($errno, $errstr, $errfile, $errline, $errcontext) {
+  echo "$errno: $errstr in $errfile on $errline\n";
+  var_dump($errcontext);
+  echo "\n";
+  help();
+  die();
+});
+try {
+  $filename = $argv[1];
+  $translator = new SeijiTranslator();
+  $translator->translateFile($filename);
+} catch(\Exception $ex) {
+  echo (string) $ex;
+  help();
+}
 // vim:ft=php:

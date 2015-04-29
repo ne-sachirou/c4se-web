@@ -124,6 +124,17 @@ gulp.task('less', function () {
     pipe(gulp.dest('lib/assets'));
 });
 
+gulp.task('php-build', function (done) {
+  cp.exec('vendor/bin/phing build', function (err, stdout, stderr) {
+    console.log(stdout);
+    if (err) {
+      console.error(stderr);
+      return done(err);
+    }
+    done();
+  });
+});
+
 gulp.task('php-test', function (done) {
   cp.exec('vendor/bin/phing test', function (err, stdout, stderr) {
     console.log(stdout);
@@ -142,6 +153,6 @@ gulp.task('watch', function () {
   gulp.watch(['index.php', 'lib/**/**.php', 'tests/**/**.php'], ['php-test']);
 });
 
-gulp.task('build', ['copy-assets', 'imagemin', 'js-build', 'less']);
+gulp.task('build', ['copy-assets', 'imagemin', 'js-build', 'less', 'php-build']);
 gulp.task('js-test', ['jscs', 'jshint']);
 gulp.task('test', ['js-test', 'php-test']);

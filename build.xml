@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="c4se-web" default="main">
     <target name="main">
-        <!-- <phingcall target="build"/> -->
+        <phingcall target="build"/>
         <phingcall target="test"/>
     </target>
+
+    <target name="build" depends="translate_to_seiji"/>
 
     <target name="test">
         <!-- PHP lint -->
@@ -45,5 +47,16 @@
         </exec>
     </target>
 
-    <!-- <target name="build" depends=""/> -->
+    <target name="translate_to_seiji">
+        <foreach param="file" target="translate_file_to_seiji">
+            <fileset dir="src/views">
+                <include name="**/**.html"/>
+            </fileset>
+        </foreach>
+    </target>
+    <target name="translate_file_to_seiji">
+        <exec executable="bin/seiji_translator" passthru="true">
+            <arg value="${file}"/>
+        </exec>
+    </target>
 </project>
