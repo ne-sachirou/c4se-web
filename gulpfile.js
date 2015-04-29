@@ -125,14 +125,33 @@ gulp.task('less', function () {
 });
 
 gulp.task('php-build', function (done) {
-  cp.exec('vendor/bin/phing build', function (err, stdout, stderr) {
-    console.log(stdout);
-    if (err) {
-      console.error(stderr);
-      return done(err);
+  var ant = cp.spawn('vendor/bin/phing', ['build']);
+
+  function sendInput() {
+    var chunk = process.stdin.read();
+    if (null === chunk) {
+      return;
+    }
+    ant.stdin.write(chunk);
+  }
+
+  ant.on('close', function (code) {
+    process.stdin.removeListener('readable', sendInput);
+    if (code !== 0) {
+      return done(new Error());
     }
     done();
+  }).on('error', function (err) {
+    console.error(err);
+    done(err);
   });
+  ant.stdout.on('data', function (chunk) {
+    process.stdout.write(chunk);
+  });
+  ant.stderr.on('data', function (chunk) {
+    process.stderr.write(chunk);
+  });
+  process.stdin.on('readable', sendInput);
 });
 
 gulp.task('php-test', function (done) {
