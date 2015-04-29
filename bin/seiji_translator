@@ -1,0 +1,20 @@
+#!/usr/bin/env php
+<?php
+
+function help()
+{
+  echo "新字 → 舊字変換
+bin/seiji_translator FILENAME
+
+FILENAME\t変換するFileのPath。上書きします。
+";
+}
+
+if (!isset($argv[1])) {
+  help();
+  exit;
+}
+$filename = $argv[1];
+$translator = \Seiji\SeijiTranslator();
+$translator->translateFile($filename);
+// vim:ft=php:
