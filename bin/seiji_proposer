@@ -1,14 +1,14 @@
 #!/usr/bin/env php
 <?php
 require __DIR__.'/../vendor/autoload.php';
-use SeiJi\SeiJiTranslator;
+use SeiJi\SeiJiProposer;
 
 function help()
 {
-  echo "新字 → 舊字変換
-bin/seiji_translator FILENAME
+  echo "新字 → 舊字修正
+bin/seiji_proposer FILENAME
 
-FILENAME\t変換するFileのPath。上書きします。";
+FILENAME\t修正するFileのPath。上書きします。";
 }
 
 if (!isset($argv[1])) {
@@ -24,8 +24,8 @@ set_error_handler(function ($errno, $errstr, $errfile, $errline, $errcontext) {
 });
 try {
   $filename = $argv[1];
-  $translator = new SeiJiTranslator();
-  $translator->translateFile($filename);
+  $translator = new SeiJiProposer();
+  $translator->proposeFile($filename);
 } catch(\Exception $ex) {
   echo (string) $ex;
   help();
