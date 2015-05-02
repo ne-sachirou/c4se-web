@@ -31,7 +31,7 @@ gulp.task('copy-assets', function () {
     {
       src  : [
         traceur.RUNTIME_PATH,
-        'src/fonts/*',
+        'src/fonts/Yuraru ru Soin 01\'.ttf',
         'src/bower_components/TAKETORI-JS/taketori.js',
         'src/bower_components/TAKETORI-JS/taketori.css',
       ],

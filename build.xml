@@ -5,7 +5,7 @@
         <phingcall target="test"/>
     </target>
 
-    <target name="build" depends="translate_to_seiji, propose_to_seiji"/>
+    <target name="build" depends="translate_to_seiji, propose_to_seiji, uniseiji_font"/>
 
     <fileset dir="." id="views">
         <include name="src/views/**/**.html"/>
@@ -61,5 +61,9 @@
         <apply executable="bin/seiji_proposer" passthru="true" checkreturn="true">
             <fileset refid="views"/>
         </apply>
+    </target>
+
+    <target name="uniseiji_font">
+        <exec executable="bin/uniseiji_font" passthru="true"/>
     </target>
 </project>

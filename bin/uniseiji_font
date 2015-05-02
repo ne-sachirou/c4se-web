@@ -1,0 +1,9 @@
+#!/bin/bash
+
+cwd=$(pwd)
+cd $(dirname $0)/../lib/SeiJi
+chars=`cat Unicode舊字JIS舊字對照表.txt | perl -e '$in=join("",<STDIN>);$in=~s/\A---.*\n---\n//ms;print $in' | sed -e 's/#.*$//g' | sed -e '/^\s*$/d' | awk '{print $1}'`
+echo $chars | php uniseiji_font.pe.php > uniseiji_font.pe
+rm ../../lib/assets/uniseiji.ttf 2> /dev/null
+fontforge -script uniseiji_font.pe
+cd $cwd
