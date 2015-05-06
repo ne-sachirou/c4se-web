@@ -1,0 +1,17 @@
+@import '../_helpers';
+
+.index {
+  display   : flex;
+  flex-wrap : wrap;
+  position  : relative;
+
+  &_item {
+    background : @widget_bg_color;
+    color      : @widget_front_color;
+    margin     : 0.8em;
+    padding    : 0.8em 3em;
+    width      : 7cm;
+
+    h1 { font-size : large; }
+  }
+}

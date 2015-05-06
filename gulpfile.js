@@ -116,7 +116,7 @@ gulp.task('jshint', function () {
 });
 
 gulp.task('less', function () {
-  gulp.src(['src/stylesheets/!(_)*.less']).
+  gulp.src(['src/stylesheets/**/!(_)**.less']).
     pipe(less({
       compress  : true,
       sourceMap : true,
