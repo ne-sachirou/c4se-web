@@ -125,5 +125,5 @@ class UiSideMenu {
 window.addEventListener('DOMContentLoaded', () => {
   new UiLayout();
   var taketori = new Taketori();
-  taketori.set({}).element('div.vertical-content').toVertical();
+  taketori.set({}).element('div.vertical').toVertical();
 });
