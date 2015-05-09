@@ -50,10 +50,4 @@
             <arg value="${dir}"/>
         </exec>
     </target>
-
-    <target name="propose_to_seiji">
-        <apply executable="bin/seiji_proposer" passthru="true" checkreturn="true">
-            <fileset refid="views"/>
-        </apply>
-    </target>
 </project>

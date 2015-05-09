@@ -2,6 +2,7 @@
 'use strict';
 var cp = require('child_process');
 var del      = require('del'),
+    glob     = require('glob'),
     gulp     = require('gulp'),
     concat   = require('gulp-concat'),
     imagemin = require('gulp-imagemin'),
@@ -27,6 +28,34 @@ function promissExec(cmd) {
       }
       resolve();
     });
+  });
+}
+
+function execPipe(cmd, options) {
+  options = options || [];
+  return through.obj(function (file, encoding, callback) {
+    var me      = this,
+        proc    = cp.spawn(cmd, options),
+        stdouts = [];
+    proc.on('close', function (code) {
+      if (0 !== code) {
+        me.emit('error', new Error(cmd + ' ' + options.join(' ') + ' ends with ' + code));
+        return callback();
+      }
+      file.contents = Buffer.concat(stdouts);
+      me.push(file);
+      callback();
+    }).on('error', function (err) {
+      me.emit('error', err);
+    });
+    proc.stdout.on('data', function (chunk) {
+      stdouts.push(chunk);
+    });
+    proc.stderr.on('data', function (chunk) {
+      process.stderr.write(chunk);
+    });
+    proc.stdin.write(file.contents.toString(encoding));
+    proc.stdin.end();
   });
 }
 
@@ -142,40 +171,58 @@ gulp.task('php-test', function () {
   return promissExec('vendor/bin/phing test');
 });
 
-gulp.task('seiji-propose', function () {
+// This must not be done async.
+gulp.task('seiji-propose', function (done) {
+  process.stdin.setEncoding('utf8');
+  glob('src/views/**/**.html', function (err, matches) {
+    if (err) {
+      return done(err);
+    }
+    matches.reduce(function (promise, filename) {
+      return promise.then(function () {
+        function sendInput() {
+          var chunk = process.stdin.read();
+          if (null === chunk) {
+            return;
+          }
+          proc.stdin.write(chunk);
+        }
+
+        var proc = cp.spawn('bin/seiji_proposer', [filename]);
+        return new Promise(function (resolve, reject) {
+          proc.on('close', function (code) {
+            proc.stdin.end();
+            process.stdin.removeListener('readable', sendInput);
+            if (0 !== code) {
+              return reject(new Error(filename + ' end with ' + code));
+            }
+            resolve();
+          }).on('error', function (err) {
+            reject(err);
+          });
+          proc.stdout.on('data', function (chunk) {
+            process.stdout.write(chunk);
+          });
+          proc.stderr.on('data', function (chunk) {
+            process.stderr.write(chunk);
+          });
+          process.stdin.on('readable', sendInput);
+        });
+      });
+    }, Promise.resolve(null)).
+      then(function () {
+        done();
+      }).
+      catch(function (err) {
+        console.error(err);
+        done(err);
+      });
+  });
 });
 
 gulp.task('seiji-translate', function () {
-  function exec(cmd, options) {
-    options = options || [];
-    return through.obj(function (file, encoding, callback) {
-      var me      = this,
-          proc    = cp.spawn(cmd, options),
-          stdouts = [];
-      proc.on('close', function (code) {
-        if (0 !== code) {
-          me.emit('error', new Error(cmd + ' ' + options.join(' ') + ' ends with ' + code));
-          return callback();
-        }
-        file.contents = Buffer.concat(stdouts);
-        me.push(file);
-        callback();
-      }).on('error', function (err) {
-        me.emit('error', err);
-      });
-      proc.stdout.on('data', function (chunk) {
-        stdouts.push(chunk);
-      });
-      proc.stderr.on('data', function (chunk) {
-        process.stderr.write(chunk);
-      });
-      proc.stdin.write(file.contents.toString(encoding));
-      proc.stdin.end();
-    });
-  }
-
   return gulp.src('src/views/**/**.html').
-    pipe(exec('bin/seiji_translator')).
+    pipe(execPipe('bin/seiji_translator')).
     pipe(gulp.dest('src/views'));
 });
 
@@ -190,7 +237,7 @@ gulp.task('watch', function () {
   gulp.watch(['index.php', 'lib/**/**.php', 'tests/**/**.php'], ['php-test']);
 });
 
-gulp.task('build', ['copy-assets', 'imagemin', 'js-build', 'less', 'seiji']);
+gulp.task('build',   ['copy-assets', 'imagemin', 'js-build', 'less', 'seiji']);
 gulp.task('js-test', ['jscs', 'jshint']);
-gulp.task('seiji', ['seiji-propose', 'seiji-translate', 'seiji-uniseiji-font']);
-gulp.task('test', ['js-test', 'php-test']);
+gulp.task('seiji',   ['seiji-propose', 'seiji-translate', 'seiji-uniseiji-font']);
+gulp.task('test',    ['js-test', 'php-test']);
