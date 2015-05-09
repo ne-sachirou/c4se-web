@@ -8,7 +8,7 @@ class UiIndex {
     this.wavables = [];
     this._setAsWavable(document.querySelectorAll('.index_item'));
     this._setAsWavable(document.querySelectorAll('.profileIndex_item'));
-    this.waveRandom();
+    window.setTimeout(() => this.waveRandom(), 10);
   }
 
   _setAsWavable(items) {

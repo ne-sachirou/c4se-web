@@ -17,9 +17,11 @@ export class Wavable {
   }
 
   wave() {
-    for (let background of this.wavableBackgrounds) {
-      background.classList.add(`wavable_${this.direction}Background-waving`);
-    }
+    window.requestAnimationFrame(() => {
+      for (let background of this.wavableBackgrounds) {
+        background.classList.add(`wavable_${this.direction}Background-waving`);
+      }
+    });
     window.setTimeout(() => {
       for (let background of this.wavableBackgrounds) {
         background.classList.remove(`wavable_${this.direction}Background-waving`);
