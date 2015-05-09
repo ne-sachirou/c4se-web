@@ -1,7 +1,9 @@
 /* jshint node:true */
 'use strict';
-var cp = require('child_process');
-var ssh      = require('co-ssh'),
+var cp = require('child_process'),
+    fs = require('fs');
+var co       = require('co'),
+    ssh      = require('co-ssh'),
     del      = require('del'),
     glob     = require('glob'),
     gulp     = require('gulp'),
@@ -125,16 +127,19 @@ gulp.task('copy-assets', function () {
   }));
 });
 
-gulp.task('deploy', function* () {
-  conn = ssh({
-    host     : 'c4se2.sakura.ne.jp',
-    password : process.env.SSH_PASSWORD,
-    port     : 22,
-    username : 'c4se2',
+gulp.task('deploy', function () {
+  return co(function* () {
+    var conn = ssh({
+      key  : fs.readFileSync(process.env.HOME + '/.ssh/id_rsa'),
+      host : 'c4se2.sakura.ne.jp',
+      port : 22,
+      user : 'c4se2',
+    });
+    yield conn.connect();
+    yield conn.exec('cd ~/www; git pull --ff-only origin master');
+    yield conn.exec('cd ~/www; composer install --no-dev');
+    // yield conn.exec('cd ~/www; set SERVER_ENV=production; vendor/bin/phpmig migrate');
   });
-  yield conn.connect();
-  yield conn.exec('cd ~/www; git pull --ff-only origin master');
-  yield conn.exec('cd ~/www; composer install --no-dev');
 });
 
 gulp.task('imagemin', function () {

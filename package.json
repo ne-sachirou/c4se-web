@@ -4,7 +4,7 @@
   "description": "c4se's main Web site.",
   "main": "gulpfile.js",
   "scripts": {
-    "test": "gulp test"
+    "test": "gulp --harmony_generators test"
   },
   "repository": {
     "type": "git",
@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/ne-sachirou/c4se-web",
   "devDependencies": {
+    "co": "^4.5.4",
     "co-ssh": "0.0.1",
     "del": "^1.1.1",
     "glob": "^5.0.5",
