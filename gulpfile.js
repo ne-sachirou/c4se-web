@@ -1,7 +1,8 @@
 /* jshint node:true */
 'use strict';
 var cp = require('child_process');
-var del      = require('del'),
+var ssh      = require('co-ssh'),
+    del      = require('del'),
     glob     = require('glob'),
     gulp     = require('gulp'),
     concat   = require('gulp-concat'),
@@ -27,6 +28,38 @@ function promissExec(cmd) {
         return reject(err);
       }
       resolve();
+    });
+  });
+}
+
+function promiseSpawn(cmd, options) {
+  var proc = cp.spawn(cmd, options);
+
+  function sendInput() {
+    var chunk = process.stdin.read();
+    if (null === chunk) {
+      return;
+    }
+    proc.stdin.write(chunk);
+  }
+
+  proc.stdout.on('data', function (chunk) {
+    process.stdout.write(chunk);
+  });
+  proc.stderr.on('data', function (chunk) {
+    process.stderr.write(chunk);
+  });
+  process.stdin.on('readable', sendInput);
+  return new Promise(function (resolve, reject) {
+    proc.on('close', function (code) {
+      proc.stdin.end();
+      process.stdin.removeListener('readable', sendInput);
+      if (0 !== code) {
+        return reject(new Error(cmd + ' ' + options.join(' ') + ' ends with ' + code));
+      }
+      resolve();
+    }).on('error', function (err) {
+      reject(err);
     });
   });
 }
@@ -90,6 +123,18 @@ gulp.task('copy-assets', function () {
   ].map(function (set) {
     return gulp.src(set.src).pipe(gulp.dest('lib/assets' + set.dest));
   }));
+});
+
+gulp.task('deploy', function* () {
+  conn = ssh({
+    host     : 'c4se2.sakura.ne.jp',
+    password : process.env.SSH_PASSWORD,
+    port     : 22,
+    username : 'c4se2',
+  });
+  yield conn.connect();
+  yield conn.exec('cd ~/www; git pull --ff-only origin master');
+  yield conn.exec('cd ~/www; composer install --no-dev');
 });
 
 gulp.task('imagemin', function () {
@@ -180,34 +225,7 @@ gulp.task('seiji-propose', function (done) {
     }
     matches.reduce(function (promise, filename) {
       return promise.then(function () {
-        function sendInput() {
-          var chunk = process.stdin.read();
-          if (null === chunk) {
-            return;
-          }
-          proc.stdin.write(chunk);
-        }
-
-        var proc = cp.spawn('bin/seiji_proposer', [filename]);
-        return new Promise(function (resolve, reject) {
-          proc.on('close', function (code) {
-            proc.stdin.end();
-            process.stdin.removeListener('readable', sendInput);
-            if (0 !== code) {
-              return reject(new Error(filename + ' end with ' + code));
-            }
-            resolve();
-          }).on('error', function (err) {
-            reject(err);
-          });
-          proc.stdout.on('data', function (chunk) {
-            process.stdout.write(chunk);
-          });
-          proc.stderr.on('data', function (chunk) {
-            process.stderr.write(chunk);
-          });
-          process.stdin.on('readable', sendInput);
-        });
+        return promiseSpawn('bin/seiji_proposer', [filename]);
       });
     }, Promise.resolve(null)).
       then(function () {
