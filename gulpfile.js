@@ -17,10 +17,12 @@ var co       = require('co'),
     merge    = require('merge-stream'),
     through  = require('through2');
 var SRCS = {
-      js  : ['*.js', 'src/javascripts/**/**.js'],
+      html: 'src/views/**/**.html',
       img : 'src/images/*',
+      js  : ['*.js', 'src/javascripts/**/**.js'],
     };
 
+  // {{{ Util
 function promissExec(cmd) {
   return new Promise(function (resolve, reject) {
     cp.exec(cmd, function (err, stdout, stderr) {
@@ -93,6 +95,7 @@ function execPipe(cmd, options) {
     proc.stdin.end();
   });
 }
+// }}}
 
 gulp.task('clean', function (done) {
   del(['lib/assets/**'], function (err, paths) {
@@ -224,7 +227,7 @@ gulp.task('php-test', function () {
 // This must not be done async.
 gulp.task('seiji-propose', function (done) {
   process.stdin.setEncoding('utf8');
-  glob('src/views/**/**.html', function (err, matches) {
+  glob(SRCS.html, function (err, matches) {
     if (err) {
       return done(err);
     }
@@ -244,7 +247,7 @@ gulp.task('seiji-propose', function (done) {
 });
 
 gulp.task('seiji-translate', function () {
-  return gulp.src('src/views/**/**.html').
+  return gulp.src(SRCS.html).
     pipe(execPipe('bin/seiji_translator')).
     pipe(gulp.dest('src/views'));
 });
@@ -254,9 +257,10 @@ gulp.task('seiji-uniseiji-font', function () {
 });
 
 gulp.task('watch', function () {
-  gulp.watch(SRCS.img, ['imagemin']);
-  gulp.watch(SRCS.js, ['js-build', 'js-test']);
-  gulp.watch('src/stylesheets/*.less', ['less']);
+  gulp.watch(SRCS.html                                        , ['seiji-translate']);
+  gulp.watch(SRCS.img                                         , ['imagemin']);
+  gulp.watch(SRCS.js                                          , ['js-build', 'js-test']);
+  gulp.watch('src/stylesheets/*.less'                         , ['less']);
   gulp.watch(['index.php', 'lib/**/**.php', 'tests/**/**.php'], ['php-test']);
 });
 
@@ -264,3 +268,5 @@ gulp.task('build',   ['copy-assets', 'imagemin', 'js-build', 'less', 'seiji']);
 gulp.task('js-test', ['jscs', 'jshint']);
 gulp.task('seiji',   ['seiji-propose', 'seiji-translate', 'seiji-uniseiji-font']);
 gulp.task('test',    ['js-test', 'php-test']);
+
+// vim:fdm=marker:
