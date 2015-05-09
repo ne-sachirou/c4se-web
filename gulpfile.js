@@ -175,7 +175,8 @@ gulp.task('seiji-translate', function () {
   }
 
   return gulp.src('src/views/**/**.html').
-    pipe(exec('bin/seiji_translator'));
+    pipe(exec('bin/seiji_translator')).
+    pipe(gulp.dest('src/views'));
 });
 
 gulp.task('seiji-uniseiji-font', function () {
