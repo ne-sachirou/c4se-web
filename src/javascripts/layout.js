@@ -1,4 +1,5 @@
 /* jshint browser:true, strict:false */
+/* global Taketori */
 
 import {EventRouter} from './_baselib.js';
 
@@ -117,4 +118,8 @@ class UiSideMenu {
   }
 }
 
-window.addEventListener('DOMContentLoaded', () => new UiLayout());
+window.addEventListener('DOMContentLoaded', () => {
+  new UiLayout();
+  var taketori = new Taketori();
+  taketori.set({}).element('div.vertical-content').toVertical();
+});
