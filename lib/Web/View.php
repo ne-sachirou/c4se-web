@@ -22,8 +22,11 @@ class View
     public function render()
     {
         $content = file_get_contents($this->content);
-        $content = $this->renderPart($content);
-        return $this->renderPart($this->layout, ['content' => $content]);
+        $content = new YamlFrontMatter($content);
+        list($content, $params) = [$content->content, $content->params];
+        $content = $this->renderPart($content, $params);
+        $params  = array_merge($params, ['content' => $content]);
+        return $this->renderPart($this->layout, $params);
     }
 
     private function renderPart($content, $params = [])

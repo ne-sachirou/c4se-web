@@ -22,7 +22,7 @@ var SRCS = {
       js  : ['*.js', 'src/javascripts/**/**.js'],
     };
 
-  // {{{ Util
+// {{{ Util
 function promissExec(cmd) {
   return new Promise(function (resolve, reject) {
     cp.exec(cmd, function (err, stdout, stderr) {
