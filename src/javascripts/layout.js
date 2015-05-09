@@ -84,20 +84,24 @@ class UiTopMenuRightItem {
   }
 
   open() {
-    this.isOpen           = true;
-    this.ul.style.display = 'block';
-    this.anchor.classList.remove('fa-caret-down');
-    this.anchor.classList.add('fa-caret-up');
+    this.isOpen = true;
+    window.requestAnimationFrame(() => {
+      this.ul.style.display = 'block';
+      this.anchor.classList.remove('fa-caret-down');
+      this.anchor.classList.add('fa-caret-up');
+      window.requestAnimationFrame(() => this.ul.style.opacity = 1);
+    });
     EventRouter.emit('openLayoutTopMenuRightItem', [this]);
-    window.requestAnimationFrame(() => this.ul.style.opacity = 1);
   }
 
   close() {
-    this.isOpen           = false;
-    this.ul.style.opacity = 0;
-    this.anchor.classList.remove('fa-caret-up');
-    this.anchor.classList.add('fa-caret-down');
-    window.setTimeout(() => this.ul.style.display = 'none', 400);
+    this.isOpen = false;
+    window.requestAnimationFrame(() => {
+      this.ul.style.opacity = 0;
+      this.anchor.classList.remove('fa-caret-up');
+      this.anchor.classList.add('fa-caret-down');
+      window.setTimeout(() => this.ul.style.display = 'none', 400);
+    });
   }
 }
 
