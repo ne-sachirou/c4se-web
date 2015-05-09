@@ -10,11 +10,25 @@ var del      = require('del'),
     less     = require('gulp-less'),
     traceur  = require('gulp-traceur'),
     uglify   = require('gulp-uglifyjs'),
-    merge    = require('merge-stream');
+    merge    = require('merge-stream'),
+    through  = require('through2');
 var SRCS = {
       js  : ['*.js', 'src/javascripts/**/**.js'],
       img : 'src/images/*',
     };
+
+function promissExec(cmd) {
+  return new Promise(function (resolve, reject) {
+    cp.exec(cmd, function (err, stdout, stderr) {
+      console.log(stdout);
+      if (err) {
+        console.error(stderr);
+        return reject(err);
+      }
+      resolve();
+    });
+  });
+}
 
 gulp.task('clean', function (done) {
   del(['lib/assets/**'], function (err, paths) {
@@ -124,45 +138,48 @@ gulp.task('less', function () {
     pipe(gulp.dest('lib/assets'));
 });
 
-gulp.task('php-build', function (done) {
-  var ant = cp.spawn('vendor/bin/phing', ['build']);
-
-  function sendInput() {
-    var chunk = process.stdin.read();
-    if (null === chunk) {
-      return;
-    }
-    ant.stdin.write(chunk);
-  }
-
-  ant.on('close', function (code) {
-    process.stdin.removeListener('readable', sendInput);
-    if (code !== 0) {
-      return done(new Error());
-    }
-    done();
-  }).on('error', function (err) {
-    console.error(err);
-    done(err);
-  });
-  ant.stdout.on('data', function (chunk) {
-    process.stdout.write(chunk);
-  });
-  ant.stderr.on('data', function (chunk) {
-    process.stderr.write(chunk);
-  });
-  process.stdin.on('readable', sendInput);
+gulp.task('php-test', function () {
+  return promissExec('vendor/bin/phing test');
 });
 
-gulp.task('php-test', function (done) {
-  cp.exec('vendor/bin/phing test', function (err, stdout, stderr) {
-    console.log(stdout);
-    if (err) {
-      console.error(stderr);
-      return done(err);
-    }
-    done();
-  });
+gulp.task('seiji-propose', function () {
+});
+
+gulp.task('seiji-translate', function () {
+  function exec(cmd, options) {
+    options = options || [];
+    return through.obj(function (file, encoding, callback) {
+      var me      = this,
+          proc    = cp.spawn(cmd, options),
+          stdouts = [];
+      proc.on('close', function (code) {
+        if (0 !== code) {
+          me.emit('error', new Error(cmd + ' ' + options.join(' ') + ' ends with ' + code));
+          return callback();
+        }
+        file.contents = Buffer.concat(stdouts);
+        me.push(file);
+        callback();
+      }).on('error', function (err) {
+        me.emit('error', err);
+      });
+      proc.stdout.on('data', function (chunk) {
+        stdouts.push(chunk);
+      });
+      proc.stderr.on('data', function (chunk) {
+        process.stderr.write(chunk);
+      });
+      proc.stdin.write(file.contents.toString(encoding));
+      proc.stdin.end();
+    });
+  }
+
+  return gulp.src('src/views/**/**.html').
+    pipe(exec('bin/seiji_translator'));
+});
+
+gulp.task('seiji-uniseiji-font', function () {
+  return promissExec('bin/uniseiji_font');
 });
 
 gulp.task('watch', function () {
@@ -172,6 +189,7 @@ gulp.task('watch', function () {
   gulp.watch(['index.php', 'lib/**/**.php', 'tests/**/**.php'], ['php-test']);
 });
 
-gulp.task('build', ['copy-assets', 'imagemin', 'js-build', 'less', 'php-build']);
+gulp.task('build', ['copy-assets', 'imagemin', 'js-build', 'less', 'seiji']);
 gulp.task('js-test', ['jscs', 'jshint']);
+gulp.task('seiji', ['seiji-propose', 'seiji-translate', 'seiji-uniseiji-font']);
 gulp.task('test', ['js-test', 'php-test']);

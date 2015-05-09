@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="c4se-web" default="main">
     <target name="main">
-        <phingcall target="build"/>
+        <!--<phingcall target="build"/>-->
         <phingcall target="test"/>
     </target>
 
-    <target name="build" depends="translate_to_seiji, propose_to_seiji, uniseiji_font"/>
+    <!--<target name="build" depends=""/>-->
 
     <fileset dir="." id="views">
         <include name="src/views/**/**.html"/>
@@ -51,19 +51,9 @@
         </exec>
     </target>
 
-    <target name="translate_to_seiji">
-        <apply executable="bin/seiji_translator" checkreturn="true">
-            <fileset refid="views"/>
-        </apply>
-    </target>
-
     <target name="propose_to_seiji">
         <apply executable="bin/seiji_proposer" passthru="true" checkreturn="true">
             <fileset refid="views"/>
         </apply>
-    </target>
-
-    <target name="uniseiji_font">
-        <exec executable="bin/uniseiji_font" passthru="true"/>
     </target>
 </project>

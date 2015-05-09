@@ -8,13 +8,10 @@ function help()
   echo "新字 → 舊字変換
 bin/seiji_translator FILENAME
 
-FILENAME\t変換するFileのPath。上書きします。";
+FILENAME\t変換するFileのPath。上書きします。
+";
 }
 
-if (!isset($argv[1])) {
-  help();
-  exit;
-}
 set_error_handler(function ($errno, $errstr, $errfile, $errline, $errcontext) {
   echo "$errno: $errstr in $errfile on $errline\n";
   var_dump($errcontext);
@@ -23,11 +20,19 @@ set_error_handler(function ($errno, $errstr, $errfile, $errline, $errcontext) {
   die();
 });
 try {
-  $filename = $argv[1];
+  $read       = [STDIN];
+  $write      = [];
+  $except     = [];
   $translator = new SeiJiTranslator();
-  $translator->translateFile($filename);
+  if (isset($argv[1])) {
+    $translator->translateFile($argv[1]);
+  } elseif (stream_select($read, $write, $except, 0)) {
+    echo $translator->translate(stream_get_contents(STDIN));
+  } else {
+    help();
+  }
 } catch(\Exception $ex) {
-  echo (string) $ex;
+  echo (string) $ex."\n";
   help();
 }
 // vim:ft=php:
