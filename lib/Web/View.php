@@ -65,7 +65,7 @@ class View
                         continue;
                     }
                     $items[] = [
-                        'url'   => preg_split("/\s+/", $line)[0],
+                        'url'   => preg_split('/\s+/', $line)[0],
                         'title' => preg_replace('/\A\S+\s+/', '', $line),
                         'i'     => $i,
                     ];

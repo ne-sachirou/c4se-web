@@ -24,6 +24,7 @@ Open('../../src/fonts/NotoSansCJKjp-Regular.otf')
 # CIDChangeSubFont('NotoSansCJKjp-Regular-Ideographs')
 CIDFlatten()
 Reencode('unicode')
+MergeFonts('../../src/fonts/migu-1m-regular.ttf')
 chars     = [<?php echo implode(',', $chars    ); ?>]
 charsOrig = [<?php echo implode(',', $charsOrig); ?>]
 i         = 0
