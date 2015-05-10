@@ -71,3 +71,24 @@ export function setStyle(node, rules) {
     node.style[prop] = rules[prop];
   }
 }
+
+/**
+ * @param {string}             elmName
+ * @param {hash}               attrs
+ * @param {(Element|string)[]} childs
+ *
+ * @return HTMLElement
+ */
+export function h(elmName, attrs, childs) {
+  var elm = document.createElement(elmName);
+  for (let attrName of Object.keys(attrs)) {
+    elm.setAttribute(attrName, attrs[attrName]);
+  }
+  for (let child of childs) {
+    if (typeof child === 'string' || child instanceof String) {
+      child = document.createTextNode(child);
+    }
+    elm.appendChild(child);
+  }
+  return elm;
+}

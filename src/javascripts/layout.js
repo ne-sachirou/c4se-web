@@ -1,14 +1,15 @@
 /* jshint browser:true, strict:false */
 /* global Taketori */
 
-import {EventRouter} from './_baselib.js';
+import {EventRouter, h} from './_baselib.js';
 
 class UiLayout {
   constructor() {
-    this.content  = document.querySelector('.page_content');
-    this.footer   = document.querySelector('.page_footer');
-    this.topMenu  = new UiTopMenu();
-    this.sideMenu = new UiSideMenu();
+    this.content    = document.querySelector('.page_content');
+    this.footer     = document.querySelector('.page_footer');
+    this.topMenu    = new UiTopMenu();
+    this.sideMenu   = new UiSideMenu();
+    this.breadcrumb = new UiBreadcrumb();
     document.body.addEventListener('click', () => {
       for (let rightItem of this.topMenu.rightItems) {
         rightItem.close();
@@ -119,6 +120,34 @@ class UiSideMenu {
   close() {
     this.isOpen          = false;
     this.node.style.left = '-60mm';
+  }
+}
+
+class UiBreadcrumb {
+  constructor() {
+    this.node = document.querySelector('.breadcrumb');
+    var items = this.node.textContent.split('\n').
+      filter((line) => '' !== line.trim()).
+      map((line) => {
+        return {
+          url   : line.match(/^\s*(\S+)/      )[1],
+          title : line.match(/^\s*\S+\s+(.+)$/)[1],
+        };
+      });
+    var scope = items.reduceRight((child, item) => {
+      var scope = h('div', {itemscope : '', itemtype: 'http://data-vocabulary.org/Breadcrumb'}, [
+        h('a', {href : item.url, itemprop : 'url'}, [
+          h('span', {itemprop : 'title'}, [item.title])
+        ])
+      ]);
+      if (child) {
+        child.setAttribute('itemprop', 'child');
+        scope.appendChild(child);
+      }
+      return scope;
+    }, null);
+    this.node.innerHTML = '';
+    this.node.appendChild(scope);
   }
 }
 

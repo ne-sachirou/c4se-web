@@ -12,10 +12,6 @@
   src         : url("/lib/assets/Yuraru ru Soin 01'.ttf");
 }
 
-.vertical { .vendor(text-orientation, upright); }
-
-.yuraru { font-family : yuraru-sans-serif; }
-
 .page_topMenu_elm() {
   display         : inline-block;
   height          : 12mm;
@@ -63,6 +59,18 @@ a {
     color           : @widget_active_color;
     text-decoration : underline overline;
   }
+}
+
+.vertical { .vendor(text-orientation, upright); }
+
+.yuraru { font-family : yuraru-sans-serif; }
+
+.breadcrumb {
+  font-size : smaller;
+
+  div[itemscope] { display : inline; }
+
+  div[itemprop="child"]:before { content : ' > '; }
 }
 
 .page {
