@@ -126,6 +126,9 @@ class UiSideMenu {
 class UiBreadcrumb {
   constructor() {
     this.node = document.querySelector('.breadcrumb');
+    if (!this.node) {
+      return;
+    }
     var items = this.node.textContent.split('\n').
       filter((line) => '' !== line.trim()).
       map((line) => {
