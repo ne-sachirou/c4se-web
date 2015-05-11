@@ -131,13 +131,13 @@ gulp.task('copy-assets', function () {
 });
 
 gulp.task('deploy', function () {
+  var conn = ssh({
+    key  : fs.readFileSync(process.env.HOME + '/.ssh/id_rsa'),
+    host : 'c4se2.sakura.ne.jp',
+    port : 22,
+    user : 'c4se2',
+  });
   return co(function* () {
-    var conn = ssh({
-      key  : fs.readFileSync(process.env.HOME + '/.ssh/id_rsa'),
-      host : 'c4se2.sakura.ne.jp',
-      port : 22,
-      user : 'c4se2',
-    });
     yield conn.connect();
     yield conn.exec('cd ~/www; git pull --ff-only origin master');
     yield conn.exec('cd ~/www; composer install --no-dev');
