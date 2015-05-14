@@ -12,10 +12,10 @@ var co       = require('co'),
     jscs     = require('gulp-jscs'),
     jshint   = require('gulp-jshint'),
     less     = require('gulp-less'),
+    run      = require('gulp-run'),
     traceur  = require('gulp-traceur'),
     uglify   = require('gulp-uglifyjs'),
-    merge    = require('merge-stream'),
-    through  = require('through2');
+    merge    = require('merge-stream');
 var SRCS = {
       html: 'src/views/**/**.html',
       img : 'src/images/*',
@@ -65,34 +65,6 @@ function promiseSpawn(cmd, options) {
     }).on('error', function (err) {
       reject(err);
     });
-  });
-}
-
-function execPipe(cmd, options) {
-  options = options || [];
-  return through.obj(function (file, encoding, callback) {
-    var me      = this,
-        proc    = cp.spawn(cmd, options),
-        stdouts = [];
-    proc.on('close', function (code) {
-      if (0 !== code) {
-        me.emit('error', new Error(cmd + ' ' + options.join(' ') + ' ends with ' + code));
-        return callback();
-      }
-      file.contents = Buffer.concat(stdouts);
-      me.push(file);
-      callback();
-    }).on('error', function (err) {
-      me.emit('error', err);
-    });
-    proc.stdout.on('data', function (chunk) {
-      stdouts.push(chunk);
-    });
-    proc.stderr.on('data', function (chunk) {
-      process.stderr.write(chunk);
-    });
-    proc.stdin.write(file.contents.toString(encoding));
-    proc.stdin.end();
   });
 }
 // }}}
@@ -248,7 +220,7 @@ gulp.task('seiji-propose', function (done) {
 
 gulp.task('seiji-translate', function () {
   return gulp.src(SRCS.html).
-    pipe(execPipe('bin/seiji_translator')).
+    pipe(run('bin/seiji_translator', {silent : true})).
     pipe(gulp.dest('src/views'));
 });
 

@@ -27,9 +27,9 @@
     "gulp-jscs": "^1.4.0",
     "gulp-jshint": "~1.9.4",
     "gulp-less": "^3.0.2",
+    "gulp-run": "^1.6.8",
     "gulp-traceur": "^0.17.1",
     "gulp-uglifyjs": "^0.6.1",
-    "merge-stream": "^0.1.7",
-    "through2": "^0.6.5"
+    "merge-stream": "^0.1.7"
   }
 }
