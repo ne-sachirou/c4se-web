@@ -20,16 +20,16 @@
     "co": "^4.5.4",
     "co-ssh": "0.0.1",
     "del": "^1.1.1",
-    "glob": "^5.0.5",
+    "glob": "^5.0.6",
     "gulp": "~3.8.11",
     "gulp-concat": "^2.5.2",
     "gulp-imagemin": "^2.2.1",
-    "gulp-jscs": "^1.4.0",
-    "gulp-jshint": "~1.9.4",
-    "gulp-less": "^3.0.2",
+    "gulp-jscs": "^1.6.0",
+    "gulp-jshint": "~1.10.0",
+    "gulp-less": "^3.0.3",
     "gulp-run": "^1.6.8",
     "gulp-traceur": "^0.17.1",
-    "gulp-uglifyjs": "^0.6.1",
+    "gulp-uglifyjs": "^0.6.2",
     "merge-stream": "^0.1.7"
   }
 }
