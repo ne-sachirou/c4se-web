@@ -23,6 +23,15 @@ var SRCS = {
     };
 
 // {{{ Util
+/**
+ * Like Bluebird's Promise.reduce().
+ */
+function promiseSequence(defrreds) {
+  return defrreds.reduce(function (promise, defrred) {
+    return promise.then(defrred);
+  }, Promise.resolve(null));
+}
+
 function promissExec(cmd) {
   return new Promise(function (resolve, reject) {
     cp.exec(cmd, function (err, stdout, stderr) {
@@ -53,6 +62,7 @@ function promiseSpawn(cmd, options) {
   proc.stderr.on('data', function (chunk) {
     process.stderr.write(chunk);
   });
+  process.stdin.setEncoding('utf8');
   process.stdin.on('readable', sendInput);
   return new Promise(function (resolve, reject) {
     proc.on('close', function (code) {
@@ -198,16 +208,15 @@ gulp.task('php-test', function () {
 
 // This must not be done async.
 gulp.task('seiji-propose', function (done) {
-  process.stdin.setEncoding('utf8');
   glob(SRCS.html, function (err, matches) {
     if (err) {
       return done(err);
     }
-    matches.reduce(function (promise, filename) {
-      return promise.then(function () {
+    promiseSequence(matches.map(function (filename) {
+      return function () {
         return promiseSpawn('bin/seiji_proposer', [filename]);
-      });
-    }, Promise.resolve(null)).
+      };
+    })).
       then(function () {
         done();
       }).
