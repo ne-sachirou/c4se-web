@@ -2,20 +2,21 @@
 'use strict';
 var cp = require('child_process'),
     fs = require('fs');
-var co       = require('co'),
-    ssh      = require('co-ssh'),
-    del      = require('del'),
-    glob     = require('glob'),
-    gulp     = require('gulp'),
-    concat   = require('gulp-concat'),
-    imagemin = require('gulp-imagemin'),
-    jscs     = require('gulp-jscs'),
-    jshint   = require('gulp-jshint'),
-    less     = require('gulp-less'),
-    run      = require('gulp-run'),
-    traceur  = require('gulp-traceur'),
-    uglify   = require('gulp-uglifyjs'),
-    merge    = require('merge-stream');
+var co        = require('co'),
+    ssh       = require('co-ssh'),
+    del       = require('del'),
+    glob      = require('glob'),
+    gulp      = require('gulp'),
+    concat    = require('gulp-concat'),
+    cssBase64 = require('gulp-css-base64'),
+    imagemin  = require('gulp-imagemin'),
+    jscs      = require('gulp-jscs'),
+    jshint    = require('gulp-jshint'),
+    less      = require('gulp-less'),
+    run       = require('gulp-run'),
+    traceur   = require('gulp-traceur'),
+    uglify    = require('gulp-uglifyjs'),
+    merge     = require('merge-stream');
 var SRCS = {
       html: 'src/views/**/**.html',
       img : 'src/images/*',
@@ -198,6 +199,10 @@ gulp.task('less', function () {
     pipe(less({
       compress  : true,
       sourceMap : true,
+    })).
+    pipe(cssBase64({
+      baseDir           : '.',
+      maxWeightResource : 32768 * 4,
     })).
     pipe(gulp.dest('lib/assets'));
 });
