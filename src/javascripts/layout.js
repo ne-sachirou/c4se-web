@@ -158,4 +158,7 @@ window.addEventListener('DOMContentLoaded', () => {
   new UiLayout();
   var taketori = new Taketori();
   taketori.set({}).element('div.vertical').toVertical();
+  window.requestAnimationFrame(() => {
+    document.body.style.fontFamily = 'UniSeiJi, ' + window.getComputedStyle(document.body).fontFamily;
+  });
 });
