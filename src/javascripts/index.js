@@ -1,6 +1,6 @@
 /* jshint browser:true, strict:false */
 
-import {Range} from './_baselib.js';
+import {Range  } from './_baselib.js';
 import {Wavable} from './_wavable.js';
 
 class UiIndex {

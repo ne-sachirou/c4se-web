@@ -13,11 +13,11 @@ function showFeed(target) {
         fragment = document.createDocumentFragment();
     for (let entry of feed.entries) {
       var entryNode = h('section', {'class' : 'feed_entry'}, [
-        h('h1', {}, [
+        h('h1', [
           h('a', {href : entry.link}, [entry.title]),
         ]),
-        h('p', {}, [entry.summary]),
-        h('div', {'class' : 'feed_entry_updated'}, [entry.updated || entry.published]),
+        h('p', [entry.summary]),
+        h('div.feed_entry_updated', [entry.updated || entry.published]),
       ]);
       fragment.appendChild(entryNode);
       ++i;

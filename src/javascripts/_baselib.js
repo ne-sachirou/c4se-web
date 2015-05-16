@@ -14,7 +14,6 @@ export function Range(min, max) {
   }
   this.min = min;
   this.max = max;
-  return this;
 }
 
 Range.prototype[Symbol.iterator] = function () {
@@ -40,9 +39,9 @@ export var EventRouter = {
   emit : function (name, params, me) {
     params = params || [];
     me     = me     || null;
-    this.listeners[name].forEach(function (listener) {
+    for (let listener of this.listeners[name]) {
       listener.apply(me, params);
-    });
+    }
   },
 
   on : function (name, listener) {
@@ -73,13 +72,42 @@ export function setStyle(node, rules) {
 }
 
 /**
- * @param {string}             elmName
- * @param {hash}               attrs
- * @param {(Element|string)[]} childs
+ * Create a real node.
+ *
+ * Example
+ *   h('div#momonga.momonga', [h('i', ['mOmonga'])]); <div id="momonga" class="momonga"><i>mOmonga</i></div>
+ *   h('a', {href : 'momonga.html'}, ['mOmonga']);    <a href="momonga.html">mOmonga</a>
+ *   h('a', {name : 'momonga'});                      <a name="momonga"></a>
+ *   h('b', ['mOmonga']);                             <b>mOmonga</a>
+ *   h('hr');                                         <hr/>
+ *
+ * @param {string}          elmName
+ * @param {hash}            attrs
+ * @param {(Node|string)[]} childs
  *
  * @return HTMLElement
  */
 export function h(elmName, attrs, childs) {
+  if (void 0 === childs) {
+    if (Array.isArray(attrs)) {
+      childs = attrs;
+      attrs  = {};
+    } else {
+      childs = [];
+      attrs  = attrs || {};
+    }
+  }
+  elmName = elmName.replace(/#[-_\w]+/g, (match) => {
+    attrs.id = match.slice(1);
+    return '';
+  }).replace(/\.[-_\w]+/g, (match) => {
+    attrs['class'] = (attrs['class'] || '') + ' ' + match.slice(1);
+    return '';
+  });
+  return h_(elmName, attrs, childs);
+}
+
+function h_(elmName, attrs, childs) {
   var elm = document.createElement(elmName);
   for (let attrName of Object.keys(attrs)) {
     elm.setAttribute(attrName, attrs[attrName]);
