@@ -74,9 +74,16 @@ a {
 }
 
 .page {
+  left     : 0;
   position : absolute;
   top      : 0;
   width    : 100%;
+
+  &, &_sideMenu {
+    transition-duration        : @default_transition_duration;
+    transition-property        : left;
+    transition-timing-function : ease-in-out;
+  }
 
   &_content, &_footer, &_topMenu {
     left         : 0;
@@ -84,12 +91,6 @@ a {
     position     : relative;
     width        : 100%;
     width        : ~'calc(100% - 1mm)';
-  }
-
-  &_content, &_footer, &_topMenu, &_sideMenu {
-    transition-duration        : @default_transition_duration;
-    transition-property        : left;
-    transition-timing-function : ease-in-out;
   }
 
   &_content, &_footer {

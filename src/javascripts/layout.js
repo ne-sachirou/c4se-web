@@ -5,11 +5,12 @@ import {EventRouter, h} from './_baselib.js';
 
 class UiLayout {
   constructor() {
-    this.content    = document.querySelector('.page_content');
-    this.footer     = document.querySelector('.page_footer');
-    this.topMenu    = new UiTopMenu();
-    this.sideMenu   = new UiSideMenu();
-    this.breadcrumb = new UiBreadcrumb();
+    this.node       = document.querySelector('.page');
+    this.content    = this.node.querySelector('.page_content');
+    this.footer     = this.node.querySelector('.page_footer');
+    this.topMenu    = new UiTopMenu(this.node);
+    this.sideMenu   = new UiSideMenu(this.node);
+    this.breadcrumb = new UiBreadcrumb(this.node);
     document.body.addEventListener('click', () => {
       for (let rightItem of this.topMenu.rightItems) {
         rightItem.close();
@@ -17,13 +18,11 @@ class UiLayout {
     });
     EventRouter.on('toggleLayoutSideMenu', () => {
       if (this.sideMenu.isOpen) {
-        this.content.style.left = '0';
-        this.footer.style.left  = '0';
+        this.node.style.left = '0';
         this.topMenu.whenCloseSideMenu();
         this.sideMenu.close();
       } else {
-        this.content.style.left = '60mm';
-        this.footer.style.left  = '60mm';
+        this.node.style.left = '60mm';
         this.topMenu.whenOpenSideMenu();
         this.sideMenu.open();
       }
@@ -32,9 +31,9 @@ class UiLayout {
 }
 
 class UiTopMenu {
-  constructor() {
-    this.node              = document.querySelector('.page_topMenu');
-    this.leftSideToggleBtn = document.querySelector('.page_topMenu_left_sideToggleBtn');
+  constructor(page) {
+    this.node              = page.querySelector('.page_topMenu');
+    this.leftSideToggleBtn = page.querySelector('.page_topMenu_left_sideToggleBtn');
     this.rightItems        = [];
     this.leftSideToggleBtn.addEventListener('click', () => EventRouter.emit('toggleLayoutSideMenu'));
     for (let rightItem of Array.from(this.node.querySelectorAll('.page_topMenu_right > ul > li'))) {
@@ -51,13 +50,11 @@ class UiTopMenu {
   }
 
   whenOpenSideMenu() {
-    this.node.style.left = '60mm';
     this.leftSideToggleBtn.classList.remove('fa-chevron-right');
     this.leftSideToggleBtn.classList.add('fa-times');
   }
 
   whenCloseSideMenu() {
-    this.node.style.left = '0';
     this.leftSideToggleBtn.classList.remove('fa-times');
     this.leftSideToggleBtn.classList.add('fa-chevron-right');
   }
@@ -107,9 +104,9 @@ class UiTopMenuRightItem {
 }
 
 class UiSideMenu {
-  constructor() {
+  constructor(page) {
     this.isOpen = false;
-    this.node   = document.querySelector('.page_sideMenu');
+    this.node   = page.querySelector('.page_sideMenu');
   }
 
   open() {
@@ -124,8 +121,8 @@ class UiSideMenu {
 }
 
 class UiBreadcrumb {
-  constructor() {
-    this.node = document.querySelector('.breadcrumb');
+  constructor(page) {
+    this.node = page.querySelector('.breadcrumb');
     if (!this.node || this.node.querySelector('*[itemscope]')) {
       return;
     }
