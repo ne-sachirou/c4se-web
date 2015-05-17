@@ -6,11 +6,20 @@
   position  : relative;
 
   &_item {
-    background : @widget_bg_color;
-    color      : @widget_front_color;
-    margin     : 0.8em;
-    padding    : 0.8em 3em;
-    width      : 7cm;
+    background                 : @widget_bg_color;
+    border-radius              : 2px;
+    color                      : @widget_front_color;
+    margin                     : 0.8em;
+    padding                    : 0.8em 3em;
+    transition-duration        : @default_transition_duration;
+    transition-property        : border-radius, box-shadow;
+    transition-timing-function : ease-in-out;
+    width                      : 7cm;
+
+    &:hover {
+    border-radius : 4px;
+    box-shadow    : 0 0 1px @widget_front_color inset, 0 0 3px @widget_front_color inset;
+  }
 
     h1 { font-size : large; }
   }

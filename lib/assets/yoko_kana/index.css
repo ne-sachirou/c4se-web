@@ -1,1 +1,1 @@
-.index{display:flex;flex-wrap:wrap;position:relative}.index_item{background:#373d49;color:#a0aabf;margin:.8em;padding:.8em 3em;width:7cm}.index_item h1{font-size:large}
+.index{display:flex;flex-wrap:wrap;position:relative}.index_item{background:#373d49;border-radius:2px;color:#a0aabf;margin:.8em;padding:.8em 3em;transition-duration:.4s;transition-property:border-radius,box-shadow;transition-timing-function:ease-in-out;width:7cm}.index_item:hover{border-radius:4px;box-shadow:0 0 1px #a0aabf inset,0 0 3px #a0aabf inset}.index_item h1{font-size:large}
