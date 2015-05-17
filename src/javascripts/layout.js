@@ -6,8 +6,6 @@ import {EventRouter, h} from './_baselib.js';
 class UiLayout {
   constructor() {
     this.node       = document.querySelector('.page');
-    this.content    = this.node.querySelector('.page_content');
-    this.footer     = this.node.querySelector('.page_footer');
     this.topMenu    = new UiTopMenu(this.node);
     this.sideMenu   = new UiSideMenu(this.node);
     this.breadcrumb = new UiBreadcrumb(this.node);
