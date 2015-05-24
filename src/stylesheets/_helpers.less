@@ -14,6 +14,16 @@
           @{property} : @value;
 }
 
+.cf() {
+  overflow : hidden;
+
+  &:after {
+    clear   : both;
+    content : '';
+    display : block;
+  }
+}
+
 @bg_color            : white;
 @front_color         : black;
 @widget_bg_color     : rgb( 55,  61,  73);
