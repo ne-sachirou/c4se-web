@@ -13,6 +13,7 @@ var co        = require('co'),
     jscs      = require('gulp-jscs'),
     jshint    = require('gulp-jshint'),
     less      = require('gulp-less'),
+    plumber   = require('gulp-plumber'),
     run       = require('gulp-run'),
     traceur   = require('gulp-traceur'),
     uglify    = require('gulp-uglifyjs'),
@@ -170,6 +171,7 @@ gulp.task('js-build', function () {
     },
   ].map(function (set) {
     return gulp.src(set.src).
+      pipe(plumber()).
       pipe(traceur({
         modules : 'inline',
       })).
@@ -196,6 +198,7 @@ gulp.task('jshint', function () {
 
 gulp.task('less', function () {
   gulp.src(['src/stylesheets/**/!(_)**.less']).
+    pipe(plumber()).
     pipe(less({
       compress  : true,
       sourceMap : true,
@@ -243,11 +246,11 @@ gulp.task('seiji-uniseiji-font', function () {
 });
 
 gulp.task('watch', function () {
-  gulp.watch(SRCS.html                                        , ['seiji-translate']);
-  gulp.watch(SRCS.img                                         , ['imagemin']);
+  gulp.watch(SRCS.html                                        , ['seiji-translate'    ]);
+  gulp.watch(SRCS.img                                         , ['imagemin'           ]);
   gulp.watch(SRCS.js                                          , ['js-build', 'js-test']);
-  gulp.watch('src/stylesheets/*.less'                         , ['less']);
-  gulp.watch(['index.php', 'lib/**/**.php', 'tests/**/**.php'], ['php-test']);
+  gulp.watch('src/stylesheets/**/**.less'                     , ['less'               ]);
+  gulp.watch(['index.php', 'lib/**/**.php', 'tests/**/**.php'], ['php-test'           ]);
 });
 
 gulp.task('build',   ['copy-assets', 'imagemin', 'js-build', 'less', 'seiji']);

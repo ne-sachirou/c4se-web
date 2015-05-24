@@ -28,6 +28,7 @@
     "gulp-jscs": "^1.6.0",
     "gulp-jshint": "~1.10.0",
     "gulp-less": "^3.0.3",
+    "gulp-plumber": "^1.0.1",
     "gulp-run": "^1.6.8",
     "gulp-traceur": "^0.17.1",
     "gulp-uglifyjs": "^0.6.2",

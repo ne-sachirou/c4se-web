@@ -1,0 +1,2 @@
+#!/bin/bash
+gulp --harmony_generators $*
