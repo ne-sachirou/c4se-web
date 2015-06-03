@@ -14,8 +14,10 @@ abstract class SeiJiProcessor
         $this->dic = array_reduce(
             preg_split('/\n+/', $dic),
             function ($carry, $line) {
-                $line = preg_split('/\s+/', $line);
-                $carry[$line[0]] = array_slice($line, 1);
+                if ($line) {
+                    $line = preg_split('/\s+/', $line);
+                    $carry[$line[0]] = array_slice($line, 1);
+                }
                 return $carry;
             },
             []
