@@ -4,7 +4,7 @@
   "description": "c4se's main Web site.",
   "main": "gulpfile.js",
   "scripts": {
-    "test": "gulp --harmony_generators test"
+    "test": "bin/gulp test"
   },
   "repository": {
     "type": "git",
@@ -19,14 +19,14 @@
   "devDependencies": {
     "co": "^4.5.4",
     "co-ssh": "0.0.1",
-    "del": "^1.1.1",
-    "glob": "^5.0.6",
-    "gulp": "~3.8.11",
+    "del": "^1.2.0",
+    "glob": "^5.0.10",
+    "gulp": "~3.9.0",
     "gulp-concat": "^2.5.2",
     "gulp-css-base64": "^1.3.2",
     "gulp-imagemin": "^2.2.1",
     "gulp-jscs": "^1.6.0",
-    "gulp-jshint": "~1.10.0",
+    "gulp-jshint": "~1.11.0",
     "gulp-less": "^3.0.3",
     "gulp-plumber": "^1.0.1",
     "gulp-run": "^1.6.8",
