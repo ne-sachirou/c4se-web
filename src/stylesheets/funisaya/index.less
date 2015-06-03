@@ -14,11 +14,21 @@
   padding       : 14mm;
   position      : relative;
 
-  &_mainVisual { float : left; }
+  &_mainVisual {
+    float : left;
+
+    img { max-width : 100%; }
+  }
 
   h1 {
     .vendor(animation, jumbotron-pumping, 10s, ease-in-out, 0s, infinite, alternate);
     margin-top : 160px;
     text-align : center;
   }
+}
+
+.progress {
+  &_advance { color : green; }
+
+  &_back { color : red; }
 }
