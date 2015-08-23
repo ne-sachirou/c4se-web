@@ -4,6 +4,7 @@
   "description": "c4se's main Web site.",
   "main": "gulpfile.js",
   "scripts": {
+    "start": "php -S 0.0.0.0:3000 index.php",
     "test": "bin/gulp test"
   },
   "repository": {

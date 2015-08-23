@@ -21,5 +21,5 @@ endloop
 SelectInvert()
 Clear()
 SetFondName('UniSeiJi')
-Generate('../../lib/assets/uniseiji.ttf')
+Generate('../../assets/uniseiji.ttf')
 Close()

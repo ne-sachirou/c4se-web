@@ -19,7 +19,7 @@ var co        = require('co'),
     uglify    = require('gulp-uglifyjs'),
     merge     = require('merge-stream');
 var SRCS = {
-      html: 'views/**/**.html',
+      html: 'lib/views/**/**.html',
       img : 'src/images/*',
       js  : ['*.js', 'src/javascripts/**/**.js'],
     };
@@ -82,7 +82,7 @@ function promiseSpawn(cmd, options) {
 // }}}
 
 gulp.task('clean', function (done) {
-  del(['lib/assets/**'], function (err, paths) {
+  del(['assets/**'], function (err, paths) {
     if (err) {
       return done(err);
     }
@@ -110,7 +110,7 @@ gulp.task('copy-assets', function () {
       dest : '/fonts'
     },
   ].map(function (set) {
-    return gulp.src(set.src).pipe(gulp.dest('lib/assets' + set.dest));
+    return gulp.src(set.src).pipe(gulp.dest('assets' + set.dest));
   }));
 });
 
@@ -135,7 +135,7 @@ gulp.task('imagemin', function () {
       optimizationLevel : 7,
       progressive       : true,
     })).
-    pipe(gulp.dest('lib/assets'));
+    pipe(gulp.dest('assets'));
 });
 
 gulp.task('js-build', function () {
@@ -181,7 +181,7 @@ gulp.task('js-build', function () {
         output       : {},
         compress     : { unsafe : true },
       })).
-      pipe(gulp.dest('lib/assets'));
+      pipe(gulp.dest('assets'));
   }));
 });
 
@@ -207,7 +207,7 @@ gulp.task('less', function () {
       baseDir           : '.',
       maxWeightResource : 32768 * 4,
     })).
-    pipe(gulp.dest('lib/assets'));
+    pipe(gulp.dest('assets'));
 });
 
 gulp.task('php-test', function () {
@@ -238,7 +238,7 @@ gulp.task('seiji-propose', function (done) {
 gulp.task('seiji-translate', function () {
   return gulp.src(SRCS.html).
     pipe(run('bin/seiji_translator', {silent : true})).
-    pipe(gulp.dest('views'));
+    pipe(gulp.dest('lib/views'));
 });
 
 gulp.task('seiji-uniseiji-font', function () {

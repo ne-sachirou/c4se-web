@@ -10,7 +10,7 @@ class ApiImageController
      */
     public function image($path, $w = null, $h = null)
     {
-        $path = __DIR__.'/../../assets/'.urldecode($path);
+        $path = __DIR__.'/../../../assets/'.urldecode($path);
         if (!is_readable($path)) {
             throw new NotFound();
         }
