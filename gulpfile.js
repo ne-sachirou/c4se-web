@@ -19,7 +19,7 @@ var co        = require('co'),
     uglify    = require('gulp-uglifyjs'),
     merge     = require('merge-stream');
 var SRCS = {
-      html: 'src/views/**/**.html',
+      html: 'views/**/**.html',
       img : 'src/images/*',
       js  : ['*.js', 'src/javascripts/**/**.js'],
     };
@@ -238,7 +238,7 @@ gulp.task('seiji-propose', function (done) {
 gulp.task('seiji-translate', function () {
   return gulp.src(SRCS.html).
     pipe(run('bin/seiji_translator', {silent : true})).
-    pipe(gulp.dest('src/views'));
+    pipe(gulp.dest('views'));
 });
 
 gulp.task('seiji-uniseiji-font', function () {

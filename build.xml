@@ -8,7 +8,7 @@
     <!--<target name="build" depends=""/>-->
 
     <fileset dir="." id="views">
-        <include name="src/views/**/**.html"/>
+        <include name="views/**/**.html"/>
     </fileset>
 
     <target name="test">

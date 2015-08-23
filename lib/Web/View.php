@@ -8,9 +8,9 @@ class View
 
     public function __construct($path, $option)
     {
-        $this->content = "src/views/$path.html";
+        $this->content = "views/$path.html";
         if (isset($option['layout'])) {
-            $this->layout = file_get_contents("src/views/{$option['layout']}.html");
+            $this->layout = file_get_contents("views/{$option['layout']}.html");
         }
     }
 
@@ -37,7 +37,7 @@ class View
         $loader = new \Twig_Loader_Chain(
             [
                 $loader,
-                new \Twig_Loader_Filesystem('src/views'),
+                new \Twig_Loader_Filesystem('views'),
             ]
         );
         $engine = new \Twig_Environment($loader);
