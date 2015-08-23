@@ -20,7 +20,7 @@ var co        = require('co'),
     merge     = require('merge-stream');
 var SRCS = {
       html: 'lib/views/**/**.html',
-      img : 'src/images/*',
+      img : 'src/images/**/**',
       js  : ['*.js', 'src/javascripts/**/**.js'],
     };
 
