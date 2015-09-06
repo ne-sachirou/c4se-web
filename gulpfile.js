@@ -2,12 +2,13 @@
 'use strict';
 var cp = require('child_process'),
     fs = require('fs');
-var autoprefixer = require('gulp-autoprefixer'),
-    co           = require('co'),
+var co           = require('co'),
     ssh          = require('co-ssh'),
     del          = require('del'),
     glob         = require('glob'),
     gulp         = require('gulp'),
+    autoprefixer = require('gulp-autoprefixer'),
+    babel        = require('gulp-babel'),
     concat       = require('gulp-concat'),
     cssBase64    = require('gulp-css-base64'),
     imagemin     = require('gulp-imagemin'),
@@ -16,7 +17,6 @@ var autoprefixer = require('gulp-autoprefixer'),
     less         = require('gulp-less'),
     plumber      = require('gulp-plumber'),
     run          = require('gulp-run'),
-    traceur      = require('gulp-traceur'),
     uglify       = require('gulp-uglifyjs'),
     merge        = require('merge-stream');
 var SRCS = {
@@ -96,7 +96,6 @@ gulp.task('copy-assets', function () {
   return merge([
     {
       src  : [
-        traceur.RUNTIME_PATH,
         'src/fonts/Yuraru ru Soin 01\'.ttf',
         'src/bower_components/TAKETORI-JS/taketori.js',
         'src/bower_components/TAKETORI-JS/taketori.css',
@@ -173,12 +172,12 @@ gulp.task('js-build', function () {
   ].map(function (set) {
     return gulp.src(set.src).
       pipe(plumber()).
-      pipe(traceur({
-        modules : 'inline',
+      pipe(babel({
+        modules : 'umd',
       })).
       pipe(concat(set.dest)).
       pipe(uglify({
-        outSourceMap : true,
+        // outSourceMap : true,
         output       : {},
         compress     : { unsafe : true },
       })).
