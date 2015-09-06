@@ -17,11 +17,12 @@ var del          = require('del'),
     run          = require('gulp-run'),
     uglify       = require('gulp-uglifyjs'),
     merge        = require('merge-stream'),
+    runSequence  = require('run-sequence'),
     Ssh          = require('simple-ssh');
 var SRCS = {
-      html: 'lib/views/**/**.html',
-      img : 'src/images/**/**',
-      js  : ['*.esnext.js', 'src/javascripts/**/**.js'],
+      html : 'lib/views/**/**.html',
+      img  : 'src/images/**/**',
+      js   : ['*.esnext.js', 'src/javascripts/**/**.js'],
     };
 
 // {{{ Util
@@ -237,9 +238,9 @@ gulp.task('watch', () => {
   gulp.watch(['index.php', 'lib/**/**.php', 'tests/**/**.php'], ['php-test'           ]);
 });
 
-gulp.task('build',   ['copy-assets', 'imagemin', 'js-build', 'css-build', 'seiji']);
+gulp.task('build',   (done) => runSequence(['copy-assets', 'imagemin', 'js-build', 'css-build'], 'seiji', done));
 gulp.task('js-test', ['jscs', 'jshint']);
-gulp.task('seiji',   ['seiji-propose', 'seiji-translate', 'seiji-uniseiji-font']);
+gulp.task('seiji',   (done) => runSequence(['seiji-translate', 'seiji-uniseiji-font'], 'seiji-propose', done));
 gulp.task('test',    ['js-test', 'php-test']);
 
 // vim:fdm=marker:

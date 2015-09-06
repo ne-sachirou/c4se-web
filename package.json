@@ -33,6 +33,7 @@
     "gulp-run": "^1.6.8",
     "gulp-uglifyjs": "^0.6.2",
     "merge-stream": "^0.1.7",
+    "run-sequence": "^1.1.2",
     "simple-ssh": "^0.8.6"
   }
 }
