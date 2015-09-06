@@ -2,28 +2,27 @@
 'use strict';
 var cp = require('child_process'),
     fs = require('fs');
-var co           = require('co'),
-    ssh          = require('co-ssh'),
-    del          = require('del'),
-    glob         = require('glob'),
-    gulp         = require('gulp'),
+var del = require('del'),
+    glob = require('glob'),
+    gulp = require('gulp'),
     autoprefixer = require('gulp-autoprefixer'),
-    babel        = require('gulp-babel'),
-    concat       = require('gulp-concat'),
-    cssBase64    = require('gulp-css-base64'),
-    imagemin     = require('gulp-imagemin'),
-    jscs         = require('gulp-jscs'),
-    jshint       = require('gulp-jshint'),
-    less         = require('gulp-less'),
-    plumber      = require('gulp-plumber'),
-    run          = require('gulp-run'),
-    uglify       = require('gulp-uglifyjs'),
-    merge        = require('merge-stream');
+    babel = require('gulp-babel'),
+    concat = require('gulp-concat'),
+    cssBase64 = require('gulp-css-base64'),
+    imagemin = require('gulp-imagemin'),
+    jscs = require('gulp-jscs'),
+    jshint = require('gulp-jshint'),
+    less = require('gulp-less'),
+    plumber = require('gulp-plumber'),
+    run = require('gulp-run'),
+    uglify = require('gulp-uglifyjs'),
+    merge = require('merge-stream'),
+    Ssh = require('simple-ssh');
 var SRCS = {
-      html: 'lib/views/**/**.html',
-      img : 'src/images/**/**',
-      js  : ['*.js', 'src/javascripts/**/**.js'],
-    };
+  html: 'lib/views/**/**.html',
+  img: 'src/images/**/**',
+  js: ['*.esnext.js', 'src/javascripts/**/**.js']
+};
 
 // {{{ Util
 /**
@@ -60,7 +59,7 @@ function promiseSpawn(cmd, options) {
   }
 
   proc.stdout.on('data', function (chunk) {
-    process.stdout.write(chunk);
+    return process.stdout.write(chunk);
   });
   proc.stderr.on('data', function (chunk) {
     process.stderr.write(chunk);
@@ -76,7 +75,7 @@ function promiseSpawn(cmd, options) {
       }
       resolve();
     }).on('error', function (err) {
-      reject(err);
+      return reject(err);
     });
   });
 }
@@ -93,124 +92,87 @@ gulp.task('clean', function (done) {
 });
 
 gulp.task('copy-assets', function () {
-  return merge([
-    {
-      src  : [
-        'src/fonts/Yuraru ru Soin 01\'.ttf',
-        'src/bower_components/TAKETORI-JS/taketori.js',
-        'src/bower_components/TAKETORI-JS/taketori.css',
-      ],
-      dest : ''
-    },
-    {
-      src  : [
-        'src/bower_components/font-awsome/css/font-awesome.min.css',
-        'src/bower_components/font-awsome/fonts/*',
-      ],
-      dest : '/fonts'
-    },
-  ].map(function (set) {
+  return merge([{
+    src: ['src/fonts/Yuraru ru Soin 01\'.ttf', 'src/bower_components/TAKETORI-JS/taketori.js', 'src/bower_components/TAKETORI-JS/taketori.css'],
+    dest: ''
+  }, {
+    src: ['src/bower_components/font-awsome/css/font-awesome.min.css', 'src/bower_components/font-awsome/fonts/*'],
+    dest: '/fonts'
+  }].map(function (set) {
     return gulp.src(set.src).pipe(gulp.dest('assets' + set.dest));
   }));
 });
 
-gulp.task('deploy', function () {
-  var conn = ssh({
-    key  : fs.readFileSync(process.env.HOME + '/.ssh/id_rsa'),
-    host : 'c4se2.sakura.ne.jp',
-    port : 22,
-    user : 'c4se2',
-  });
-  return co(function* () {
-    yield conn.connect();
-    yield conn.exec('cd ~/www; git pull --ff-only origin master');
-    yield conn.exec('cd ~/www; composer install --no-dev');
-    // yield conn.exec('cd ~/www; set SERVER_ENV=production; vendor/bin/phpmig migrate');
-  });
+gulp.task('deploy', function (done) {
+  var ssh = new Ssh({
+    agentForward: true,
+    key: fs.readFileSync(process.env.HOME + '/.ssh/id_rsa'),
+    host: 'c4se2.sakura.ne.jp',
+    port: 22,
+    user: 'c4se2'
+  }),
+      cmd = 'cd ~/www;' + 'git pull --ff-only origin master;' + 'composer install --no-dev;' + ''; // 'set SERVER_ENV=production; vendor/bin/phpmig migrate';
+  ssh.exec(cmd, {
+    out: function out(stdout) {
+      return console.log(stdout);
+    },
+    err: function err(stderr) {
+      return console.error(stderr);
+    }
+  }).on('end', function () {
+    return done();
+  }).start();
 });
 
 gulp.task('imagemin', function () {
-  return gulp.src(SRCS.img).
-    pipe(imagemin({
-      optimizationLevel : 7,
-      progressive       : true,
-    })).
-    pipe(gulp.dest('assets'));
+  return gulp.src(SRCS.img).pipe(imagemin({
+    optimizationLevel: 7,
+    progressive: true
+  })).pipe(gulp.dest('assets'));
 });
 
 gulp.task('js-build', function () {
-  return merge([
-    {
-      src : [
-        'src/javascripts/_baselib.js',
-        'src/javascripts/layout.js',
-      ],
-      dest : 'layout.js'
-    },
-    {
-      src : [
-        'src/javascripts/_baselib.js',
-        'src/javascripts/_wavable.js',
-        'src/javascripts/index.js',
-      ],
-      dest : 'index.js'
-    },
-    {
-      src : [
-        'src/javascripts/_baselib.js',
-        'src/javascripts/feed.js',
-      ],
-      dest : 'feed.js'
-    },
-    {
-      src : [
-        'src/javascripts/_baselib.js',
-        'src/javascripts/vertical_latin.js',
-      ],
-      dest : 'vertical_latin.js'
-    },
-  ].map(function (set) {
-    return gulp.src(set.src).
-      pipe(plumber()).
-      pipe(babel({
-        modules : 'umd',
-      })).
-      pipe(concat(set.dest)).
-      pipe(uglify({
-        // outSourceMap : true,
-        output       : {},
-        compress     : { unsafe : true },
-      })).
-      pipe(gulp.dest('assets'));
+  return merge([{
+    src: ['src/javascripts/_baselib.js', 'src/javascripts/layout.js'],
+    dest: 'layout.js'
+  }, {
+    src: ['src/javascripts/_baselib.js', 'src/javascripts/_wavable.js', 'src/javascripts/index.js'],
+    dest: 'index.js'
+  }, {
+    src: ['src/javascripts/_baselib.js', 'src/javascripts/feed.js'],
+    dest: 'feed.js'
+  }, {
+    src: ['src/javascripts/_baselib.js', 'src/javascripts/vertical_latin.js'],
+    dest: 'vertical_latin.js'
+  }].map(function (set) {
+    return gulp.src(set.src).pipe(plumber()).pipe(babel({
+      modules: 'umd'
+    })).pipe(concat(set.dest)).pipe(uglify({
+      // outSourceMap : true,
+      output: {},
+      compress: { unsafe: true }
+    })).pipe(gulp.dest('assets'));
   }));
 });
 
 gulp.task('jscs', function () {
-  return gulp.src(SRCS.js).
-    pipe(jscs());
+  return gulp.src(SRCS.js).pipe(jscs());
 });
 
 gulp.task('jshint', function () {
-  return gulp.src(SRCS.js).
-    pipe(jshint()).
-    pipe(jshint.reporter('default'));
+  return gulp.src(SRCS.js).pipe(jshint()).pipe(jshint.reporter('default'));
 });
 
 gulp.task('css-build', function () {
-  gulp.src(['src/stylesheets/**/!(_)**.less']).
-    pipe(plumber()).
-    pipe(less({
-      compress  : true,
-      sourceMap : true,
-    })).
-    pipe(autoprefixer({
-      browsers : ['last 2 version'],
-    })).
-    pipe(cssBase64({
-      baseDir           : '.',
-      maxWeightResource : 32768 * 4,
-    })).
-    pipe(gulp.dest('assets'));
+  gulp.src(['src/stylesheets/**/!(_)**.less']).pipe(plumber()).pipe(less({
+    compress: true,
+    sourceMap: true
+  })).pipe(autoprefixer({
+    browsers: ['last 2 version']
+  })).pipe(cssBase64({
+    baseDir: '.',
+    maxWeightResource: 32768 * 4
+  })).pipe(gulp.dest('assets'));
 });
 
 gulp.task('php-test', function () {
@@ -227,21 +189,17 @@ gulp.task('seiji-propose', function (done) {
       return function () {
         return promiseSpawn('bin/seiji_proposer', [filename]);
       };
-    })).
-      then(function () {
-        done();
-      }).
-      catch(function (err) {
-        console.error(err);
-        done(err);
-      });
+    })).then(function () {
+      return done();
+    })['catch'](function (err) {
+      console.error(err);
+      done(err);
+    });
   });
 });
 
 gulp.task('seiji-translate', function () {
-  return gulp.src(SRCS.html).
-    pipe(run('bin/seiji_translator', {silent : true})).
-    pipe(gulp.dest('lib/views'));
+  return gulp.src(SRCS.html).pipe(run('bin/seiji_translator', { silent: true })).pipe(gulp.dest('lib/views'));
 });
 
 gulp.task('seiji-uniseiji-font', function () {
@@ -249,16 +207,16 @@ gulp.task('seiji-uniseiji-font', function () {
 });
 
 gulp.task('watch', function () {
-  gulp.watch(SRCS.html                                        , ['seiji-translate'    ]);
-  gulp.watch(SRCS.img                                         , ['imagemin'           ]);
-  gulp.watch(SRCS.js                                          , ['js-build', 'js-test']);
-  gulp.watch('src/stylesheets/**/**.less'                     , ['less'               ]);
-  gulp.watch(['index.php', 'lib/**/**.php', 'tests/**/**.php'], ['php-test'           ]);
+  gulp.watch(SRCS.html, ['seiji-translate']);
+  gulp.watch(SRCS.img, ['imagemin']);
+  gulp.watch(SRCS.js, ['js-build', 'js-test']);
+  gulp.watch('src/stylesheets/**/**.less', ['less']);
+  gulp.watch(['index.php', 'lib/**/**.php', 'tests/**/**.php'], ['php-test']);
 });
 
-gulp.task('build',   ['copy-assets', 'imagemin', 'js-build', 'css-build', 'seiji']);
+gulp.task('build', ['copy-assets', 'imagemin', 'js-build', 'css-build', 'seiji']);
 gulp.task('js-test', ['jscs', 'jshint']);
-gulp.task('seiji',   ['seiji-propose', 'seiji-translate', 'seiji-uniseiji-font']);
-gulp.task('test',    ['js-test', 'php-test']);
+gulp.task('seiji', ['seiji-propose', 'seiji-translate', 'seiji-uniseiji-font']);
+gulp.task('test', ['js-test', 'php-test']);
 
 // vim:fdm=marker:

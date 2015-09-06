@@ -1,2 +1,3 @@
 #!/bin/bash
-gulp --harmony_generators $*
+babel -o gulpfile.js gulpfile.esnext.js
+gulp $*
