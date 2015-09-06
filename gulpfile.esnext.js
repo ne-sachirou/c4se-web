@@ -49,26 +49,9 @@ function promissExec(cmd) {
 }
 
 function promiseSpawn(cmd, options) {
-  var proc = cp.spawn(cmd, options);
-
-  function sendInput() {
-    var chunk = process.stdin.read();
-    if (null === chunk) {
-      return;
-    }
-    proc.stdin.write(chunk);
-  }
-
-  proc.stdout.on('data', (chunk) => process.stdout.write(chunk));
-  proc.stderr.on('data', (chunk) => {
-    process.stderr.write(chunk);
-  });
-  process.stdin.setEncoding('utf8');
-  process.stdin.on('readable', sendInput);
+  var proc = cp.spawn(cmd, options, {stdio : 'inherit'});
   return new Promise((resolve, reject) => {
-    proc.on('close', (code) => {
-      proc.stdin.end();
-      process.stdin.removeListener('readable', sendInput);
+    proc.on('exit', (code) => {
       if (0 !== code) {
         return reject(new Error(cmd + ' ' + options.join(' ') + ' ends with ' + code));
       }

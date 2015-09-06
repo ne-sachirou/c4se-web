@@ -42,7 +42,7 @@ class SeiJiProposer extends SeiJiProcessor
                 }
                 echo "?:\t";
                 $selection = (int) fgets(STDIN);
-                if ($selection && isset($this->dic[$char][$selection])) {
+                if ($selection && 0 !== $selection && isset($this->dic[$char][$selection - 1])) {
                     $char = $this->dic[$char][$selection - 1];
                 }
             }
