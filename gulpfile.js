@@ -2,22 +2,23 @@
 'use strict';
 var cp = require('child_process'),
     fs = require('fs');
-var co        = require('co'),
-    ssh       = require('co-ssh'),
-    del       = require('del'),
-    glob      = require('glob'),
-    gulp      = require('gulp'),
-    concat    = require('gulp-concat'),
-    cssBase64 = require('gulp-css-base64'),
-    imagemin  = require('gulp-imagemin'),
-    jscs      = require('gulp-jscs'),
-    jshint    = require('gulp-jshint'),
-    less      = require('gulp-less'),
-    plumber   = require('gulp-plumber'),
-    run       = require('gulp-run'),
-    traceur   = require('gulp-traceur'),
-    uglify    = require('gulp-uglifyjs'),
-    merge     = require('merge-stream');
+var autoprefixer = require('gulp-autoprefixer'),
+    co           = require('co'),
+    ssh          = require('co-ssh'),
+    del          = require('del'),
+    glob         = require('glob'),
+    gulp         = require('gulp'),
+    concat       = require('gulp-concat'),
+    cssBase64    = require('gulp-css-base64'),
+    imagemin     = require('gulp-imagemin'),
+    jscs         = require('gulp-jscs'),
+    jshint       = require('gulp-jshint'),
+    less         = require('gulp-less'),
+    plumber      = require('gulp-plumber'),
+    run          = require('gulp-run'),
+    traceur      = require('gulp-traceur'),
+    uglify       = require('gulp-uglifyjs'),
+    merge        = require('merge-stream');
 var SRCS = {
       html: 'lib/views/**/**.html',
       img : 'src/images/**/**',
@@ -196,12 +197,15 @@ gulp.task('jshint', function () {
     pipe(jshint.reporter('default'));
 });
 
-gulp.task('less', function () {
+gulp.task('css-build', function () {
   gulp.src(['src/stylesheets/**/!(_)**.less']).
     pipe(plumber()).
     pipe(less({
       compress  : true,
       sourceMap : true,
+    })).
+    pipe(autoprefixer({
+      browsers : ['last 2 version'],
     })).
     pipe(cssBase64({
       baseDir           : '.',
@@ -253,7 +257,7 @@ gulp.task('watch', function () {
   gulp.watch(['index.php', 'lib/**/**.php', 'tests/**/**.php'], ['php-test'           ]);
 });
 
-gulp.task('build',   ['copy-assets', 'imagemin', 'js-build', 'less', 'seiji']);
+gulp.task('build',   ['copy-assets', 'imagemin', 'js-build', 'css-build', 'seiji']);
 gulp.task('js-test', ['jscs', 'jshint']);
 gulp.task('seiji',   ['seiji-propose', 'seiji-translate', 'seiji-uniseiji-font']);
 gulp.task('test',    ['js-test', 'php-test']);

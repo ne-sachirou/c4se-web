@@ -1,9 +1,9 @@
 @import '../_helpers';
 
-.keyframes(jumbotron-pumping; {
+@keyframes jumbotron-pumping {
     0% { transform : scale(1.0); }
   100% { transform : scale(1.1); }
-});
+}
 
 .jumbotron {
   .cf;
@@ -21,7 +21,7 @@
   }
 
   h1 {
-    .vendor(animation, jumbotron-pumping, 10s, ease-in-out, 0s, infinite, alternate);
+    animation  : jumbotron-pumping, 10s, ease-in-out, 0s, infinite, alternate;
     margin-top : 160px;
     text-align : center;
   }

@@ -1,6 +1,6 @@
 @import '_helpers';
 
-.keyframes(wavable-horizontalWaving; {
+@keyframes wavable-horizontalWaving {
      0% { left :  0; }
    8.3% { left : -3px; }
   16.7% { left :  0; }
@@ -14,9 +14,9 @@
   83.3% { left :  0; }
   91.6% { left :  1px; }
    100% { left :  0; }
-});
+}
 
-.keyframes(wavable-verticalWaving; {
+@keyframes wavable-verticalWaving {
      0% { top :  0; }
    8.3% { top : -3px; }
   16.7% { top :  0; }
@@ -30,11 +30,11 @@
   83.3% { top :  0; }
   91.6% { top :  1px; }
    100% { top :  0; }
-});
+}
 
 .wavable_animationSetting() {
-  .vendor(animation-duration, 0.9s);
-  .vendor(animation-iteration-count, 1);
+  animation-duration         : 0.9s;
+  animation-iteration-count  : 1;
   transition-timing-function : ease-in-out;
 }
 
@@ -46,7 +46,7 @@
 
     &-waving {
       .wavable_animationSetting;
-      .vendor(animation-name, wavable-horizontalWaving);
+      animation-name : wavable-horizontalWaving;
     }
   }
 
@@ -57,7 +57,7 @@
 
     &-waving {
       .wavable_animationSetting;
-      .vendor(animation-name, wavable-verticalWaving);
+      animation-name : wavable-verticalWaving;
     }
   }
 }

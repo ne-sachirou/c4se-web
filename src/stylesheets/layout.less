@@ -36,18 +36,18 @@
 }
 
 body {
-  .vendor(font-smoothing, antialiased);
-  .vendor(osx-font-smoothing, grayscale);
-  background     : @bg_color;
-  color          : @front_color;
-  font-family    : 'Source Sans Pro', 'Helvetica Neue', Helvetica, Arial, 'ヒラギノ角ゴ ProN W3', 'Hiragino Kaku Gothic ProN', Meiryo, sans-serif;
-  font-size      : 9pt;
-  font-weight    : normal;
-  letter-spacing : 1px;
-  line-height    : 13pt;
-  margin         : 0;
-  overflow-x     : hidden;
-  text-rendering : optimizeLegibility;
+  background         : @bg_color;
+  color              : @front_color;
+  font-family        : 'Source Sans Pro', 'Helvetica Neue', Helvetica, Arial, 'ヒラギノ角ゴ ProN W3', 'Hiragino Kaku Gothic ProN', Meiryo, sans-serif;
+  font-size          : 9pt;
+  font-smoothing     : antialiased;
+  font-weight        : normal;
+  letter-spacing     : 1px;
+  line-height        : 13pt;
+  margin             : 0;
+  osx-font-smoothing : grayscale;
+  overflow-x         : hidden;
+  text-rendering     : optimizeLegibility;
 }
 
 a {
@@ -61,7 +61,7 @@ a {
   }
 }
 
-.vertical { .vendor(text-orientation, upright); }
+.vertical { text-orientation : upright; }
 
 .yuraru { font-family : yuraru-sans-serif; }
 
