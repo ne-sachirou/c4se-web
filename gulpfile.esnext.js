@@ -149,17 +149,24 @@ gulp.task('js-build', () => {
       ],
       dest : 'vertical_latin.js'
     },
+    {
+      src : [
+        'src/bower_components/regenerator/runtime.js',
+        'src/javascripts/funisaya/world/World.js',
+        'src/javascripts/funisaya/world/main.js',
+      ],
+      dest : 'funisaya/world.js'
+    },
   ].map((set) => {
     return gulp.src(set.src).
       pipe(plumber()).
       pipe(babel({
-        modules : 'umd',
+        modules  : 'umd',
       })).
       pipe(concat(set.dest)).
       pipe(uglify({
-        // outSourceMap : true,
-        output       : {},
-        compress     : { unsafe : true },
+        output   : {},
+        compress : { unsafe : true },
       })).
       pipe(gulp.dest('assets'));
   }));
@@ -217,7 +224,7 @@ gulp.task('watch', () => {
   gulp.watch(SRCS.html                                        , ['seiji-translate'    ]);
   gulp.watch(SRCS.img                                         , ['imagemin'           ]);
   gulp.watch(SRCS.js                                          , ['js-build', 'js-test']);
-  gulp.watch('src/stylesheets/**/**.less'                     , ['less'               ]);
+  gulp.watch('src/stylesheets/**/**.less'                     , ['css-build'          ]);
   gulp.watch(['index.php', 'lib/**/**.php', 'tests/**/**.php'], ['php-test'           ]);
 });
 
