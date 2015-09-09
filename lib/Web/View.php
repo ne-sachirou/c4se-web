@@ -3,15 +3,13 @@ namespace Web;
 
 class View
 {
-    private $layout;
     private $content;
+    private $option;
 
     public function __construct($path, $option)
     {
         $this->content = "lib/views/$path.html";
-        if (isset($option['layout'])) {
-            $this->layout = file_get_contents("lib/views/{$option['layout']}.html");
-        }
+        $this->option  = $option;
     }
 
     public function isFound()
@@ -24,10 +22,15 @@ class View
         $content = file_get_contents($this->content);
         $content = new YamlFrontMatter($content);
         list($content, $params) = [$content->content, $content->params];
+        $params = array_merge($this->option, $params);
         $content = $this->renderPart($content, $params);
         $content = $this->translateBreadcrumb($content);
-        $params  = array_merge($params, ['content' => $content]);
-        return $this->renderPart($this->layout, $params);
+        if (isset($params['layout']) && $params['layout']) {
+            $layout  = file_get_contents("lib/views/{$params['layout']}.html");
+            $params  = array_merge($params, ['content' => $content]);
+            $content = $this->renderPart($layout, $params);
+        }
+        return $content;
     }
 
     private function renderPart($content, $params = [])
