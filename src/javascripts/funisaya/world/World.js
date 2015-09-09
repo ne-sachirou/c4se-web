@@ -1,12 +1,21 @@
 export class World {
   constructor() {
+    var me = this;
+
+    function adjustCanvas() {
+      me.canvas.height = window.innerHeight;
+      me.canvas.width  = window.innerWidth;
+    }
+
     this.canvas = document.getElementById('world');
-    this.scene = new LoadingScene(this);
+    this.scene  = new LoadingScene(this);
+    window.addEventListener('resize', adjustCanvas);
+    adjustCanvas();
   }
 
   loadData() {
     return new Promise((resolve, reject) => {
-      resolve();
+      window.setTimeout(() => resolve(), 1000);
     });
   }
 
@@ -17,6 +26,7 @@ export class World {
   }
 
   nextScene(sceneClass) {
+    this.scene.destructor();
     this.scene = new sceneClass(this);
   }
 }
@@ -25,11 +35,8 @@ class ResourceLoader {
   constructor() {
   }
 
-  loadInitialResources() {
-    return Promise.all(ResourceLoader.initialResources.map((r) => r.load()));
-  }
-
   loadSet(name) {
+    return Promise.all(ResourceLoader.resourceSets[name].map((r) => r.load()));
   }
 }
 
@@ -69,33 +76,39 @@ class Scene {
   constructor(world) {
     this.world = world;
   }
+
+  destructor() {
+  }
 }
 
 class LoadingScene extends Scene {
   constructor(world) {
-    console.log('Loading');
     super(world);
-    this.init();
+    this._init();
   }
 
   destructor() {
+    super.destructor();
     var node = document.getElementsByClassName('loadingScene')[0];
     node.parentNode.removeChild(node);
   }
 
-  async init() {
+  async _init() {
     var node = document.importNode(document.getElementById('loadingScene').content, true).firstElementChild;
     document.body.appendChild(node);
     await new ResourceLoader().loadSet('init');
     await this.world.loadData();
-    this.destructor();
     this.world.nextScene(FieldScene);
   }
 }
 
 class FieldScene extends Scene {
   constructor(world) {
-    console.log('Field');
     super(world);
+    this._context = this.world.canvas.getContext('2d');
+    this._context.fillStyle = 'white';
+    this._context.fillRect(50, 50, 300, 200);
+    this._context.clearRect(120, 80, 200, 140);
+    this._context.strokeRect(200, 20, 180, 260);
   }
 }
