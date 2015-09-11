@@ -1,1 +1,514 @@
-!function(e,t){if("function"==typeof define&&define.amd)define(["exports"],t);else if("undefined"!=typeof exports)t(exports);else{var n={exports:{}};t(n.exports),e._baselib=n.exports}}(this,function(e){"use strict";function t(e,t){return Math.floor(Math.random()*(t-e))+e}function n(e,t){return this instanceof n?(this.min=e,void(this.max=t)):new n(e,t)}function r(e,t){var n=!0,r=!1,i=void 0;try{for(var o,a=Object.keys(t)[Symbol.iterator]();!(n=(o=a.next()).done);n=!0){var s=o.value;if("-"===s[0]){s=s.slice(1);var u=s[0].toUpperCase()+s.slice(1);e.style["Moz"+u]=t["-"+s],e.style["ms"+u]=t["-"+s],e.style["webkit"+u]=t["-"+s]}e.style[s]=t[s]}}catch(l){r=!0,i=l}finally{try{!n&&a["return"]&&a["return"]()}finally{if(r)throw i}}}function i(e,t,n){return void 0===n&&(Array.isArray(t)?(n=t,t={}):(n=[],t=t||{})),e=e.replace(/#[-_\w]+/g,function(e){return t.id=e.slice(1),""}).replace(/\.[-_\w]+/g,function(e){return t["class"]=(t["class"]||"")+" "+e.slice(1),""}),o(e,t,n)}function o(e,t,n){var r=document.createElement(e),i=!0,o=!1,a=void 0;try{for(var s,u=Object.keys(t)[Symbol.iterator]();!(i=(s=u.next()).done);i=!0){var l=s.value;r.setAttribute(l,t[l])}}catch(c){o=!0,a=c}finally{try{!i&&u["return"]&&u["return"]()}finally{if(o)throw a}}var f=!0,d=!1,p=void 0;try{for(var h,y=n[Symbol.iterator]();!(f=(h=y.next()).done);f=!0){var v=h.value;("string"==typeof v||v instanceof String)&&(v=document.createTextNode(v)),r.appendChild(v)}}catch(c){d=!0,p=c}finally{try{!f&&y["return"]&&y["return"]()}finally{if(d)throw p}}return r}Object.defineProperty(e,"__esModule",{value:!0}),e.rand=t,e.Range=n,e.setStyle=r,e.h=i,Array.prototype.sample=function(){return this[t(0,this.length)]},n.prototype[Symbol.iterator]=function(){var e=this,t=this.min-1;return{next:function(){return++t,{value:t,done:t>e.max}}}},n.prototype.sample=function(){return t(this.min,this.max)};var a={listeners:{},emit:function(e,t,n){t=t||[],n=n||null;var r=!0,i=!1,o=void 0;try{for(var a,s=this.listeners[e][Symbol.iterator]();!(r=(a=s.next()).done);r=!0){var u=a.value;u.apply(n,t)}}catch(l){i=!0,o=l}finally{try{!r&&s["return"]&&s["return"]()}finally{if(i)throw o}}},on:function(e,t){this.listeners[e]||(this.listeners[e]=[]),this.listeners[e].push(t)}};e.EventRouter=a}),function(e,t){if("function"==typeof define&&define.amd)define(["exports","./_baselib.js"],t);else if("undefined"!=typeof exports)t(exports,require("./_baselib.js"));else{var n={exports:{}};t(n.exports,e._baselib),e.layout=n.exports}}(this,function(e,t){"use strict";function n(e,t){if(!(e instanceof t))throw new TypeError("Cannot call a class as a function")}var r=function(){function e(e,t){for(var n=0;n<t.length;n++){var r=t[n];r.enumerable=r.enumerable||!1,r.configurable=!0,"value"in r&&(r.writable=!0),Object.defineProperty(e,r.key,r)}}return function(t,n,r){return n&&e(t.prototype,n),r&&e(t,r),t}}(),i=function l(){var e=this;n(this,l),this.node=document.querySelector(".page"),this.topMenu=new o(this.node),this.sideMenu=new s(this.node),this.breadcrumb=new u(this.node),document.body.addEventListener("click",function(){var t=!0,n=!1,r=void 0;try{for(var i,o=e.topMenu.rightItems[Symbol.iterator]();!(t=(i=o.next()).done);t=!0){var a=i.value;a.close()}}catch(s){n=!0,r=s}finally{try{!t&&o["return"]&&o["return"]()}finally{if(n)throw r}}}),t.EventRouter.on("toggleLayoutSideMenu",function(){e.sideMenu.isOpen?(e.node.style.left="0",e.topMenu.whenCloseSideMenu(),e.sideMenu.close()):(e.node.style.left="60mm",e.topMenu.whenOpenSideMenu(),e.sideMenu.open())})},o=function(){function e(r){var i=this;n(this,e),this.node=r.querySelector(".page_topMenu"),this.leftSideToggleBtn=r.querySelector(".page_topMenu_left_sideToggleBtn"),this.rightItems=[],this.leftSideToggleBtn.addEventListener("click",function(){return t.EventRouter.emit("toggleLayoutSideMenu")});var o=!0,s=!1,u=void 0;try{for(var l,c=Array.from(this.node.querySelectorAll(".page_topMenu_right > ul > li"))[Symbol.iterator]();!(o=(l=c.next()).done);o=!0){var f=l.value;this.rightItems.push(new a(f))}}catch(d){s=!0,u=d}finally{try{!o&&c["return"]&&c["return"]()}finally{if(s)throw u}}t.EventRouter.on("openLayoutTopMenuRightItem",function(e){var t=!0,n=!1,r=void 0;try{for(var o,a=i.rightItems[Symbol.iterator]();!(t=(o=a.next()).done);t=!0){var s=o.value;s!==e&&s.close()}}catch(u){n=!0,r=u}finally{try{!t&&a["return"]&&a["return"]()}finally{if(n)throw r}}})}return r(e,[{key:"whenOpenSideMenu",value:function(){this.leftSideToggleBtn.classList.remove("fa-chevron-right"),this.leftSideToggleBtn.classList.add("fa-times")}},{key:"whenCloseSideMenu",value:function(){this.leftSideToggleBtn.classList.remove("fa-times"),this.leftSideToggleBtn.classList.add("fa-chevron-right")}}]),e}(),a=function(){function e(t){var r=this;n(this,e),this.isOpen=!1,this.node=t,this.anchor=this.node.querySelector("a"),this.ul=this.node.querySelector("ul"),this.ul&&(this.anchor.classList.add("fa"),this.anchor.classList.add("fa-caret-down"),this.anchor.addEventListener("click",function(e){e.preventDefault(),e.stopPropagation(),r.isOpen?r.close():r.open()}))}return r(e,[{key:"open",value:function(){var e=this;this.isOpen=!0,window.requestAnimationFrame(function(){e.ul.style.display="block",e.anchor.classList.remove("fa-caret-down"),e.anchor.classList.add("fa-caret-up"),window.requestAnimationFrame(function(){return e.ul.style.opacity=1})}),t.EventRouter.emit("openLayoutTopMenuRightItem",[this])}},{key:"close",value:function(){var e=this;this.isOpen=!1,window.requestAnimationFrame(function(){e.ul.style.opacity=0,e.anchor.classList.remove("fa-caret-up"),e.anchor.classList.add("fa-caret-down"),window.setTimeout(function(){return e.ul.style.display="none"},400)})}}]),e}(),s=function(){function e(t){n(this,e),this.isOpen=!1,this.node=t.querySelector(".page_sideMenu")}return r(e,[{key:"open",value:function(){this.isOpen=!0,this.node.style.left="0"}},{key:"close",value:function(){this.isOpen=!1,this.node.style.left="-60mm"}}]),e}(),u=function c(e){if(n(this,c),this.node=e.querySelector(".breadcrumb"),this.node&&!this.node.querySelector("*[itemscope]")){var r=this.node.textContent.split("\n").filter(function(e){return""!==e.trim()}).map(function(e){return{url:e.match(/^\s*(\S+)/)[1],title:e.match(/^\s*\S+\s+(.+)$/)[1]}}),i=r.reduceRight(function(e,n){var r=t.h("div",{itemscope:"",itemtype:"http://data-vocabulary.org/Breadcrumb"},[t.h("a",{href:n.url,itemprop:"url"},[t.h("span",{itemprop:"title"},[n.title])])]);return e&&(e.setAttribute("itemprop","child"),r.appendChild(e)),r},null);this.node.innerHTML="",this.node.appendChild(i)}};window.addEventListener("DOMContentLoaded",function(){new i;var e=new Taketori;e.set({}).element("div.vertical").toVertical(),window.requestAnimationFrame(function(){document.body.style.fontFamily="UniSeiJi, "+window.getComputedStyle(document.body).fontFamily})})});
+(function (global, factory) {
+  if (typeof define === 'function' && define.amd) {
+    define(['exports'], factory);
+  } else if (typeof exports !== 'undefined') {
+    factory(exports);
+  } else {
+    var mod = {
+      exports: {}
+    };
+    factory(mod.exports);
+    global._baselib = mod.exports;
+  }
+})(this, function (exports) {
+  /* jshint browser:true, strict:false */
+
+  'use strict';
+
+  Object.defineProperty(exports, '__esModule', {
+    value: true
+  });
+  exports.rand = rand;
+  exports.Range = Range;
+  exports.setStyle = setStyle;
+  exports.h = h;
+
+  function rand(min, max) {
+    return Math.floor(Math.random() * (max - min)) + min;
+  }
+
+  Array.prototype.sample = function () {
+    return this[rand(0, this.length)];
+  };
+
+  function Range(min, max) {
+    if (!(this instanceof Range)) {
+      return new Range(min, max);
+    }
+    this.min = min;
+    this.max = max;
+  }
+
+  Range.prototype[Symbol.iterator] = function () {
+    var _this = this;
+
+    var current = this.min - 1;
+    return {
+      next: function next() {
+        ++current;
+        return {
+          value: current,
+          done: current > _this.max
+        };
+      }
+    };
+  };
+
+  Range.prototype.sample = function () {
+    return rand(this.min, this.max);
+  };
+
+  var EventRouter = {
+    listeners: {},
+
+    emit: function emit(name, params, me) {
+      params = params || [];
+      me = me || null;
+      var _iteratorNormalCompletion = true;
+      var _didIteratorError = false;
+      var _iteratorError = undefined;
+
+      try {
+        for (var _iterator = this.listeners[name][Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+          var listener = _step.value;
+
+          listener.apply(me, params);
+        }
+      } catch (err) {
+        _didIteratorError = true;
+        _iteratorError = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion && _iterator['return']) {
+            _iterator['return']();
+          }
+        } finally {
+          if (_didIteratorError) {
+            throw _iteratorError;
+          }
+        }
+      }
+    },
+
+    on: function on(name, listener) {
+      if (!this.listeners[name]) {
+        this.listeners[name] = [];
+      }
+      this.listeners[name].push(listener);
+    }
+  };
+
+  exports.EventRouter = EventRouter;
+  /**
+   * @param {HTMLElement} node
+   * @param {Hash}        rules
+   *
+   * @return void
+   */
+
+  function setStyle(node, rules) {
+    var _iteratorNormalCompletion2 = true;
+    var _didIteratorError2 = false;
+    var _iteratorError2 = undefined;
+
+    try {
+      for (var _iterator2 = Object.keys(rules)[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+        var prop = _step2.value;
+
+        if ('-' === prop[0]) {
+          prop = prop.slice(1);
+          var upperCase = prop[0].toUpperCase() + prop.slice(1);
+          node.style['Moz' + upperCase] = rules['-' + prop];
+          node.style['ms' + upperCase] = rules['-' + prop];
+          node.style['webkit' + upperCase] = rules['-' + prop];
+        }
+        node.style[prop] = rules[prop];
+      }
+    } catch (err) {
+      _didIteratorError2 = true;
+      _iteratorError2 = err;
+    } finally {
+      try {
+        if (!_iteratorNormalCompletion2 && _iterator2['return']) {
+          _iterator2['return']();
+        }
+      } finally {
+        if (_didIteratorError2) {
+          throw _iteratorError2;
+        }
+      }
+    }
+  }
+
+  /**
+   * Create a real node.
+   *
+   * Example
+   *   h('div#momonga.momonga', [h('i', ['mOmonga'])]); <div id="momonga" class="momonga"><i>mOmonga</i></div>
+   *   h('a', {href : 'momonga.html'}, ['mOmonga']);    <a href="momonga.html">mOmonga</a>
+   *   h('a', {name : 'momonga'});                      <a name="momonga"></a>
+   *   h('b', ['mOmonga']);                             <b>mOmonga</a>
+   *   h('hr');                                         <hr/>
+   *
+   * @param {string}          elmName
+   * @param {hash}            attrs
+   * @param {(Node|string)[]} childs
+   *
+   * @return HTMLElement
+   */
+
+  function h(elmName, attrs, childs) {
+    if (void 0 === childs) {
+      if (Array.isArray(attrs)) {
+        childs = attrs;
+        attrs = {};
+      } else {
+        childs = [];
+        attrs = attrs || {};
+      }
+    }
+    elmName = elmName.replace(/#[-_\w]+/g, function (match) {
+      attrs.id = match.slice(1);
+      return '';
+    }).replace(/\.[-_\w]+/g, function (match) {
+      attrs['class'] = (attrs['class'] || '') + ' ' + match.slice(1);
+      return '';
+    });
+    return h_(elmName, attrs, childs);
+  }
+
+  function h_(elmName, attrs, childs) {
+    var elm = document.createElement(elmName);
+    var _iteratorNormalCompletion3 = true;
+    var _didIteratorError3 = false;
+    var _iteratorError3 = undefined;
+
+    try {
+      for (var _iterator3 = Object.keys(attrs)[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+        var attrName = _step3.value;
+
+        elm.setAttribute(attrName, attrs[attrName]);
+      }
+    } catch (err) {
+      _didIteratorError3 = true;
+      _iteratorError3 = err;
+    } finally {
+      try {
+        if (!_iteratorNormalCompletion3 && _iterator3['return']) {
+          _iterator3['return']();
+        }
+      } finally {
+        if (_didIteratorError3) {
+          throw _iteratorError3;
+        }
+      }
+    }
+
+    var _iteratorNormalCompletion4 = true;
+    var _didIteratorError4 = false;
+    var _iteratorError4 = undefined;
+
+    try {
+      for (var _iterator4 = childs[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+        var child = _step4.value;
+
+        if (typeof child === 'string' || child instanceof String) {
+          child = document.createTextNode(child);
+        }
+        elm.appendChild(child);
+      }
+    } catch (err) {
+      _didIteratorError4 = true;
+      _iteratorError4 = err;
+    } finally {
+      try {
+        if (!_iteratorNormalCompletion4 && _iterator4['return']) {
+          _iterator4['return']();
+        }
+      } finally {
+        if (_didIteratorError4) {
+          throw _iteratorError4;
+        }
+      }
+    }
+
+    return elm;
+  }
+});
+(function (global, factory) {
+  if (typeof define === 'function' && define.amd) {
+    define(['exports', './_baselib.js'], factory);
+  } else if (typeof exports !== 'undefined') {
+    factory(exports, require('./_baselib.js'));
+  } else {
+    var mod = {
+      exports: {}
+    };
+    factory(mod.exports, global._baselib);
+    global.layout = mod.exports;
+  }
+})(this, function (exports, _baselibJs) {
+  /* jshint browser:true, strict:false */
+  /* global Taketori */
+
+  'use strict';
+
+  var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+  function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+  var UiLayout = function UiLayout() {
+    var _this = this;
+
+    _classCallCheck(this, UiLayout);
+
+    this.node = document.querySelector('.page');
+    this.topMenu = new UiTopMenu(this.node);
+    this.sideMenu = new UiSideMenu(this.node);
+    this.breadcrumb = new UiBreadcrumb(this.node);
+    document.body.addEventListener('click', function () {
+      var _iteratorNormalCompletion = true;
+      var _didIteratorError = false;
+      var _iteratorError = undefined;
+
+      try {
+        for (var _iterator = _this.topMenu.rightItems[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+          var rightItem = _step.value;
+
+          rightItem.close();
+        }
+      } catch (err) {
+        _didIteratorError = true;
+        _iteratorError = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion && _iterator['return']) {
+            _iterator['return']();
+          }
+        } finally {
+          if (_didIteratorError) {
+            throw _iteratorError;
+          }
+        }
+      }
+    });
+    _baselibJs.EventRouter.on('toggleLayoutSideMenu', function () {
+      if (_this.sideMenu.isOpen) {
+        _this.node.style.left = '0';
+        _this.topMenu.whenCloseSideMenu();
+        _this.sideMenu.close();
+      } else {
+        _this.node.style.left = '60mm';
+        _this.topMenu.whenOpenSideMenu();
+        _this.sideMenu.open();
+      }
+    });
+  };
+
+  var UiTopMenu = (function () {
+    function UiTopMenu(page) {
+      var _this2 = this;
+
+      _classCallCheck(this, UiTopMenu);
+
+      this.node = page.querySelector('.page_topMenu');
+      this.leftSideToggleBtn = page.querySelector('.page_topMenu_left_sideToggleBtn');
+      this.rightItems = [];
+      this.leftSideToggleBtn.addEventListener('click', function () {
+        return _baselibJs.EventRouter.emit('toggleLayoutSideMenu');
+      });
+      var _iteratorNormalCompletion2 = true;
+      var _didIteratorError2 = false;
+      var _iteratorError2 = undefined;
+
+      try {
+        for (var _iterator2 = Array.from(this.node.querySelectorAll('.page_topMenu_right > ul > li'))[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+          var rightItem = _step2.value;
+
+          this.rightItems.push(new UiTopMenuRightItem(rightItem));
+        }
+      } catch (err) {
+        _didIteratorError2 = true;
+        _iteratorError2 = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion2 && _iterator2['return']) {
+            _iterator2['return']();
+          }
+        } finally {
+          if (_didIteratorError2) {
+            throw _iteratorError2;
+          }
+        }
+      }
+
+      _baselibJs.EventRouter.on('openLayoutTopMenuRightItem', function (openingRightItem) {
+        var _iteratorNormalCompletion3 = true;
+        var _didIteratorError3 = false;
+        var _iteratorError3 = undefined;
+
+        try {
+          for (var _iterator3 = _this2.rightItems[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+            var rightItem = _step3.value;
+
+            if (rightItem === openingRightItem) {
+              continue;
+            }
+            rightItem.close();
+          }
+        } catch (err) {
+          _didIteratorError3 = true;
+          _iteratorError3 = err;
+        } finally {
+          try {
+            if (!_iteratorNormalCompletion3 && _iterator3['return']) {
+              _iterator3['return']();
+            }
+          } finally {
+            if (_didIteratorError3) {
+              throw _iteratorError3;
+            }
+          }
+        }
+      });
+    }
+
+    _createClass(UiTopMenu, [{
+      key: 'whenOpenSideMenu',
+      value: function whenOpenSideMenu() {
+        this.leftSideToggleBtn.classList.remove('fa-chevron-right');
+        this.leftSideToggleBtn.classList.add('fa-times');
+      }
+    }, {
+      key: 'whenCloseSideMenu',
+      value: function whenCloseSideMenu() {
+        this.leftSideToggleBtn.classList.remove('fa-times');
+        this.leftSideToggleBtn.classList.add('fa-chevron-right');
+      }
+    }]);
+
+    return UiTopMenu;
+  })();
+
+  var UiTopMenuRightItem = (function () {
+    function UiTopMenuRightItem(node) {
+      var _this3 = this;
+
+      _classCallCheck(this, UiTopMenuRightItem);
+
+      this.isOpen = false;
+      this.node = node;
+      this.anchor = this.node.querySelector('a');
+      this.ul = this.node.querySelector('ul');
+      if (this.ul) {
+        this.anchor.classList.add('fa');
+        this.anchor.classList.add('fa-caret-down');
+        this.anchor.addEventListener('click', function (evt) {
+          evt.preventDefault();
+          evt.stopPropagation();
+          if (_this3.isOpen) {
+            _this3.close();
+          } else {
+            _this3.open();
+          }
+        });
+      }
+    }
+
+    _createClass(UiTopMenuRightItem, [{
+      key: 'open',
+      value: function open() {
+        var _this4 = this;
+
+        this.isOpen = true;
+        window.requestAnimationFrame(function () {
+          _this4.ul.style.display = 'block';
+          _this4.anchor.classList.remove('fa-caret-down');
+          _this4.anchor.classList.add('fa-caret-up');
+          window.requestAnimationFrame(function () {
+            return _this4.ul.style.opacity = 1;
+          });
+        });
+        _baselibJs.EventRouter.emit('openLayoutTopMenuRightItem', [this]);
+      }
+    }, {
+      key: 'close',
+      value: function close() {
+        var _this5 = this;
+
+        this.isOpen = false;
+        window.requestAnimationFrame(function () {
+          _this5.ul.style.opacity = 0;
+          _this5.anchor.classList.remove('fa-caret-up');
+          _this5.anchor.classList.add('fa-caret-down');
+          window.setTimeout(function () {
+            return _this5.ul.style.display = 'none';
+          }, 400);
+        });
+      }
+    }]);
+
+    return UiTopMenuRightItem;
+  })();
+
+  var UiSideMenu = (function () {
+    function UiSideMenu(page) {
+      _classCallCheck(this, UiSideMenu);
+
+      this.isOpen = false;
+      this.node = page.querySelector('.page_sideMenu');
+    }
+
+    _createClass(UiSideMenu, [{
+      key: 'open',
+      value: function open() {
+        this.isOpen = true;
+        this.node.style.left = '0';
+      }
+    }, {
+      key: 'close',
+      value: function close() {
+        this.isOpen = false;
+        this.node.style.left = '-60mm';
+      }
+    }]);
+
+    return UiSideMenu;
+  })();
+
+  var UiBreadcrumb = function UiBreadcrumb(page) {
+    _classCallCheck(this, UiBreadcrumb);
+
+    this.node = page.querySelector('.breadcrumb');
+    if (!this.node || this.node.querySelector('*[itemscope]')) {
+      return;
+    }
+    var items = this.node.textContent.split('\n').filter(function (line) {
+      return '' !== line.trim();
+    }).map(function (line) {
+      return {
+        url: line.match(/^\s*(\S+)/)[1],
+        title: line.match(/^\s*\S+\s+(.+)$/)[1]
+      };
+    });
+    var scope = items.reduceRight(function (child, item) {
+      var scope = (0, _baselibJs.h)('div', { itemscope: '', itemtype: 'http://data-vocabulary.org/Breadcrumb' }, [(0, _baselibJs.h)('a', { href: item.url, itemprop: 'url' }, [(0, _baselibJs.h)('span', { itemprop: 'title' }, [item.title])])]);
+      if (child) {
+        child.setAttribute('itemprop', 'child');
+        scope.appendChild(child);
+      }
+      return scope;
+    }, null);
+    this.node.innerHTML = '';
+    this.node.appendChild(scope);
+  };
+
+  window.addEventListener('DOMContentLoaded', function () {
+    new UiLayout();
+    var taketori = new Taketori();
+    taketori.set({}).element('div.vertical').toVertical();
+    window.requestAnimationFrame(function () {
+      document.body.style.fontFamily = 'UniSeiJi, ' + window.getComputedStyle(document.body).fontFamily;
+    });
+  });
+});

@@ -152,6 +152,9 @@ gulp.task('js-build', () => {
     {
       src : [
         'src/bower_components/regenerator/runtime.js',
+        'src/javascripts/funisaya/world/ResourceLoader.js',
+        'src/javascripts/funisaya/world/Scene.js',
+        'src/javascripts/funisaya/world/FieldScene.js',
         'src/javascripts/funisaya/world/World.js',
         'src/javascripts/funisaya/world/main.js',
       ],
@@ -161,13 +164,13 @@ gulp.task('js-build', () => {
     return gulp.src(set.src).
       pipe(plumber()).
       pipe(babel({
-        modules  : 'umd',
+        modules : 'umd',
       })).
       pipe(concat(set.dest)).
-      pipe(uglify({
-        output   : {},
-        compress : { unsafe : true },
-      })).
+      // pipe(uglify({
+      //   output   : {},
+      //   compress : { unsafe : true },
+      // })).
       pipe(gulp.dest('assets'));
   }));
 });
@@ -223,7 +226,7 @@ gulp.task('seiji-uniseiji-font', () => promissExec('bin/uniseiji_font'));
 gulp.task('watch', () => {
   gulp.watch(SRCS.html                                        , ['seiji-translate'    ]);
   gulp.watch(SRCS.img                                         , ['imagemin'           ]);
-  gulp.watch(SRCS.js                                          , ['js-build', 'js-test']);
+  gulp.watch(SRCS.js                                          , ['js-build'/*, 'js-test'*/]);
   gulp.watch('src/stylesheets/**/**.less'                     , ['css-build'          ]);
   gulp.watch(['index.php', 'lib/**/**.php', 'tests/**/**.php'], ['php-test'           ]);
 });
