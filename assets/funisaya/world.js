@@ -732,15 +732,15 @@
 
   ResourceLoader.resourceSets = {
     init: [
-    // new ImageResource('charactorFrontLeft.png'),
-    // new ImageResource('charactorFrontMiddle.png'),
-    // new ImageResource('charactorFrontRight.png'),
-    // new ImageResource('charactorLeftSideLeft.png'),
-    // new ImageResource('charactorLeftSideMiddle.png'),
-    // new ImageResource('charactorLeftSideRight.png'),
-    // new ImageResource('charactorRightSideLeft.png'),
-    // new ImageResource('charactorRightSideMiddle.png'),
-    // new ImageResource('charactorRightSideRight.png'),
+    // new ImageResource('CharactorFrontLeft.png'),
+    new ImageResource('CharactorFrontMiddle.png'),
+    // new ImageResource('CharactorFrontRight.png'),
+    // new ImageResource('CharactorLeftSideLeft.png'),
+    // new ImageResource('CharactorLeftSideMiddle.png'),
+    // new ImageResource('CharactorLeftSideRight.png'),
+    // new ImageResource('CharactorRightSideLeft.png'),
+    // new ImageResource('CharactorRightSideMiddle.png'),
+    // new ImageResource('CharactorRightSideRight.png'),
     new ImageResource('Dark.png')]
   };
 });
@@ -835,19 +835,25 @@
       var me = this;
 
       function loop() {
-        if (!me.isLive) {
+        if (!me._isLive) {
           return;
         }
-        me._draw();
+        me.draw();
         window.requestAnimationFrame(loop);
       }
 
-      this.isLive = true;
-      this.context = world.canvas.getContext('2d');
+      this._isLive = true;
+      this._context = world.canvas.getContext('2d');
+      this._zurag = null;
+      this._zuragCanvas = null;
+      this._zuragCanvasContext = null;
+      this._charactor = new Charactor();
       if (this.world.serialized.fieldScene) {
         this._deserialize(this.world.serialized.fieldScene);
       } else {
-        this.map = FieldScene.maps.start;
+        this.switchZurag(FieldScene.zurags.start);
+        this._charactor.x = Math.floor(this._zurag.colNum / 2);
+        this._charactor.y = Math.floor(this._zurag.rowNum / 2);
       }
       loop();
     }
@@ -855,26 +861,40 @@
     _createClass(FieldScene, [{
       key: 'destructor',
       value: function destructor() {
-        this.isLive = false;
+        this._isLive = false;
         this.world.serialized.fieldScene = this._serialize();
       }
     }, {
-      key: '_draw',
-      value: function _draw() {
-        this.context.clearRect(0, 0, this.world.canvas.width, this.world.canvas.height);
-        this.map.draw(this.context);
+      key: 'draw',
+      value: function draw() {
+        this._zuragCanvasContext.clearRect(0, 0, this._zuragCanvas.width, this._zuragCanvas.height);
+        this._zurag.drawMats(this._zuragCanvasContext);
+        this._zurag.drawInteractives(this._zuragCanvasContext);
+        this._charactor.draw(this._zuragCanvasContext);
+        this._zurag.drawOverlays(this._zuragCanvasContext);
+        this._context.clearRect(0, 0, this.world.canvas.width, this.world.canvas.height);
+        this._context.drawImage(this._zuragCanvas, -(this._zuragCanvas.width - this.world.canvas.width) / 2, -(this._zuragCanvas.height - this.world.canvas.height) / 2);
+      }
+    }, {
+      key: 'switchZurag',
+      value: function switchZurag(zurag) {
+        this._zurag = zurag;
+        this._zuragCanvas = document.createElement('canvas');
+        this._zuragCanvasContext = this._zuragCanvas.getContext('2d');
+        this._zuragCanvas.height = zurag.rowNum * 48;
+        this._zuragCanvas.width = zurag.colNum * 48;
       }
     }, {
       key: '_serialize',
       value: function _serialize() {
         return {
-          mapNer: this.map.ner
+          zuragNer: this._zurag.ner
         };
       }
     }, {
       key: '_deserialize',
       value: function _deserialize(serialized) {
-        this.map = FieldScene.maps[serialized.mapNer];
+        this._zurag = FieldScene.zurags[serialized.zuragNer];
       }
     }]);
 
@@ -883,13 +903,13 @@
 
   exports.FieldScene = FieldScene;
 
-  FieldScene.maps = {};
+  FieldScene.zurags = {};
   FieldScene.mats = {};
   FieldScene.interactables = {};
   FieldScene.overlays = {};
 
-  FieldScene.registerMap = function (map) {
-    return FieldScene.maps[map.ner] = map;
+  FieldScene.registerZurag = function (zurag) {
+    return FieldScene.zurags[zurag.ner] = zurag;
   };
 
   FieldScene.registerMatItem = function (itemClass) {
@@ -910,131 +930,229 @@
     FieldScene.mats[ner] = itemClass;
   };
 
-  var Map = (function () {
-    function Map(mats, interactives, overlays, setting) {
-      _classCallCheck(this, Map);
+  var Charactor = (function () {
+    function Charactor() {
+      _classCallCheck(this, Charactor);
 
-      this.colNum = mats.length;
-      this.rowNum = mats[0].length;
+      this.x = 0;
+      this.y = 0;
+      this.imageFrontMiddle = new _ResourceLoaderJs.ResourceLoader().resources['CharactorFrontMiddle.png'].resource;
+      this._isMoving = false;
+    }
+
+    _createClass(Charactor, [{
+      key: 'draw',
+      value: function draw(context) {
+        context.drawImage(this.imageFrontMiddle, this.x * 48, this.y * 48);
+      }
+    }, {
+      key: 'moveUp',
+      value: function moveUp() {
+        if (this._isMoving) {
+          return;
+        }
+      }
+    }, {
+      key: 'moveRight',
+      value: function moveRight() {
+        if (this._isMoving) {
+          return;
+        }
+      }
+    }, {
+      key: 'moveDown',
+      value: function moveDown() {
+        if (this._isMoving) {
+          return;
+        }
+      }
+    }, {
+      key: 'moveLeft',
+      value: function moveLeft() {
+        if (this._isMoving) {
+          return;
+        }
+      }
+    }]);
+
+    return Charactor;
+  })();
+
+  var Zurag = (function () {
+    function Zurag(mats, interactives, overlays, setting) {
+      _classCallCheck(this, Zurag);
+
+      this.colNum = mats[0].length;
+      this.rowNum = mats.length;
       this.mats = mats;
       this.interactives = interactives;
       this.overlays = overlays;
       this.ner = setting.ner;
       this._isStarted = false;
+      var _iteratorNormalCompletion = true;
+      var _didIteratorError = false;
+      var _iteratorError = undefined;
+
+      try {
+        for (var _iterator = mats[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+          var row = _step.value;
+
+          if (row.length !== this.colNum) {
+            throw new Error('Zurag[' + this.ner + '].mats colNums [' + mats.map(function (row) {
+              return row.length;
+            }).join(',') + ']');
+          }
+        }
+      } catch (err) {
+        _didIteratorError = true;
+        _iteratorError = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion && _iterator['return']) {
+            _iterator['return']();
+          }
+        } finally {
+          if (_didIteratorError) {
+            throw _iteratorError;
+          }
+        }
+      }
     }
 
-    _createClass(Map, [{
-      key: 'start',
-      value: function start() {
-        this.mats = this.mats.map(function (row, y) {
-          return row.map(function (ner, x) {
-            return new MatItem([x, y], ner);
-          });
-        });
-      }
-    }, {
-      key: 'draw',
-      value: function draw(context) {
+    /**
+     * 48px x 48px
+     */
+
+    _createClass(Zurag, [{
+      key: 'drawMats',
+      value: function drawMats(context) {
         if (!this._isStarted) {
           this._isStarted = true;
-          this.start();
+          this._start();
         }
-        var _iteratorNormalCompletion = true;
-        var _didIteratorError = false;
-        var _iteratorError = undefined;
+        var _iteratorNormalCompletion2 = true;
+        var _didIteratorError2 = false;
+        var _iteratorError2 = undefined;
 
         try {
-          for (var _iterator = this.mats[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-            var row = _step.value;
-            var _iteratorNormalCompletion2 = true;
-            var _didIteratorError2 = false;
-            var _iteratorError2 = undefined;
+          for (var _iterator2 = this.mats[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+            var row = _step2.value;
+            var _iteratorNormalCompletion3 = true;
+            var _didIteratorError3 = false;
+            var _iteratorError3 = undefined;
 
             try {
-              for (var _iterator2 = row[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-                var mat = _step2.value;
+              for (var _iterator3 = row[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+                var mat = _step3.value;
 
                 mat.draw(context);
               }
             } catch (err) {
-              _didIteratorError2 = true;
-              _iteratorError2 = err;
+              _didIteratorError3 = true;
+              _iteratorError3 = err;
             } finally {
               try {
-                if (!_iteratorNormalCompletion2 && _iterator2['return']) {
-                  _iterator2['return']();
+                if (!_iteratorNormalCompletion3 && _iterator3['return']) {
+                  _iterator3['return']();
                 }
               } finally {
-                if (_didIteratorError2) {
-                  throw _iteratorError2;
+                if (_didIteratorError3) {
+                  throw _iteratorError3;
                 }
               }
             }
           }
         } catch (err) {
-          _didIteratorError = true;
-          _iteratorError = err;
+          _didIteratorError2 = true;
+          _iteratorError2 = err;
         } finally {
           try {
-            if (!_iteratorNormalCompletion && _iterator['return']) {
-              _iterator['return']();
+            if (!_iteratorNormalCompletion2 && _iterator2['return']) {
+              _iterator2['return']();
             }
           } finally {
-            if (_didIteratorError) {
-              throw _iteratorError;
+            if (_didIteratorError2) {
+              throw _iteratorError2;
             }
           }
         }
       }
+    }, {
+      key: 'drawInteractives',
+      value: function drawInteractives(context) {}
+    }, {
+      key: 'drawOverlays',
+      value: function drawOverlays(context) {}
+    }, {
+      key: '_start',
+      value: function _start() {
+        this.mats = this.mats.map(function (row, y) {
+          return row.map(function (ner, x) {
+            return new (FieldScene.mats[ner] || MatItem)(x, y);
+          });
+        });
+      }
     }]);
 
-    return Map;
+    return Zurag;
   })();
 
   var MatItem = (function () {
-    function MatItem(position, ner) {
+    function MatItem(x, y) {
       _classCallCheck(this, MatItem);
 
-      this.x = position[0] * 32;
-      this.y = position[1] * 32;
-      this.image = new _ResourceLoaderJs.ResourceLoader().resources[ner + '.png'].resource;
+      this.x = x * 48;
+      this.y = y * 48;
+      this.isPassable = true;
     }
 
     _createClass(MatItem, [{
+      key: 'draw',
+      value: function draw(context) {}
+    }]);
+
+    return MatItem;
+  })();
+
+  var InteractiveItem = function InteractiveItem(x, y) {
+    _classCallCheck(this, InteractiveItem);
+
+    this.x = x;
+    this.y = y;
+  };
+
+  var OverlayItem = function OverlayItem(x, y) {
+    _classCallCheck(this, OverlayItem);
+
+    this.x = x;
+    this.y = y;
+  };
+
+  var DarkMatItem = (function (_MatItem) {
+    _inherits(DarkMatItem, _MatItem);
+
+    function DarkMatItem(x, y) {
+      _classCallCheck(this, DarkMatItem);
+
+      _get(Object.getPrototypeOf(DarkMatItem.prototype), 'constructor', this).call(this, x, y);
+      this.image = new _ResourceLoaderJs.ResourceLoader().resources['Dark.png'].resource;
+    }
+
+    _createClass(DarkMatItem, [{
       key: 'draw',
       value: function draw(context) {
         context.drawImage(this.image, this.x, this.y);
       }
     }]);
 
-    return MatItem;
-  })();
-
-  var InteractiveItem = function InteractiveItem() {
-    _classCallCheck(this, InteractiveItem);
-  };
-
-  var OverlayItem = function OverlayItem() {
-    _classCallCheck(this, OverlayItem);
-  };
-
-  var DarkMatItem = (function (_MatItem) {
-    _inherits(DarkMatItem, _MatItem);
-
-    function DarkMatItem() {
-      _classCallCheck(this, DarkMatItem);
-
-      _get(Object.getPrototypeOf(DarkMatItem.prototype), 'constructor', this).apply(this, arguments);
-    }
-
     return DarkMatItem;
   })(MatItem);
 
   FieldScene.registerMatItem(DarkMatItem);
 
-  FieldScene.registerMap(new Map([
+  FieldScene.registerZurag(new Zurag([
   // 20x20
-  ['Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark'], ['Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark'], ['Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark'], ['Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark'], ['Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark'], ['Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark'], ['Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark'], ['Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark'], ['Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark'], ['Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark'], ['Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark'], ['Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark'], ['Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark'], ['Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark'], ['Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark'], ['Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark'], ['Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark'], ['Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark'], ['Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark'], ['Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark']], [], [[[0, 0], 'tree']], {
+  ['Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark'], ['Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark'], ['Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark'], ['Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark'], ['Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark'], ['Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark'], ['Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark'], ['Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark'], ['Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark'], ['Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark'], ['Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark'], ['Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark'], ['Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark'], ['Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark'], ['Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark'], ['Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark'], ['Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark'], ['Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark'], ['Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark'], ['Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark', 'Dark']], [], [[[0, 0], 'Tree']], {
     ner: 'start',
     bgm: 'qwertyuiop.ogg'
   }));
@@ -1198,6 +1316,9 @@
 })(this, function (exports, _WorldJs) {
   /* jshint browser:true, strict:false */
   'use strict';
+
+  // ner   name 名前
+  // zurag map  地図
 
   window.addEventListener('DOMContentLoaded', function () {
     return new _WorldJs.World();

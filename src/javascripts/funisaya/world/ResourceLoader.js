@@ -56,15 +56,15 @@ ResourceLoader._instance = null;
 
 ResourceLoader.resourceSets = {
   init: [
-    // new ImageResource('charactorFrontLeft.png'),
-    // new ImageResource('charactorFrontMiddle.png'),
-    // new ImageResource('charactorFrontRight.png'),
-    // new ImageResource('charactorLeftSideLeft.png'),
-    // new ImageResource('charactorLeftSideMiddle.png'),
-    // new ImageResource('charactorLeftSideRight.png'),
-    // new ImageResource('charactorRightSideLeft.png'),
-    // new ImageResource('charactorRightSideMiddle.png'),
-    // new ImageResource('charactorRightSideRight.png'),
+    // new ImageResource('CharactorFrontLeft.png'),
+    new ImageResource('CharactorFrontMiddle.png'),
+    // new ImageResource('CharactorFrontRight.png'),
+    // new ImageResource('CharactorLeftSideLeft.png'),
+    // new ImageResource('CharactorLeftSideMiddle.png'),
+    // new ImageResource('CharactorLeftSideRight.png'),
+    // new ImageResource('CharactorRightSideLeft.png'),
+    // new ImageResource('CharactorRightSideMiddle.png'),
+    // new ImageResource('CharactorRightSideRight.png'),
     new ImageResource('Dark.png'),
   ],
 };
