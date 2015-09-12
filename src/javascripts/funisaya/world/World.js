@@ -29,7 +29,7 @@ export class World {
   loadData() {
     return new Promise((resolve, reject) => {
       this.serialized = {};
-      window.setTimeout(() => resolve(), 1000);
+      resolve();
     });
   }
 

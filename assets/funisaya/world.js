@@ -852,8 +852,7 @@
         this._deserialize(this.world.serialized.fieldScene);
       } else {
         this.switchZurag(FieldScene.zurags.start);
-        this._charactor.x = Math.floor(this._zurag.colNum / 2);
-        this._charactor.y = Math.floor(this._zurag.rowNum / 2);
+        this._charactor.moveTo(Math.floor(this._zurag.colNum / 2), Math.floor(this._zurag.rowNum / 2));
       }
       loop();
     }
@@ -874,6 +873,32 @@
         this._zurag.drawOverlays(this._zuragCanvasContext);
         this._context.clearRect(0, 0, this.world.canvas.width, this.world.canvas.height);
         this._context.drawImage(this._zuragCanvas, -(this._zuragCanvas.width - this.world.canvas.width) / 2, -(this._zuragCanvas.height - this.world.canvas.height) / 2);
+      }
+    }, {
+      key: 'onKeyDown',
+      value: function onKeyDown(evt) {
+        switch (evt.keyCode) {
+          case 37:
+            // ←
+            evt.preventDefault();
+            this._charactor.moveLeft();
+            break;
+          case 38:
+            // ↑
+            evt.preventDefault();
+            this._charactor.moveUp();
+            break;
+          case 39:
+            // →
+            evt.preventDefault();
+            this._charactor.moveRight();
+            break;
+          case 40:
+            // ↓
+            evt.preventDefault();
+            this._charactor.moveDown();
+            break;
+        }
       }
     }, {
       key: 'switchZurag',
@@ -934,6 +959,8 @@
     function Charactor() {
       _classCallCheck(this, Charactor);
 
+      this.col = 0;
+      this.row = 0;
       this.x = 0;
       this.y = 0;
       this.imageFrontMiddle = new _ResourceLoaderJs.ResourceLoader().resources['CharactorFrontMiddle.png'].resource;
@@ -943,7 +970,7 @@
     _createClass(Charactor, [{
       key: 'draw',
       value: function draw(context) {
-        context.drawImage(this.imageFrontMiddle, this.x * 48, this.y * 48);
+        context.drawImage(this.imageFrontMiddle, this.x, this.y);
       }
     }, {
       key: 'moveUp',
@@ -951,6 +978,7 @@
         if (this._isMoving) {
           return;
         }
+        this.moveTo(this.col, this.row - 1);
       }
     }, {
       key: 'moveRight',
@@ -958,6 +986,7 @@
         if (this._isMoving) {
           return;
         }
+        this.moveTo(this.col + 1, this.row);
       }
     }, {
       key: 'moveDown',
@@ -965,12 +994,51 @@
         if (this._isMoving) {
           return;
         }
+        this.moveTo(this.col, this.row + 1);
       }
     }, {
       key: 'moveLeft',
       value: function moveLeft() {
         if (this._isMoving) {
           return;
+        }
+        this.moveTo(this.col - 1, this.row);
+      }
+    }, {
+      key: 'moveTo',
+      value: function moveTo(col, row) {
+        var _this = this;
+
+        var DURATION = 200;
+        if (Math.abs(this.col - col) <= 1 && Math.abs(this.row - row) <= 1) {
+          (function () {
+            var startX = _this.x;
+            var startY = _this.y;
+            var endX = col * 48;
+            var endY = row * 48;
+            var startAt = Date.now();
+            var loop = function loop() {
+              var now = Date.now();
+              _this.x = Math.sin((now - startAt) * (Math.PI / 2) / DURATION) * (endX - startX) + startX;
+              _this.y = Math.sin((now - startAt) * (Math.PI / 2) / DURATION) * (endY - startY) + startY;
+              if (now >= startAt + DURATION) {
+                _this.x = endX;
+                _this.y = endY;
+                _this._isMoving = false;
+              } else {
+                window.requestAnimationFrame(loop);
+              }
+            };
+            _this._isMoving = true;
+            _this.col = col;
+            _this.row = row;
+            loop();
+          })();
+        } else {
+          this.col = col;
+          this.row = row;
+          this.x = col * 48;
+          this.y = row * 48;
         }
       }
     }]);
@@ -1227,9 +1295,7 @@
 
         return new Promise(function (resolve, reject) {
           _this2.serialized = {};
-          window.setTimeout(function () {
-            return resolve();
-          }, 1000);
+          resolve();
         });
       }
     }, {

@@ -26,8 +26,10 @@ export class FieldScene extends Scene {
       this._deserialize(this.world.serialized.fieldScene);
     } else {
       this.switchZurag(FieldScene.zurags.start);
-      this._charactor.x = Math.floor(this._zurag.colNum / 2);
-      this._charactor.y = Math.floor(this._zurag.rowNum / 2);
+      this._charactor.moveTo(
+        Math.floor(this._zurag.colNum / 2),
+        Math.floor(this._zurag.rowNum / 2)
+      );
     }
     loop();
   }
@@ -49,6 +51,27 @@ export class FieldScene extends Scene {
       -(this._zuragCanvas.width - this.world.canvas.width) / 2,
       -(this._zuragCanvas.height - this.world.canvas.height) / 2
     );
+  }
+
+  onKeyDown(evt) {
+    switch (evt.keyCode) {
+      case 37: // ←
+        evt.preventDefault();
+        this._charactor.moveLeft();
+        break;
+      case 38: // ↑
+        evt.preventDefault();
+        this._charactor.moveUp();
+        break;
+      case 39: // →
+        evt.preventDefault();
+        this._charactor.moveRight();
+        break;
+      case 40: // ↓
+        evt.preventDefault();
+        this._charactor.moveDown();
+        break;
+    }
   }
 
   switchZurag(zurag) {
@@ -97,6 +120,8 @@ FieldScene.registerOverlayItem = (itemClass) => {
 
 class Charactor {
   constructor() {
+    this.col              = 0;
+    this.row              = 0;
     this.x                = 0;
     this.y                = 0;
     this.imageFrontMiddle = new ResourceLoader().resources['CharactorFrontMiddle.png'].resource;
@@ -104,30 +129,66 @@ class Charactor {
   }
 
   draw(context) {
-    context.drawImage(this.imageFrontMiddle, this.x * 48, this.y * 48);
+    context.drawImage(this.imageFrontMiddle, this.x, this.y);
   }
 
   moveUp() {
     if (this._isMoving) {
       return;
     }
+    this.moveTo(this.col, this.row - 1);
   }
 
   moveRight() {
     if (this._isMoving) {
       return;
     }
+    this.moveTo(this.col + 1, this.row);
   }
 
   moveDown() {
     if (this._isMoving) {
       return;
     }
+    this.moveTo(this.col, this.row + 1);
   }
 
   moveLeft() {
     if (this._isMoving) {
       return;
+    }
+    this.moveTo(this.col - 1, this.row);
+  }
+
+  moveTo(col, row) {
+    const DURATION = 200;
+    if (Math.abs(this.col - col) <= 1 && Math.abs(this.row - row) <= 1) {
+      let startX  = this.x;
+      let startY  = this.y;
+      let endX    = col * 48;
+      let endY    = row * 48;
+      let startAt = Date.now();
+      let loop    = () => {
+        var now = Date.now();
+        this.x = Math.sin((now - startAt) * (Math.PI / 2) / DURATION) * (endX - startX) + startX;
+        this.y = Math.sin((now - startAt) * (Math.PI / 2) / DURATION) * (endY - startY) + startY;
+        if (now >= startAt + DURATION) {
+          this.x = endX;
+          this.y = endY;
+          this._isMoving = false;
+        } else {
+          window.requestAnimationFrame(loop);
+        }
+      };
+      this._isMoving = true;
+      this.col = col;
+      this.row = row;
+      loop();
+    } else {
+      this.col = col;
+      this.row = row;
+      this.x = col * 48;
+      this.y = row * 48;
     }
   }
 }
