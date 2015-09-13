@@ -25,7 +25,7 @@ export class FieldScene extends Scene {
     if (this.world.serialized.fieldScene) {
       this._deserialize(this.world.serialized.fieldScene);
     } else {
-      this.switchZurag(FieldScene.zurags.start);
+      this.switchZurag(FieldScene.zurags.Start);
       this._charactor.moveTo(
         Math.floor(this._zurag.colNum / 2),
         Math.floor(this._zurag.rowNum / 2)
@@ -46,11 +46,21 @@ export class FieldScene extends Scene {
     this._charactor.draw(this._zuragCanvasContext);
     this._zurag.drawOverlays(this._zuragCanvasContext);
     this._context.clearRect(0, 0, this.world.canvas.width, this.world.canvas.height);
-    this._context.drawImage(
-      this._zuragCanvas,
-      -(this._zuragCanvas.width - this.world.canvas.width) / 2,
-      -(this._zuragCanvas.height - this.world.canvas.height) / 2
-    );
+    {
+      let transformX = (this.world.canvas.width / 2) - (this._charactor.x - 24);
+      let transformY = (this.world.canvas.height / 2) - (this._charactor.y - 24);
+      if (transformX > 0) {
+        transformX = 0;
+      } else if (this.world.canvas.width - transformX > this._zuragCanvas.width) {
+        transformX = this.world.canvas.width - this._zuragCanvas.width;
+      }
+      if (transformY > 0) {
+        transformY = 0;
+      } else if (this.world.canvas.height - transformY > this._zuragCanvas.height) {
+        transformY = this.world.canvas.height - this._zuragCanvas.height;
+      }
+      this._context.drawImage(this._zuragCanvas, transformX, transformY);
+    }
   }
 
   onKeyDown(evt) {
@@ -302,7 +312,7 @@ FieldScene.registerZurag(new Zurag(
     [[0, 0], 'Tree'],
   ],
   {
-    ner: 'start',
+    ner: 'Start',
     bgm: 'qwertyuiop.ogg',
   }
 ));
