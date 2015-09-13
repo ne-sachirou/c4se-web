@@ -152,7 +152,7 @@ class Charactor {
     this.row              = 0;
     this.x                = 0;
     this.y                = 0;
-    this.imageFrontMiddle = new ResourceLoader().resources['CharactorFrontMiddle.png'].resource;
+    this.imageFrontMiddle = ResourceLoader.resources['CharactorFrontMiddle.png'].resource;
     this._isMoving        = false;
   }
 
@@ -291,7 +291,7 @@ class OverlayItem {
 class DarkMatItem extends MatItem {
   constructor(x, y) {
     super(x, y);
-    this.image = new ResourceLoader().resources['Dark.png'].resource;
+    this.image = ResourceLoader.resources['Dark.png'].resource;
   }
 
   draw(context) {

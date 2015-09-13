@@ -61,7 +61,7 @@ class LoadingScene extends Scene {
   async _init() {
     var node = document.importNode(document.getElementById('loadingScene').content, true).firstElementChild;
     document.body.appendChild(node);
-    await new ResourceLoader().loadSet('init');
+    await ResourceLoader.loadSet('init');
     await this.world.loadData();
     this.world.nextScene(FieldScene);
   }

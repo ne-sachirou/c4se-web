@@ -27,16 +27,25 @@ class AudioResource extends Resource {
   }
 }
 
-export class ResourceLoader {
-  constructor() {
-    if (ResourceLoader._instance) {
-      return ResourceLoader._instance;
-    }
-    ResourceLoader._instance = this;
-    this.resources = {};
-  }
+export var ResourceLoader = {
+  resources: {},
 
-  loadSet(ner) {
+  resourceSets: {
+    init: [
+      // new ImageResource('CharactorFrontLeft.png'),
+      new ImageResource('CharactorFrontMiddle.png'),
+      // new ImageResource('CharactorFrontRight.png'),
+      // new ImageResource('CharactorLeftSideLeft.png'),
+      // new ImageResource('CharactorLeftSideMiddle.png'),
+      // new ImageResource('CharactorLeftSideRight.png'),
+      // new ImageResource('CharactorRightSideLeft.png'),
+      // new ImageResource('CharactorRightSideMiddle.png'),
+      // new ImageResource('CharactorRightSideRight.png'),
+      new ImageResource('Dark.png'),
+    ],
+  },
+
+  loadSet: function (ner) {
     return Promise.all(
       ResourceLoader.resourceSets[ner].map((resource) => {
         if (this.resources[resource.ner]) {
@@ -49,22 +58,5 @@ export class ResourceLoader {
         }
       })
     );
-  }
-}
-
-ResourceLoader._instance = null;
-
-ResourceLoader.resourceSets = {
-  init: [
-    // new ImageResource('CharactorFrontLeft.png'),
-    new ImageResource('CharactorFrontMiddle.png'),
-    // new ImageResource('CharactorFrontRight.png'),
-    // new ImageResource('CharactorLeftSideLeft.png'),
-    // new ImageResource('CharactorLeftSideMiddle.png'),
-    // new ImageResource('CharactorLeftSideRight.png'),
-    // new ImageResource('CharactorRightSideLeft.png'),
-    // new ImageResource('CharactorRightSideMiddle.png'),
-    // new ImageResource('CharactorRightSideRight.png'),
-    new ImageResource('Dark.png'),
-  ],
+  },
 };

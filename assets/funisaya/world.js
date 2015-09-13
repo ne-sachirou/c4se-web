@@ -694,55 +694,39 @@
     return AudioResource;
   })(Resource);
 
-  var ResourceLoader = (function () {
-    function ResourceLoader() {
-      _classCallCheck(this, ResourceLoader);
+  var ResourceLoader = {
+    resources: {},
 
-      if (ResourceLoader._instance) {
-        return ResourceLoader._instance;
-      }
-      ResourceLoader._instance = this;
-      this.resources = {};
+    resourceSets: {
+      init: [
+      // new ImageResource('CharactorFrontLeft.png'),
+      new ImageResource('CharactorFrontMiddle.png'),
+      // new ImageResource('CharactorFrontRight.png'),
+      // new ImageResource('CharactorLeftSideLeft.png'),
+      // new ImageResource('CharactorLeftSideMiddle.png'),
+      // new ImageResource('CharactorLeftSideRight.png'),
+      // new ImageResource('CharactorRightSideLeft.png'),
+      // new ImageResource('CharactorRightSideMiddle.png'),
+      // new ImageResource('CharactorRightSideRight.png'),
+      new ImageResource('Dark.png')]
+    },
+
+    loadSet: function loadSet(ner) {
+      var _this3 = this;
+
+      return Promise.all(ResourceLoader.resourceSets[ner].map(function (resource) {
+        if (_this3.resources[resource.ner]) {
+          return Promise.resolve(_this3.resources[resource.ner]);
+        } else {
+          return resource.load().then(function () {
+            _this3.resources[resource.ner] = _this3.resources[resource.ner] || resource;
+            return _this3.resources[resource.ner];
+          });
+        }
+      }));
     }
-
-    _createClass(ResourceLoader, [{
-      key: 'loadSet',
-      value: function loadSet(ner) {
-        var _this3 = this;
-
-        return Promise.all(ResourceLoader.resourceSets[ner].map(function (resource) {
-          if (_this3.resources[resource.ner]) {
-            return Promise.resolve(_this3.resources[resource.ner]);
-          } else {
-            return resource.load().then(function () {
-              _this3.resources[resource.ner] = _this3.resources[resource.ner] || resource;
-              return _this3.resources[resource.ner];
-            });
-          }
-        }));
-      }
-    }]);
-
-    return ResourceLoader;
-  })();
-
-  exports.ResourceLoader = ResourceLoader;
-
-  ResourceLoader._instance = null;
-
-  ResourceLoader.resourceSets = {
-    init: [
-    // new ImageResource('CharactorFrontLeft.png'),
-    new ImageResource('CharactorFrontMiddle.png'),
-    // new ImageResource('CharactorFrontRight.png'),
-    // new ImageResource('CharactorLeftSideLeft.png'),
-    // new ImageResource('CharactorLeftSideMiddle.png'),
-    // new ImageResource('CharactorLeftSideRight.png'),
-    // new ImageResource('CharactorRightSideLeft.png'),
-    // new ImageResource('CharactorRightSideMiddle.png'),
-    // new ImageResource('CharactorRightSideRight.png'),
-    new ImageResource('Dark.png')]
   };
+  exports.ResourceLoader = ResourceLoader;
 });
 (function (global, factory) {
   if (typeof define === "function" && define.amd) {
@@ -997,7 +981,7 @@
       this.row = 0;
       this.x = 0;
       this.y = 0;
-      this.imageFrontMiddle = new _ResourceLoaderJs.ResourceLoader().resources['CharactorFrontMiddle.png'].resource;
+      this.imageFrontMiddle = _ResourceLoaderJs.ResourceLoader.resources['CharactorFrontMiddle.png'].resource;
       this._isMoving = false;
     }
 
@@ -1237,7 +1221,7 @@
       _classCallCheck(this, DarkMatItem);
 
       _get(Object.getPrototypeOf(DarkMatItem.prototype), 'constructor', this).call(this, x, y);
-      this.image = new _ResourceLoaderJs.ResourceLoader().resources['Dark.png'].resource;
+      this.image = _ResourceLoaderJs.ResourceLoader.resources['Dark.png'].resource;
     }
 
     _createClass(DarkMatItem, [{
@@ -1381,7 +1365,7 @@
 
               document.body.appendChild(node);
               context$2$0.next = 4;
-              return regeneratorRuntime.awrap(new _ResourceLoaderJs.ResourceLoader().loadSet('init'));
+              return regeneratorRuntime.awrap(_ResourceLoaderJs.ResourceLoader.loadSet('init'));
 
             case 4:
               context$2$0.next = 6;
