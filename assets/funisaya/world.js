@@ -895,21 +895,33 @@
           case 37:
             // ←
             evt.preventDefault();
+            if (this._charactor.col <= 0) {
+              break;
+            }
             this._charactor.moveLeft();
             break;
           case 38:
             // ↑
             evt.preventDefault();
+            if (this._charactor.row <= 0) {
+              break;
+            }
             this._charactor.moveUp();
             break;
           case 39:
             // →
             evt.preventDefault();
+            if (this._charactor.col >= this._zurag.colNum - 1) {
+              break;
+            }
             this._charactor.moveRight();
             break;
           case 40:
             // ↓
             evt.preventDefault();
+            if (this._charactor.row >= this._zurag.rowNum - 1) {
+              break;
+            }
             this._charactor.moveDown();
             break;
         }
