@@ -891,38 +891,46 @@
     }, {
       key: 'onKeyDown',
       value: function onKeyDown(evt) {
+        var _this = this;
+
+        var nextCol = this._charactor.col;
+        var nextRow = this._charactor.row;
+        var isMovable = function isMovable() {
+          var nextMat = _this._zurag.mats[nextRow] ? _this._zurag.mats[nextRow][nextCol] : void 0;
+          return nextMat && nextMat.isPassable;
+        };
         switch (evt.keyCode) {
           case 37:
             // ←
             evt.preventDefault();
-            if (this._charactor.col <= 0) {
-              break;
+            --nextCol;
+            if (isMovable()) {
+              this._charactor.moveLeft();
             }
-            this._charactor.moveLeft();
             break;
           case 38:
             // ↑
             evt.preventDefault();
-            if (this._charactor.row <= 0) {
-              break;
+            --nextRow;
+            if (isMovable()) {
+              this._charactor.moveUp();
             }
-            this._charactor.moveUp();
             break;
           case 39:
             // →
             evt.preventDefault();
-            if (this._charactor.col >= this._zurag.colNum - 1) {
-              break;
+            ++nextCol;
+            if (isMovable()) {
+              this._charactor.moveRight();
             }
-            this._charactor.moveRight();
             break;
           case 40:
             // ↓
             evt.preventDefault();
-            if (this._charactor.row >= this._zurag.rowNum - 1) {
-              break;
+            ++nextRow;
+            if (isMovable()) {
+              this._charactor.moveDown();
             }
-            this._charactor.moveDown();
             break;
         }
       }
@@ -1033,31 +1041,31 @@
     }, {
       key: 'moveTo',
       value: function moveTo(col, row) {
-        var _this = this;
+        var _this2 = this;
 
         var DURATION = 200;
         if (Math.abs(this.col - col) <= 1 && Math.abs(this.row - row) <= 1) {
           (function () {
-            var startX = _this.x;
-            var startY = _this.y;
+            var startX = _this2.x;
+            var startY = _this2.y;
             var endX = col * 48;
             var endY = row * 48;
             var startAt = Date.now();
             var loop = function loop() {
               var now = Date.now();
-              _this.x = Math.sin((now - startAt) * (Math.PI / 2) / DURATION) * (endX - startX) + startX;
-              _this.y = Math.sin((now - startAt) * (Math.PI / 2) / DURATION) * (endY - startY) + startY;
+              _this2.x = Math.sin((now - startAt) * (Math.PI / 2) / DURATION) * (endX - startX) + startX;
+              _this2.y = Math.sin((now - startAt) * (Math.PI / 2) / DURATION) * (endY - startY) + startY;
               if (now >= startAt + DURATION) {
-                _this.x = endX;
-                _this.y = endY;
-                _this._isMoving = false;
+                _this2.x = endX;
+                _this2.y = endY;
+                _this2._isMoving = false;
               } else {
                 window.requestAnimationFrame(loop);
               }
             };
-            _this._isMoving = true;
-            _this.col = col;
-            _this.row = row;
+            _this2._isMoving = true;
+            _this2.col = col;
+            _this2.row = row;
             loop();
           })();
         } else {

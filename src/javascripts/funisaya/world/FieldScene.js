@@ -64,34 +64,40 @@ export class FieldScene extends Scene {
   }
 
   onKeyDown(evt) {
+    var nextCol   = this._charactor.col;
+    var nextRow   = this._charactor.row;
+    var isMovable = () => {
+      var nextMat = this._zurag.mats[nextRow] ? this._zurag.mats[nextRow][nextCol] : void 0;
+      return nextMat && nextMat.isPassable;
+    };
     switch (evt.keyCode) {
       case 37: // ←
         evt.preventDefault();
-        if (this._charactor.col <= 0) {
-          break;
+        --nextCol;
+        if (isMovable()) {
+          this._charactor.moveLeft();
         }
-        this._charactor.moveLeft();
         break;
       case 38: // ↑
         evt.preventDefault();
-        if (this._charactor.row <= 0) {
-          break;
+        --nextRow;
+        if (isMovable()) {
+          this._charactor.moveUp();
         }
-        this._charactor.moveUp();
         break;
       case 39: // →
         evt.preventDefault();
-        if (this._charactor.col >= this._zurag.colNum - 1) {
-          break;
+        ++nextCol;
+        if (isMovable()) {
+          this._charactor.moveRight();
         }
-        this._charactor.moveRight();
         break;
       case 40: // ↓
         evt.preventDefault();
-        if (this._charactor.row >= this._zurag.rowNum - 1) {
-          break;
+        ++nextRow;
+        if (isMovable()) {
+          this._charactor.moveDown();
         }
-        this._charactor.moveDown();
         break;
     }
   }
