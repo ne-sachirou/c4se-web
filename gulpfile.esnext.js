@@ -25,6 +25,7 @@ var SRCS = {
       js  : ['*.esnext.js', 'src/javascripts/**/**.js'],
     };
 
+del  = promisify(del);
 glob = promisify(glob);
 
 // {{{ Util
@@ -171,13 +172,9 @@ gulp.task('build:js', () => {
   ]);
 });
 
-gulp.task('clean', (done) => {
-  del(['assets/**'], (err, paths) => {
-    if (err) {
-      return done(err);
-    }
+gulp.task('clean', () => {
+  return del(['assets/**']).then((paths) => {
     console.log('Del ' + paths.join(', '));
-    done();
   });
 });
 
@@ -235,13 +232,13 @@ gulp.task('build:css', () => {
 
 gulp.task('test:php', () => exec('vendor/bin/phing test'));
 
+// 他のタスクと同時に実行してはならない
 gulp.task('seiji', (done) => runSequence(['seiji:translate', 'seiji:uniseiji-font'], 'seiji:propose', done));
 
-// This must not be done async.
-gulp.task('seiji:propose', async (/*done*/) => {
-  var matches = await glob(SRCS.html);
+// 他のタスクと同時に実行してはならない
+gulp.task('seiji:propose', async () => {
   promiseSequence(
-    matches.map((filename) => {
+    (await glob(SRCS.html)).map((filename) => {
       return () => spawn('bin/seiji_proposer', [filename]);
     })
   );
