@@ -1,9 +1,13 @@
-Requirments
+CONTRIBUTING
 ==
+Requirments
+--
 - PHP >=5.4
 - Composer
 - Latest Node.js & NPM
-- Gulp, Bower
+- Gulp
+- Bower
+- Babel
 
 ```sh
 composer install
@@ -12,7 +16,26 @@ bower install
 ```
 
 Test
-==
+--
+`npm test`
+
+Dev Server
+--
+`npm start`
+
+Build
+--
 ```sh
-npm test
+bin/gulp build
+bin/gulp seiji
 ```
+
+Automatic building & testing while editing.
+
+`bin/gulp watch`
+
+Deploy
+--
+You must have an authorized SSH key.
+
+`bin/gulp deploy`

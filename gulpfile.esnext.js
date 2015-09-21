@@ -20,9 +20,9 @@ var del          = require('del'),
     runSequence  = require('run-sequence'),
     Ssh          = require('simple-ssh');
 var SRCS = {
-      html : 'lib/views/**/**.html',
-      img  : 'src/images/**/**',
-      js   : ['*.esnext.js', 'src/javascripts/**/**.js'],
+      html: 'lib/views/**/**.html',
+      img : 'src/images/**/**',
+      js  : ['*.esnext.js', 'src/javascripts/**/**.js'],
     };
 
 // {{{ Util
@@ -64,23 +64,26 @@ function promiseSpawn(cmd, options) {
 gulp.task('build', (done) => runSequence(['build:copy-assets', 'build:imagemin', 'build:js', 'build:css'], 'seiji', done));
 
 gulp.task('build:copy-assets', () => {
+  function build(src, dest = '') {
+    return gulp.src(set.src).pipe(gulp.dest('assets' + set.dest));
+  }
+
   return merge([
-    {
-      src  : [
+    build(
+      [
         'src/fonts/Yuraru ru Soin 01\'.ttf',
         'src/bower_components/TAKETORI-JS/taketori.js',
         'src/bower_components/TAKETORI-JS/taketori.css',
-      ],
-      dest : ''
-    },
-    {
-      src  : [
+      ]
+    ),
+    build(
+      [
         'src/bower_components/font-awsome/css/font-awesome.min.css',
         'src/bower_components/font-awsome/fonts/*',
       ],
-      dest : '/fonts'
-    },
-  ].map((set) => gulp.src(set.src).pipe(gulp.dest('assets' + set.dest))));
+      '/fonts'
+    ),
+  ]);
 });
 
 gulp.task('build:imagemin', () => {
@@ -163,11 +166,11 @@ gulp.task('clean', (done) => {
 
 gulp.task('deploy', (done) => {
   var ssh = new Ssh({
-        agentForward : true,
-        key          : fs.readFileSync(process.env.HOME + '/.ssh/id_rsa'),
-        host         : 'c4se2.sakura.ne.jp',
-        port         : 22,
-        user         : 'c4se2',
+        agentForward: true,
+        key         : fs.readFileSync(process.env.HOME + '/.ssh/id_rsa'),
+        host        : 'c4se2.sakura.ne.jp',
+        port        : 22,
+        user        : 'c4se2',
       }),
       cmd = 'cd ~/www;' +
         'git pull --ff-only origin master;' +
@@ -191,15 +194,15 @@ gulp.task('build:css', () => {
   gulp.src(['src/stylesheets/**/!(_)**.less']).
     pipe(plumber()).
     pipe(less({
-      compress  : true,
-      sourceMap : true,
+      compress: true,
+      // sourceMap: true,
     })).
     pipe(autoprefixer({
-      browsers : ['last 2 version'],
+      browsers: ['last 2 version'],
     })).
     pipe(cssBase64({
-      baseDir           : '.',
-      maxWeightResource : 32768 * 4,
+      baseDir          : '.',
+      maxWeightResource: 32768 * 4,
     })).
     pipe(gulp.dest('assets'));
 });
@@ -209,20 +212,24 @@ gulp.task('test:php', () => promiseExec('vendor/bin/phing test'));
 gulp.task('seiji', (done) => runSequence(['seiji:translate', 'seiji:uniseiji-font'], 'seiji:propose', done));
 
 // This must not be done async.
-gulp.task('seiji:propose', (done) => {
-  glob(SRCS.html, (err, matches) => {
-    if (err) {
-      return done(err);
-    }
-    promiseSequence(matches.map((filename) => {
-      return () => promiseSpawn('bin/seiji_proposer', [filename]);
-    })).
-      then(() => done()).
-      catch((err) => {
-        console.error(err);
-        done(err);
+gulp.task('seiji:propose', async (/*done*/) => {
+  function promiseGlob(path) {
+    return new Promise((resolve, reject) => {
+      glob(path, (err, matches) => {
+        if (err) {
+          return reject(err);
+        }
+        resolve(matches);
       });
-  });
+    });
+  }
+
+  var matches = await promiseGlob(SRCS.html);
+  promiseSequence(
+    matches.map((filename) => {
+      return () => promiseSpawn('bin/seiji_proposer', [filename]);
+    })
+  );
 });
 
 gulp.task('seiji:translate', () => {
@@ -242,6 +249,7 @@ gulp.task('watch', () => {
 });
 
 gulp.task('default', () => {
+  console.log('Use bin/gulp');
   return promiseExec('bin/gulp --tasks');
 });
 
