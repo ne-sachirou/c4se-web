@@ -245,7 +245,7 @@
       exports: {}
     };
     factory(mod.exports, global._baselib);
-    global._wavable = mod.exports;
+    global.Wavable = mod.exports;
   }
 })(this, function (exports, _baselibJs) {
   /* jshint browser:true, strict:false */
@@ -384,17 +384,17 @@
 });
 (function (global, factory) {
   if (typeof define === 'function' && define.amd) {
-    define(['exports', './_baselib.js', './_wavable.js'], factory);
+    define(['exports', './_baselib.js', './Wavable.js'], factory);
   } else if (typeof exports !== 'undefined') {
-    factory(exports, require('./_baselib.js'), require('./_wavable.js'));
+    factory(exports, require('./_baselib.js'), require('./Wavable.js'));
   } else {
     var mod = {
       exports: {}
     };
-    factory(mod.exports, global._baselib, global._wavable);
+    factory(mod.exports, global._baselib, global.Wavable);
     global.index = mod.exports;
   }
-})(this, function (exports, _baselibJs, _wavableJs) {
+})(this, function (exports, _baselibJs, _WavableJs) {
   /* jshint browser:true, strict:false */
 
   'use strict';
@@ -423,7 +423,7 @@
         var _this2 = this;
 
         Array.from(items).forEach(function (item) {
-          var wavable = new _wavableJs.Wavable(item);
+          var wavable = new _WavableJs.Wavable(item);
           _this2.wavables.push(wavable);
           item.addEventListener('mouseover', function (evt) {
             evt.stopPropagation();

@@ -35,7 +35,7 @@ function promiseSequence(defrreds) {
   }, Promise.resolve(null));
 }
 
-function promissExec(cmd) {
+function promiseExec(cmd) {
   return new Promise((resolve, reject) => {
     cp.exec(cmd, (err, stdout, stderr) => {
       console.log(stdout);
@@ -61,17 +61,9 @@ function promiseSpawn(cmd, options) {
 }
 // }}}
 
-gulp.task('clean', (done) => {
-  del(['assets/**'], (err, paths) => {
-    if (err) {
-      return done(err);
-    }
-    console.log('Del ' + paths.join(', '));
-    done();
-  });
-});
+gulp.task('build', (done) => runSequence(['build:copy-assets', 'build:imagemin', 'build:js', 'build:css'], 'seiji', done));
 
-gulp.task('copy-assets', () => {
+gulp.task('build:copy-assets', () => {
   return merge([
     {
       src  : [
@@ -89,6 +81,84 @@ gulp.task('copy-assets', () => {
       dest : '/fonts'
     },
   ].map((set) => gulp.src(set.src).pipe(gulp.dest('assets' + set.dest))));
+});
+
+gulp.task('build:imagemin', () => {
+  return gulp.src(SRCS.img).
+    pipe(imagemin({
+      optimizationLevel : 7,
+      progressive       : true,
+    })).
+    pipe(gulp.dest('assets'));
+});
+
+gulp.task('build:js', () => {
+  function build(src, dest) {
+    return gulp.src(src).
+      pipe(plumber()).
+      pipe(babel({
+        modules : 'umd',
+      })).
+      pipe(concat(dest)).
+      // pipe(uglify({
+      //   output   : {},
+      //   compress : { unsafe : true },
+      // })).
+      pipe(gulp.dest('assets'));
+  }
+
+  return merge([
+    build(
+      [
+        'src/javascripts/_baselib.js',
+        'src/javascripts/layout.js',
+      ],
+      'layout.js'
+    ),
+    build(
+      [
+        'src/javascripts/_baselib.js',
+        'src/javascripts/Wavable.js',
+        'src/javascripts/index.js',
+      ],
+      'index.js'
+    ),
+    build(
+      [
+        'src/javascripts/_baselib.js',
+        'src/javascripts/feed.js',
+      ],
+      'feed.js'
+    ),
+    build(
+      [
+        'src/javascripts/_baselib.js',
+        'src/javascripts/vertical_latin.js',
+      ],
+      'vertical_latin.js'
+    ),
+    build(
+      [
+        'src/bower_components/regenerator/runtime.js',
+        'src/javascripts/funisaya/world/ResourceLoader.js',
+        'src/javascripts/funisaya/world/Scene.js',
+        'src/javascripts/funisaya/world/FieldScene.js',
+        'src/javascripts/funisaya/world/World.js',
+        'src/javascripts/funisaya/world/main.js',
+      ],
+      'funisaya/world.js'
+    )
+  ]);
+});
+
+gulp.task('clean', (done) => {
+  del(['assets/**'], (err, paths) => {
+    if (err) {
+      return done(err);
+    }
+    console.log('Del ' + paths.join(', '));
+    done();
+  });
 });
 
 gulp.task('deploy', (done) => {
@@ -109,77 +179,15 @@ gulp.task('deploy', (done) => {
   }).on('end', () => done()).start();
 });
 
-gulp.task('imagemin', () => {
-  return gulp.src(SRCS.img).
-    pipe(imagemin({
-      optimizationLevel : 7,
-      progressive       : true,
-    })).
-    pipe(gulp.dest('assets'));
-});
+gulp.task('test', ['test:js', 'test:php']);
 
-gulp.task('js-build', () => {
-  return merge([
-    {
-      src : [
-        'src/javascripts/_baselib.js',
-        'src/javascripts/layout.js',
-      ],
-      dest : 'layout.js'
-    },
-    {
-      src : [
-        'src/javascripts/_baselib.js',
-        'src/javascripts/_wavable.js',
-        'src/javascripts/index.js',
-      ],
-      dest : 'index.js'
-    },
-    {
-      src : [
-        'src/javascripts/_baselib.js',
-        'src/javascripts/feed.js',
-      ],
-      dest : 'feed.js'
-    },
-    {
-      src : [
-        'src/javascripts/_baselib.js',
-        'src/javascripts/vertical_latin.js',
-      ],
-      dest : 'vertical_latin.js'
-    },
-    {
-      src : [
-        'src/bower_components/regenerator/runtime.js',
-        'src/javascripts/funisaya/world/ResourceLoader.js',
-        'src/javascripts/funisaya/world/Scene.js',
-        'src/javascripts/funisaya/world/FieldScene.js',
-        'src/javascripts/funisaya/world/World.js',
-        'src/javascripts/funisaya/world/main.js',
-      ],
-      dest : 'funisaya/world.js'
-    },
-  ].map((set) => {
-    return gulp.src(set.src).
-      pipe(plumber()).
-      pipe(babel({
-        modules : 'umd',
-      })).
-      pipe(concat(set.dest)).
-      // pipe(uglify({
-      //   output   : {},
-      //   compress : { unsafe : true },
-      // })).
-      pipe(gulp.dest('assets'));
-  }));
-});
+gulp.task('test:js', ['test:js:jscs', 'test:js:jshint']);
 
-gulp.task('jscs', () => gulp.src(SRCS.js).pipe(jscs()));
+gulp.task('test:js:jscs', () => gulp.src(SRCS.js).pipe(jscs()));
 
-gulp.task('jshint', () => gulp.src(SRCS.js).pipe(jshint()).pipe(jshint.reporter('default')));
+gulp.task('test:js:jshint', () => gulp.src(SRCS.js).pipe(jshint()).pipe(jshint.reporter('default')));
 
-gulp.task('css-build', () => {
+gulp.task('build:css', () => {
   gulp.src(['src/stylesheets/**/!(_)**.less']).
     pipe(plumber()).
     pipe(less({
@@ -196,10 +204,12 @@ gulp.task('css-build', () => {
     pipe(gulp.dest('assets'));
 });
 
-gulp.task('php-test', () => promissExec('vendor/bin/phing test'));
+gulp.task('test:php', () => promiseExec('vendor/bin/phing test'));
+
+gulp.task('seiji', (done) => runSequence(['seiji:translate', 'seiji:uniseiji-font'], 'seiji:propose', done));
 
 // This must not be done async.
-gulp.task('seiji-propose', (done) => {
+gulp.task('seiji:propose', (done) => {
   glob(SRCS.html, (err, matches) => {
     if (err) {
       return done(err);
@@ -215,13 +225,13 @@ gulp.task('seiji-propose', (done) => {
   });
 });
 
-gulp.task('seiji-translate', () => {
+gulp.task('seiji:translate', () => {
   return gulp.src(SRCS.html).
     pipe(run('bin/seiji_translator', {silent : true})).
     pipe(gulp.dest('lib/views'));
 });
 
-gulp.task('seiji-uniseiji-font', () => promissExec('bin/uniseiji_font'));
+gulp.task('seiji:uniseiji-font', () => promissExec('bin/uniseiji_font'));
 
 gulp.task('watch', () => {
   gulp.watch(SRCS.html                                        , ['seiji-translate'    ]);
@@ -231,9 +241,8 @@ gulp.task('watch', () => {
   gulp.watch(['index.php', 'lib/**/**.php', 'tests/**/**.php'], ['php-test'           ]);
 });
 
-gulp.task('build',   (done) => runSequence(['copy-assets', 'imagemin', 'js-build', 'css-build'], 'seiji', done));
-gulp.task('js-test', ['jscs', 'jshint']);
-gulp.task('seiji',   (done) => runSequence(['seiji-translate', 'seiji-uniseiji-font'], 'seiji-propose', done));
-gulp.task('test',    ['js-test', 'php-test']);
+gulp.task('default', () => {
+  return promiseExec('bin/gulp --tasks');
+});
 
 // vim:fdm=marker:
