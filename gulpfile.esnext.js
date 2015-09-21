@@ -205,7 +205,7 @@ gulp.task('deploy', async () => {
     'composer install --no-dev;' +
     '' // 'set SERVER_ENV=production; vendor/bin/phpmig migrate';
   );
-  return exec('rsync -azh --delete --stats assets c4se2@c4se2.sakura.ne.jp:/home/c4se2/www/assets');
+  return exec('rsync -azh --delete --stats assets c4se2@c4se2.sakura.ne.jp:/home/c4se2/www');
 });
 
 gulp.task('test', ['test:js', 'test:php']);

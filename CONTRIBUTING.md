@@ -25,10 +25,7 @@ Dev Server
 
 Build
 --
-```sh
-bin/gulp build
-bin/gulp seiji
-```
+`bin/gulp build`
 
 Automatic building & testing while editing.
 
