@@ -25,17 +25,34 @@ var SRCS = {
       js  : ['*.esnext.js', 'src/javascripts/**/**.js'],
     };
 
+glob = promisify(glob);
+
 // {{{ Util
-/**
- * Like Bluebird's Promise.reduce().
- */
-function promiseSequence(defrreds) {
-  return defrreds.reduce((promise, defrred) => {
-    return promise.then(defrred);
-  }, Promise.resolve(null));
+function promisify(func) {
+  return function (...args) {
+    var me = this;
+    return new Promise((resolve, reject) => {
+      function done(err, ...args) {
+        if (err) {
+          return reject(err);
+        }
+        resolve.apply(me, args);
+      }
+
+      args.push(done);
+      func.apply(me, args);
+    });
+  };
 }
 
-function promiseExec(cmd) {
+function promiseSequence(defrreds) {
+  return defrreds.reduce(
+    (promise, defrred) => promise.then(defrred),
+    Promise.resolve(null)
+  );
+}
+
+function exec(cmd) {
   return new Promise((resolve, reject) => {
     cp.exec(cmd, (err, stdout, stderr) => {
       console.log(stdout);
@@ -48,7 +65,7 @@ function promiseExec(cmd) {
   });
 }
 
-function promiseSpawn(cmd, options) {
+function spawn(cmd, options) {
   var proc = cp.spawn(cmd, options, {stdio : 'inherit'});
   return new Promise((resolve, reject) => {
     proc.on('exit', (code) => {
@@ -89,8 +106,8 @@ gulp.task('build:copy-assets', () => {
 gulp.task('build:imagemin', () => {
   return gulp.src(SRCS.img).
     pipe(imagemin({
-      optimizationLevel : 7,
-      progressive       : true,
+      optimizationLevel: 7,
+      progressive      : true,
     })).
     pipe(gulp.dest('assets'));
 });
@@ -104,8 +121,8 @@ gulp.task('build:js', () => {
       })).
       pipe(concat(dest)).
       // pipe(uglify({
-      //   output   : {},
-      //   compress : { unsafe : true },
+      //   output  : {},
+      //   compress: { unsafe : true },
       // })).
       pipe(gulp.dest('assets'));
   }
@@ -207,27 +224,16 @@ gulp.task('build:css', () => {
     pipe(gulp.dest('assets'));
 });
 
-gulp.task('test:php', () => promiseExec('vendor/bin/phing test'));
+gulp.task('test:php', () => exec('vendor/bin/phing test'));
 
 gulp.task('seiji', (done) => runSequence(['seiji:translate', 'seiji:uniseiji-font'], 'seiji:propose', done));
 
 // This must not be done async.
 gulp.task('seiji:propose', async (/*done*/) => {
-  function promiseGlob(path) {
-    return new Promise((resolve, reject) => {
-      glob(path, (err, matches) => {
-        if (err) {
-          return reject(err);
-        }
-        resolve(matches);
-      });
-    });
-  }
-
-  var matches = await promiseGlob(SRCS.html);
+  var matches = await glob(SRCS.html);
   promiseSequence(
     matches.map((filename) => {
-      return () => promiseSpawn('bin/seiji_proposer', [filename]);
+      return () => spawn('bin/seiji_proposer', [filename]);
     })
   );
 });
@@ -250,7 +256,7 @@ gulp.task('watch', () => {
 
 gulp.task('default', () => {
   console.log('Use bin/gulp');
-  return promiseExec('bin/gulp --tasks');
+  return exec('bin/gulp --tasks');
 });
 
 // vim:fdm=marker:
