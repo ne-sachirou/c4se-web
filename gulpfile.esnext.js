@@ -82,7 +82,7 @@ gulp.task('build', (done) => runSequence(['build:copy-assets', 'build:imagemin',
 
 gulp.task('build:copy-assets', () => {
   function build(src, dest = '') {
-    return gulp.src(set.src).pipe(gulp.dest('assets' + set.dest));
+    return gulp.src(src).pipe(gulp.dest('assets' + dest));
   }
 
   return merge([
@@ -253,7 +253,7 @@ gulp.task('seiji:translate', () => {
     pipe(gulp.dest('lib/views'));
 });
 
-gulp.task('seiji:uniseiji-font', () => promissExec('bin/uniseiji_font'));
+gulp.task('seiji:uniseiji-font', () => exec('bin/uniseiji_font'));
 
 gulp.task('watch', () => {
   gulp.watch(SRCS.html                                        , ['seiji-translate'    ]);
