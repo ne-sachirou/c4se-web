@@ -181,22 +181,31 @@ gulp.task('clean', (done) => {
   });
 });
 
-gulp.task('deploy', (done) => {
+gulp.task('deploy', async () => {
   var ssh = new Ssh({
         agentForward: true,
         key         : fs.readFileSync(process.env.HOME + '/.ssh/id_rsa'),
         host        : 'c4se2.sakura.ne.jp',
         port        : 22,
         user        : 'c4se2',
-      }),
-      cmd = 'cd ~/www;' +
-        'git pull --ff-only origin master;' +
-        'composer install --no-dev;' +
-        ''; // 'set SERVER_ENV=production; vendor/bin/phpmig migrate';
-  ssh.exec(cmd, {
-    out : (stdout) => console.log(stdout),
-    err : (stderr) => console.error(stderr),
-  }).on('end', () => done()).start();
+      });
+
+  function sshExec(cmd) {
+    return new Promise((resolve, reject) => {
+      ssh.exec(cmd, {
+        out : (stdout) => console.log(stdout),
+        err : (stderr) => console.error(stderr),
+      }).on('end', () => resolve()).start();
+    });
+  }
+
+  await sshExec(
+    'cd ~/www;' +
+    'git pull --ff-only origin master;' +
+    'composer install --no-dev;' +
+    '' // 'set SERVER_ENV=production; vendor/bin/phpmig migrate';
+  );
+  return exec('rsync -azh --delete --stats assets c4se2@c4se2.sakura.ne.jp:/home/c4se2/www/assets');
 });
 
 gulp.task('test', ['test:js', 'test:php']);
