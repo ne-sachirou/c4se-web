@@ -1,7 +1,9 @@
 export class SoundPlayer {
   constructor() {
-    this._context      = new (window.AudioContext || window.webkitAudioContext || window.mozAudioContext)();
-    this._musicContext = new MusicContext(this._context, document.getElementById('music'));
+    this._context      = new (window.AudioContext || window.webkitAudioContext)();
+    this._master       = this._context.createDynamicsCompressor();
+    this._musicContext = new MusicContext(this._context, this._master, document.getElementById('music'));
+    this._master.connect(this._context.destination);
   }
 
   playMusic(src) {
@@ -12,7 +14,7 @@ export class SoundPlayer {
     var eventEmitter = new SoundPlayerEventEmitter();
     var source       = this._context.createBufferSource();
     source.loop = false;
-    source.connect(this._context.destination);
+    source.connect(this._master);
     source.onended = () => eventEmitter.emit('ended');
     this._context.decodeAudioData(audio, (buffer) => {
       source.buffer = buffer;
@@ -23,7 +25,7 @@ export class SoundPlayer {
 }
 
 class MusicContext {
-  constructor(context, audioNode) {
+  constructor(context, master, audioNode) {
     var source = context.createMediaElementSource(audioNode);
     this._audioNode = audioNode;
     this._handler   = {
@@ -33,7 +35,7 @@ class MusicContext {
     };
     audioNode.autoplay = false;
     audioNode.loop     = false;
-    source.connect(context.destination);
+    source.connect(master);
   }
 
   play(src) {
