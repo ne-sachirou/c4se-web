@@ -8,6 +8,8 @@ Requirments
 - Gulp
 - Bower
 - Babel
+- Linux-like system & bash
+- FontForge
 
 ```sh
 composer install

@@ -27,15 +27,16 @@ class AudioResource extends Resource {
   load() {
     var req = new XMLHttpRequest();
     req.open('GET', `/assets/funisaya/world/${this.ner}`, true);
-    req.responsetype = 'arraybuffer';
+    req.responseType = 'arraybuffer';
     return new Promise((resolve, reject) => {
       req.onload = () => {
-        this.resource = req.response;
-        resolve(this);
-      }
+        if (4 === req.readyState) {
+          this.resource = req.response;
+          resolve(this);
+        }
+      };
       req.onerror = (err) => reject(err);
       req.send();
-      resolve(this);
     });
   }
 }
@@ -65,7 +66,7 @@ export var ResourceLoader = {
           return Promise.resolve(this.resources[resource.ner]);
         } else {
           return resource.load().then(() => {
-            this.resources[resource.ner] = this.resources[resource.ner] || resource;
+            this.resources[resource.ner] = this.resources[resource.ner] || resource.resource;
             return this.resources[resource.ner];
           });
         }

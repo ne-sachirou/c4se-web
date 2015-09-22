@@ -164,6 +164,7 @@ gulp.task('build:js', () => {
         'src/javascripts/funisaya/world/ResourceLoader.js',
         'src/javascripts/funisaya/world/Scene.js',
         'src/javascripts/funisaya/world/FieldScene.js',
+        'src/javascripts/funisaya/world/SoundPlayer.js',
         'src/javascripts/funisaya/world/World.js',
         'src/javascripts/funisaya/world/main.js',
       ],
@@ -253,11 +254,11 @@ gulp.task('seiji:translate', () => {
 gulp.task('seiji:uniseiji-font', () => exec('bin/uniseiji_font'));
 
 gulp.task('watch', () => {
-  gulp.watch(SRCS.html                                        , ['seiji-translate'    ]);
-  gulp.watch(SRCS.img                                         , ['imagemin'           ]);
-  gulp.watch(SRCS.js                                          , ['js-build'/*, 'js-test'*/]);
-  gulp.watch('src/stylesheets/**/**.less'                     , ['css-build'          ]);
-  gulp.watch(['index.php', 'lib/**/**.php', 'tests/**/**.php'], ['php-test'           ]);
+  gulp.watch(SRCS.html                                        , ['seiji:translate'    ]);
+  gulp.watch(SRCS.img                                         , ['build:imagemin'     ]);
+  gulp.watch(SRCS.js                                          , ['build:js'/*, 'test:js'*/]);
+  gulp.watch('src/stylesheets/**/**.less'                     , ['build:css'          ]);
+  gulp.watch(['index.php', 'lib/**/**.php', 'tests/**/**.php'], ['test:php'           ]);
 });
 
 gulp.task('default', () => {

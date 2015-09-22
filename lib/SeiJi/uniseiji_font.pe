@@ -21,5 +21,8 @@ endloop
 SelectInvert()
 Clear()
 SetFondName('UniSeiJi')
+SetTTFName(0x409, 1, 'UniSeiJi')
+SetTTFName(0x409, 4, 'UniSeiJi')
+SetFontNames('UniSeiJi', 'UniSeiJi', 'UniSeiJi')
 Generate('../../assets/uniseiji.ttf')
 Close()
