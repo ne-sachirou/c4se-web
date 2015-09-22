@@ -6,7 +6,6 @@ var del          = require('del'),
     glob         = require('glob'),
     gulp         = require('gulp'),
     autoprefixer = require('gulp-autoprefixer'),
-    babel        = require('gulp-babel'),
     concat       = require('gulp-concat'),
     cssBase64    = require('gulp-css-base64'),
     imagemin     = require('gulp-imagemin'),
@@ -27,7 +26,6 @@ var SRCS = {
       js  : ['*.esnext.js', 'src/javascripts/**/**.js'],
     };
 
-del  = promisify(del);
 glob = promisify(glob);
 
 // {{{ Util
@@ -117,55 +115,16 @@ gulp.task('build:imagemin', () => {
 
 gulp.task('build:js', () => {
   function build(src, dest) {
+    var entry = Array.isArray(src) ? src[src.length - 1] : src;
+    if (void 0 === dest) {
+      dest = entry.slice('src/javascripts/'.length);
+    }
     return gulp.src(src).
-      pipe(plumber()).
-      pipe(babel({
-        modules: 'ignore',
-      })).
-      pipe(concat(dest)).
-      // pipe(uglify({
-      //   output  : {},
-      //   compress: { unsafe: true },
-      // })).
-      pipe(gulp.dest('assets'));
-  }
-
-  return merge([
-    build(
-      [
-        'src/javascripts/_baselib.js',
-        'src/javascripts/layout.js',
-      ],
-      'layout.js'
-    ),
-    build(
-      [
-        'src/javascripts/_baselib.js',
-        'src/javascripts/Wavable.js',
-        'src/javascripts/index.js',
-      ],
-      'index.js'
-    ),
-    build(
-      [
-        'src/javascripts/_baselib.js',
-        'src/javascripts/feed.js',
-      ],
-      'feed.js'
-    ),
-    build(
-      [
-        'src/javascripts/_baselib.js',
-        'src/javascripts/vertical_latin.js',
-      ],
-      'vertical_latin.js'
-    ),
-    gulp.src(['src/bower_components/regenerator/runtime.js', 'src/javascripts/funisaya/world/main.js',]).
       pipe(plumber()).
       pipe(webpack({
         module: {
-          entry  : 'src/javascripts/funisaya/world/main.js',
-          output : 'world.js',
+          entry  : entry,
+          output : dest,
           resolve: {
             extensions        : ['', '.js'],
             modulesDirectories: ['node_modules', 'bower_components'],
@@ -190,27 +149,31 @@ gulp.task('build:js', () => {
           ],
         },
       })).
-      pipe(concat('funisaya/world.js')).
-      pipe(gulp.dest('assets')),
-    // build(
-    //   [
-    //     'src/bower_components/regenerator/runtime.js',
-    //     'src/javascripts/funisaya/world/ResourceLoader.js',
-    //     'src/javascripts/funisaya/world/Scene.js',
-    //     'src/javascripts/funisaya/world/FieldScene.js',
-    //     'src/javascripts/funisaya/world/SoundPlayer.js',
-    //     'src/javascripts/funisaya/world/World.js',
-    //     'src/javascripts/funisaya/world/main.js',
-    //   ],
-    //   'funisaya/world.js'
-    // ),
+      pipe(concat(dest)).
+      // pipe(uglify({
+      //   output  : {},
+      //   compress: { unsafe: true },
+      // })).
+      pipe(gulp.dest('assets'));
+  }
+
+  return merge([
+    build('src/javascripts/layout.js'),
+    build('src/javascripts/index.js'),
+    build('src/javascripts/feed.js'),
+    build('src/javascripts/vertical_latin.js'),
+    build(
+      [
+        'src/bower_components/regenerator/runtime.js',
+        'src/javascripts/funisaya/world/main.js',
+      ],
+      'funisaya/world.js'
+    ),
   ]);
 });
 
 gulp.task('clean', () => {
-  return del(['assets/+(**|!.keep)']).then((paths) => {
-    console.log('Del ' + paths.join(', '));
-  });
+  return del(['assets/+(!.keep|**)']).then((paths) => console.log('Del ' + paths.join(', ')));
 });
 
 gulp.task('deploy', ['build'], async () => {
