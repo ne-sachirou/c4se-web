@@ -3,6 +3,10 @@ class Resource {
     this.ner      = ner;
     this.resource = null;
   }
+
+  load() {
+    throw new Error('Not Implemented');
+  }
 }
 
 class ImageResource extends Resource {
@@ -21,7 +25,16 @@ class ImageResource extends Resource {
 
 class AudioResource extends Resource {
   load() {
+    var req = new XMLHttpRequest();
+    req.open('GET', `/assets/funisaya/world/${this.ner}`, true);
+    req.responsetype = 'arraybuffer';
     return new Promise((resolve, reject) => {
+      req.onload = () => {
+        this.resource = req.response;
+        resolve(this);
+      }
+      req.onerror = (err) => reject(err);
+      req.send();
       resolve(this);
     });
   }

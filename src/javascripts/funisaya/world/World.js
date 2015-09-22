@@ -1,6 +1,7 @@
 import {FieldScene    } from './FieldScene.js';
 import {ResourceLoader} from './ResourceLoader.js';
 import {Scene         } from './Scene.js';
+import {SoundPlayer   } from './SoundPlayer.js';
 
 export class World {
   constructor() {
@@ -11,9 +12,10 @@ export class World {
       me.canvas.width  = window.innerWidth;
     }
 
-    this.canvas     = document.getElementById('world');
-    this.scene      = new LoadingScene(this);
-    this.serialized = {};
+    this.canvas      = document.getElementById('world');
+    this.soundPlayer = new SoundPlayer();
+    this.scene       = new LoadingScene(this);
+    this.serialized  = {};
     window.addEventListener('resize', adjustCanvas);
     adjustCanvas();
     window.addEventListener('unload', () => {
