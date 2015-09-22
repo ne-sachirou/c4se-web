@@ -79,7 +79,7 @@ function spawn(cmd, options) {
 }
 // }}}
 
-gulp.task('build', (done) => runSequence(['build:copy-assets', 'build:imagemin', 'build:js', 'build:css'], 'seiji', done));
+gulp.task('build', ['clean'], (done) => runSequence(['build:copy-assets', 'build:imagemin', 'build:js', 'build:css'], 'seiji', done));
 
 gulp.task('build:copy-assets', () => {
   function build(src, dest = '') {
@@ -178,7 +178,7 @@ gulp.task('clean', () => {
   });
 });
 
-gulp.task('deploy', async () => {
+gulp.task('deploy', ['build'], async () => {
   var ssh = new Ssh({
         agentForward: true,
         key         : fs.readFileSync(process.env.HOME + '/.ssh/id_rsa'),
