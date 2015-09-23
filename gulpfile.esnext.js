@@ -13,7 +13,6 @@ var del          = require('del'),
     jshint       = require('gulp-jshint'),
     less         = require('gulp-less'),
     plumber      = require('gulp-plumber'),
-    run          = require('gulp-run'),
     uglify       = require('gulp-uglify'),
     webpack      = require('gulp-webpack'),
     merge        = require('merge-stream'),
@@ -104,6 +103,23 @@ gulp.task('build:copy-assets', () => {
   ]);
 });
 
+gulp.task('build:css', () => {
+  gulp.src(['src/stylesheets/**/!(_)**.less']).
+    pipe(plumber()).
+    pipe(less({
+      compress: true,
+      // sourceMap: true,
+    })).
+    pipe(autoprefixer({
+      browsers: ['last 2 version'],
+    })).
+    pipe(cssBase64({
+      baseDir          : '.',
+      maxWeightResource: 32768 * 4,
+    })).
+    pipe(gulp.dest('assets'));
+});
+
 gulp.task('build:imagemin', () => {
   return gulp.src(SRCS.img).
     pipe(imagemin({
@@ -187,10 +203,15 @@ gulp.task('deploy', ['build'], async () => {
 
   function sshExec(cmd) {
     return new Promise((resolve, reject) => {
-      ssh.exec(cmd, {
-        out : (stdout) => console.log(stdout),
-        err : (stderr) => console.error(stderr),
-      }).on('end', () => resolve()).start();
+      ssh.exec(
+        cmd,
+        {
+          out: (stdout) => console.log(stdout),
+          err: (stderr) => console.error(stderr),
+        }
+      ).
+        on('end', () => resolve()).
+        start();
     });
   }
 
@@ -211,23 +232,6 @@ gulp.task('test:js:jscs', () => gulp.src(SRCS.js).pipe(jscs()));
 
 gulp.task('test:js:jshint', () => gulp.src(SRCS.js).pipe(jshint()).pipe(jshint.reporter('default')));
 
-gulp.task('build:css', () => {
-  gulp.src(['src/stylesheets/**/!(_)**.less']).
-    pipe(plumber()).
-    pipe(less({
-      compress: true,
-      // sourceMap: true,
-    })).
-    pipe(autoprefixer({
-      browsers: ['last 2 version'],
-    })).
-    pipe(cssBase64({
-      baseDir          : '.',
-      maxWeightResource: 32768 * 4,
-    })).
-    pipe(gulp.dest('assets'));
-});
-
 gulp.task('test:php', () => exec('vendor/bin/phing test'));
 
 // 他のタスクと同時に実行してはならない
@@ -235,17 +239,19 @@ gulp.task('seiji', (done) => runSequence(['seiji:translate', 'seiji:uniseiji-fon
 
 // 他のタスクと同時に実行してはならない
 gulp.task('seiji:propose', async () => {
-  promiseSequence(
+  return promiseSequence(
     (await glob(SRCS.html)).map((filename) => {
       return () => spawn('bin/seiji_proposer', [filename]);
     })
   );
 });
 
-gulp.task('seiji:translate', () => {
-  return gulp.src(SRCS.html).
-    pipe(run('bin/seiji_translator', {silent : true})).
-    pipe(gulp.dest('lib/views'));
+gulp.task('seiji:translate', async () => {
+  return Promise.all([
+    (await glob(SRCS.html)).map((filename) => {
+      return () => exec(`bin/seiji_translator ${filename}`);
+    })
+  ]);
 });
 
 gulp.task('seiji:uniseiji-font', () => exec('bin/uniseiji_font'));
