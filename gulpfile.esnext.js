@@ -11,8 +11,8 @@ var del          = require('del'),
     imagemin     = require('gulp-imagemin'),
     jscs         = require('gulp-jscs'),
     jshint       = require('gulp-jshint'),
-    less         = require('gulp-less'),
     plumber      = require('gulp-plumber'),
+    sass         = require('gulp-sass'),
     uglify       = require('gulp-uglify'),
     webpack      = require('gulp-webpack'),
     merge        = require('merge-stream'),
@@ -60,7 +60,7 @@ function exec(cmd) {
         console.error(stderr);
         return reject(err);
       }
-      resolve();
+      resolve(stdout);
     });
   });
 }
@@ -70,7 +70,7 @@ function spawn(cmd, options) {
   return new Promise((resolve, reject) => {
     proc.on('exit', (code) => {
       if (0 !== code) {
-        return reject(new Error(cmd + ' ' + options.join(' ') + ' ends with ' + code));
+        return reject(new Error(`${cmd} ${options.join(' ')} ends with ${code}`));
       }
       resolve();
     }).on('error', (err) => reject(err));
@@ -104,15 +104,10 @@ gulp.task('build:copy-assets', () => {
 });
 
 gulp.task('build:css', () => {
-  gulp.src(['src/stylesheets/**/!(_)**.less']).
+  gulp.src(['src/stylesheets/**/!(_)*.+(sass|scss)']).
     pipe(plumber()).
-    pipe(less({
-      compress: true,
-      // sourceMap: true,
-    })).
-    pipe(autoprefixer({
-      browsers: ['last 2 version'],
-    })).
+    pipe(sass({outputStyle: 'compressed'})).
+    pipe(autoprefixer({browsers: ['last 2 version']})).
     pipe(cssBase64({
       baseDir          : '.',
       maxWeightResource: 32768 * 4,
@@ -138,30 +133,30 @@ gulp.task('build:js', () => {
     return gulp.src(src).
       pipe(plumber()).
       pipe(webpack({
-        module: {
-          entry  : entry,
-          output : dest,
-          resolve: {
-            extensions        : ['', '.js'],
-            modulesDirectories: ['node_modules', 'bower_components'],
-            alias             : {},
-          },
-          plugins: [
-            new Webpack.ResolverPlugin(new Webpack.ResolverPlugin.DirectoryDescriptionFilePlugin('bower.json', ['main'])),
-            new Webpack.optimize.DedupePlugin(),
-            new Webpack.optimize.AggressiveMergingPlugin(),
-            new Webpack.ProvidePlugin({
-              jQuery: 'jquery',
-              $     : 'jquery',
-              jquery: 'jquery',
-            }),
-          ],
+        context: __dirname,
+        // entry  : entry,
+        output : {filename: dest.match(/[^\/]+$/)[0]},
+        module : {
           loaders: [
             {
               test   : /\.js$/,
               exclude: /node_modules/,
               loader : 'babel-loader',
             },
+          ],
+          resolve: {
+            alias             : {},
+            modulesDirectories: ['node_modules', 'bower_components'],
+            extensions        : ['', '.js'],
+          },
+          plugins: [
+            new Webpack.ResolverPlugin(new Webpack.ResolverPlugin.DirectoryDescriptionFilePlugin('bower.json', ['main'])),
+            new Webpack.optimize.DedupePlugin(),
+            new Webpack.ProvidePlugin({
+              jQuery: 'jquery',
+              $     : 'jquery',
+              jquery: 'jquery',
+            }),
           ],
         },
       })).
@@ -177,7 +172,6 @@ gulp.task('build:js', () => {
     build('src/javascripts/layout.js'),
     build('src/javascripts/index.js'),
     build('src/javascripts/feed.js'),
-    build('src/javascripts/vertical_latin.js'),
     build(
       [
         'src/bower_components/regenerator/runtime.js',

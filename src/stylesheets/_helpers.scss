@@ -1,0 +1,17 @@
+%cf {
+  overflow: hidden;
+
+  &:after {
+    clear  : both;
+    content: '';
+    display: block;
+  }
+}
+
+$bg_color           : white;
+$front_color        : black;
+$widget_bg_color    : rgb( 55,  61,  73);
+$widget_front_color : rgb(160, 170, 191);
+$widget_active_color: rgb( 53, 215, 187);
+
+$default_transition_duration : 0.4s;
