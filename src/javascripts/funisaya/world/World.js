@@ -51,20 +51,30 @@ export class World {
 class LoadingScene extends Scene {
   constructor(world) {
     super(world);
+    this._node        = null;
+    this._nodeLoading = null;
+    this._nodeStart   = null;
     this._init();
   }
 
   destructor() {
     super.destructor();
-    var node = document.getElementsByClassName('loadingScene')[0];
-    node.parentNode.removeChild(node);
+    this._node.parentNode.removeChild(this._node);
   }
 
   async _init() {
-    var node = document.importNode(document.getElementById('loadingScene').content, true).firstElementChild;
-    document.body.appendChild(node);
+    this._node        = document.importNode(document.getElementById('loadingScene').content, true).firstElementChild;
+    this._nodeLoading = this._node.querySelector('.loadingScene_loading');
+    this._nodeStart   = this._node.querySelector('.loadingScene_start');
+    this._nodeStart.addEventListener('click', async () => {
+      var player = new SoundPlayer();
+      await player.init();
+      this.world.nextScene(FieldScene);
+    });
+    document.body.appendChild(this._node);
     await ResourceLoader.loadSet('init');
     await this.world.loadData();
-    this.world.nextScene(FieldScene);
+    this._nodeLoading.style.display = 'none';
+    this._nodeStart.style.display   = 'block';
   }
 }

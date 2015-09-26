@@ -23,4 +23,9 @@ body {
   text-align : center;
   top        : 50%;
   width      : 100%;
+
+  &_start {
+    cursor : pointer;
+    display: none;
+  }
 }
