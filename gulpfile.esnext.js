@@ -1,4 +1,3 @@
-/* jshint node:true */
 'use strict';
 var cp = require('child_process'),
     fs = require('fs');
@@ -8,9 +7,8 @@ var del          = require('del'),
     autoprefixer = require('gulp-autoprefixer'),
     concat       = require('gulp-concat'),
     cssBase64    = require('gulp-css-base64'),
+    eslint       = require('gulp-eslint'),
     imagemin     = require('gulp-imagemin'),
-    jscs         = require('gulp-jscs'),
-    jshint       = require('gulp-jshint'),
     plumber      = require('gulp-plumber'),
     sass         = require('gulp-sass'),
     uglify       = require('gulp-uglify'),
@@ -22,7 +20,7 @@ var del          = require('del'),
 var SRCS = {
       html: 'lib/views/**/**.html',
       img : 'src/images/**/**',
-      js  : ['*.esnext.js', 'src/javascripts/**/**.js'],
+      js  : ['gulpfile.esnext.js', 'src/javascripts/**/*.js'],
     };
 
 glob = promisify(glob);
@@ -220,11 +218,12 @@ gulp.task('deploy', ['build'], async () => {
 
 gulp.task('test', ['test:js', 'test:php']);
 
-gulp.task('test:js', ['test:js:jscs', 'test:js:jshint']);
-
-gulp.task('test:js:jscs', () => gulp.src(SRCS.js).pipe(jscs()));
-
-gulp.task('test:js:jshint', () => gulp.src(SRCS.js).pipe(jshint()).pipe(jshint.reporter('default')));
+gulp.task('test:js', () => {
+  return gulp.src(SRCS.js).
+    pipe(eslint()).
+    pipe(eslint.format()).
+    pipe(eslint.failOnError());
+});
 
 gulp.task('test:php', () => exec('vendor/bin/phing test'));
 
@@ -253,7 +252,7 @@ gulp.task('seiji:uniseiji-font', () => exec('bin/uniseiji_font'));
 gulp.task('watch', () => {
   gulp.watch(SRCS.html                                        , ['seiji:translate'    ]);
   gulp.watch(SRCS.img                                         , ['build:imagemin'     ]);
-  gulp.watch(SRCS.js                                          , ['build:js'/*, 'test:js'*/]);
+  gulp.watch(SRCS.js                                          , ['build:js', 'test:js']);
   gulp.watch('src/stylesheets/**/**.less'                     , ['build:css'          ]);
   gulp.watch(['index.php', 'lib/**/**.php', 'tests/**/**.php'], ['test:php'           ]);
 });
