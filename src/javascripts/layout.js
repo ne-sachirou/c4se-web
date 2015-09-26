@@ -1,6 +1,4 @@
-/* jshint browser:true, strict:false */
 /* global Taketori */
-
 import {EventRouter, h} from './_baselib.js';
 
 class UiLayout {

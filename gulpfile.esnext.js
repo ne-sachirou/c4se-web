@@ -1,3 +1,4 @@
+/*eslint strict: [1, "global"]*/
 'use strict';
 var cp = require('child_process'),
     fs = require('fs');
@@ -21,6 +22,7 @@ var SRCS = {
       html: 'lib/views/**/**.html',
       img : 'src/images/**/**',
       js  : ['gulpfile.esnext.js', 'src/javascripts/**/*.js'],
+      sass: 'src/stylesheets/**/!(_)*.+(sass|scss)',
     };
 
 glob = promisify(glob);
@@ -102,7 +104,7 @@ gulp.task('build:copy-assets', () => {
 });
 
 gulp.task('build:css', () => {
-  gulp.src(['src/stylesheets/**/!(_)*.+(sass|scss)']).
+  return gulp.src(SRCS.sass).
     pipe(plumber()).
     pipe(sass({outputStyle: 'compressed'})).
     pipe(autoprefixer({browsers: ['last 2 version']})).
@@ -159,10 +161,10 @@ gulp.task('build:js', () => {
         },
       })).
       pipe(concat(dest)).
-      // pipe(uglify({
-      //   output  : {},
-      //   compress: { unsafe: true },
-      // })).
+      pipe(uglify({
+        mangle  : false,
+        compress: {unsafe: true},
+      })).
       pipe(gulp.dest('assets'));
   }
 
@@ -181,7 +183,8 @@ gulp.task('build:js', () => {
 });
 
 gulp.task('clean', () => {
-  return del(['assets/+(!.keep|**)']).then((paths) => console.log('Del ' + paths.join(', ')));
+  return del(['assets/+(!.keep|**)']).
+    then((paths) => console.log('Del ' + paths.join(', ')))
 });
 
 gulp.task('deploy', ['build'], async () => {
@@ -207,6 +210,15 @@ gulp.task('deploy', ['build'], async () => {
     });
   }
 
+  if ('' !== await exec('git status --porcelain')) {
+    throw new Error('Please commit all changes');
+  }
+  if ('Everything up-to-date\n' !== await exec('git push -n origin master')) {
+    throw new Error('Please push all changes');
+  }
+  if ('master\n' !== await exec("git branch | awk '/^\\*/{print $2}'")) {
+    throw new Error('Please `git checkout master`');
+  }
   await sshExec(
     'cd ~/www;' +
     'git pull --ff-only origin master;' +
@@ -253,13 +265,10 @@ gulp.task('watch', () => {
   gulp.watch(SRCS.html                                        , ['seiji:translate'    ]);
   gulp.watch(SRCS.img                                         , ['build:imagemin'     ]);
   gulp.watch(SRCS.js                                          , ['build:js', 'test:js']);
-  gulp.watch('src/stylesheets/**/**.less'                     , ['build:css'          ]);
+  gulp.watch(SRCS.sass                                        , ['build:css'          ]);
   gulp.watch(['index.php', 'lib/**/**.php', 'tests/**/**.php'], ['test:php'           ]);
 });
 
-gulp.task('default', () => {
-  console.log('Use bin/gulp');
-  return exec('bin/gulp --tasks');
-});
+gulp.task('default', () => exec('bin/gulp --tasks'));
 
 // vim:fdm=marker:

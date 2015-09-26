@@ -1,5 +1,3 @@
-/* jshint browser:true, strict:false */
-
 import {Range  } from './_baselib.js';
 import {Wavable} from './Wavable.js';
 

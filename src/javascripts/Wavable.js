@@ -1,5 +1,3 @@
-/* jshint browser:true, strict:false */
-
 import {setStyle} from './_baselib.js';
 
 export class Wavable {

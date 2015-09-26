@@ -1,5 +1,3 @@
-/* jssc maximumLineLength:1000 */
-/* jshint browser:true, strict:false */
 import {ResourceLoader} from './ResourceLoader.js';
 import {Scene         } from './Scene.js';
 

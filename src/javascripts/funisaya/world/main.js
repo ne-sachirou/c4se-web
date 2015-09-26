@@ -1,4 +1,3 @@
-/* jshint browser:true, strict:false */
 import {World} from './World.js';
 
 // ner   name 名前

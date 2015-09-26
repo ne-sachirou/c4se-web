@@ -1,5 +1,3 @@
-/* jshint browser:true, strict:false */
-
 import {h} from './_baselib.js';
 
 function showFeed(target) {
