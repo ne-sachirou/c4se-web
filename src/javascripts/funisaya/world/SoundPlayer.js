@@ -1,34 +1,14 @@
-export class SoundPlayer {
-  constructor() {
-    if (SoundPlayer._instance) {
-      return SoundPlayer._instance;
-    }
-    SoundPlayer._instance = this;
+export var SoundPlayer = {
+  _context     : null,
+  _master      : null,
+  _musicContext: null,
+
+  init: function () {
     this._context      = new (window.AudioContext || window.webkitAudioContext)();
     this._master       = this._context.createDynamicsCompressor();
     this._musicContext = new MusicContext(this._context, this._master, document.getElementById('music'));
     this._master.connect(this._context.destination);
-  }
-
-  playMusic(src) {
-    return this._musicContext.play(src);
-  }
-
-  playSE(audio) {
-    var eventEmitter = new SoundPlayerEventEmitter();
-    var source       = this._context.createBufferSource();
-    source.loop = false;
-    source.connect(this._master);
-    source.onended = () => eventEmitter.emit('ended');
-    this._context.decodeAudioData(audio, (buffer) => {
-      source.buffer = buffer;
-      source.start();
-    }, (err) => eventEmitter.emit('error', [err]));
-    return eventEmitter;
-  }
-
-  // cf. https://github.com/uupaa/WMAudioUtil.js/wiki/WMAudioUtil
-  init() {
+    // cf. https://github.com/uupaa/WMAudioUtil.js/wiki/WMAudioUtil
     const SILENT_M4A = [
       0,0,0,24,102,116,121,112,77,52,65,32,0,0,2,0,105,115,111,109,105,115,111,
       50,0,0,0,8,102,114,101,101,0,0,0,61,109,100,97,116,222,4,0,0,108,105,98,
@@ -59,25 +39,34 @@ export class SoundPlayer {
       0,0,0,0,0,0,0,0,0,43,105,108,115,116,0,0,0,35,169,116,111,111,0,0,0,27,100,
       97,116,97,0,0,0,1,0,0,0,0,76,97,118,102,53,50,46,54,52,46,50
     ];
-    var source = this._context.createBufferSource();
+    var playing = this.playSE(new Uint8Array(SILENT_M4A).buffer);
     return new Promise((resolve, reject) => {
-      this._context.decodeAudioData(new Uint8Array(SILENT_M4A).buffer, (buffer) => {
-        source.buffer = buffer;
-        if (source) {
-          source.start(0);
-          source.stop(0);
-          source = null;
-        }
-        resolve();
-      }, (err) => {
-        console.error(err);
-        resolve();
-      });
+      playing.
+        on('ended', () => resolve()).
+        on('error', (err) => {
+          console.error(err);
+          resolve();
+        });
     });
-  }
-}
+  },
 
-SoundPlayer._instance = null;
+  playMusic: function (src) {
+    return this._musicContext.play(src);
+  },
+
+  playSE: function (audio) {
+    var eventEmitter = new SoundPlayerEventEmitter();
+    var source       = this._context.createBufferSource();
+    source.loop = false;
+    source.connect(this._master);
+    source.onended = () => eventEmitter.emit('ended');
+    this._context.decodeAudioData(audio, (buffer) => {
+      source.buffer = buffer;
+      source.start();
+    }, (err) => eventEmitter.emit('error', [err]));
+    return eventEmitter;
+  }
+};
 
 class MusicContext {
   constructor(context, master, audioNode) {

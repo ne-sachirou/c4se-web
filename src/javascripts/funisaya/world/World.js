@@ -13,7 +13,6 @@ export class World {
     }
 
     this.canvas      = document.getElementById('world');
-    this.soundPlayer = new SoundPlayer();
     this.scene       = new LoadingScene(this);
     this.serialized  = {};
     window.addEventListener('resize', adjustCanvas);
@@ -67,8 +66,7 @@ class LoadingScene extends Scene {
     this._nodeLoading = this._node.querySelector('.loadingScene_loading');
     this._nodeStart   = this._node.querySelector('.loadingScene_start');
     this._nodeStart.addEventListener('click', async () => {
-      var player = new SoundPlayer();
-      await player.init();
+      await SoundPlayer.init();
       this.world.nextScene(FieldScene);
     });
     document.body.appendChild(this._node);

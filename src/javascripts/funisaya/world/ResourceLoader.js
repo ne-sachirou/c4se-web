@@ -30,10 +30,8 @@ class AudioResource extends Resource {
     req.responseType = 'arraybuffer';
     return new Promise((resolve, reject) => {
       req.onload = () => {
-        if (4 === req.readyState) {
-          this.resource = req.response;
-          resolve(this);
-        }
+        this.resource = req.response;
+        resolve(this);
       };
       req.onerror = (err) => reject(err);
       req.send();
