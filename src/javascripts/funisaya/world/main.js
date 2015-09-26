@@ -1,6 +1,10 @@
-import {World} from './World.js';
+import {UiInfo} from './UiInfo.js';
+import {World } from './World.js';
 
 // ner   name 名前
 // zurag map  地図
 
-window.addEventListener('DOMContentLoaded', () => new World());
+window.addEventListener('DOMContentLoaded', () => {
+  new World();
+  new UiInfo();
+});

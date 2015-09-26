@@ -34,9 +34,7 @@ Range.prototype.sample = function () {
 export var EventRouter = {
   listeners : {},
 
-  emit : function (name, params, me) {
-    params = params || [];
-    me     = me     || null;
+  emit : function (name, params = [], me = null) {
     for (let listener of this.listeners[name]) {
       listener.apply(me, params);
     }

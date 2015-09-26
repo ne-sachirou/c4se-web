@@ -1,17 +1,71 @@
 @charset 'utf-8';
+@import '../_settings';
+@import '../_base';
 
 html, body {
   margin : 0;
   padding: 0;
 }
 
-body {
-  background : white;
-  color      : black;
-  overflow   : hidden;
+body { overflow: hidden; }
+
+.infoToggleBtn {
+  cursor                    : pointer;
+  font-size                 : 5mm;
+  line-height               : 12mm;
+  position                  : absolute;
+  right                     : 0;
+  text-align                : center;
+  top                       : 0;
+  transition-duration       : $default_transition_duration, $default_transition_duration;
+  transition-property       : background                  , right;
+  transition-timing-function: ease-in-out                 , ease-in-out;
+  width                     : 12mm;
+  z-index                   : 1000;
+
+  &:hover { background: rgba(255, 255, 255, 0.9); }
+
+  &-closed {
+    background: rgba(255, 255, 255, 0.6);
+    height    : 12mm;
+    right     : 0;
+  }
+
+  &-open {
+    background: rgba(255, 255, 255, 0.9);
+    height    : 100%;
+    right     : calc(100% - 12mm);
+  }
+
+  &_inner {
+    height                    : 12mm;
+    line-height               : 12mm;
+    transition-duration       : $default_transition_duration;
+    transition-property       : transform;
+    transition-timing-function: ease-in-out;
+    width                     : 100%;
+
+    &:hover { transform: scale(1.1); }
+
+    &.fa-times:hover { transform: scale(1.1) rotate(180deg); }
+  }
 }
 
-#world {
+.info {
+  background: rgba(255, 255, 255, 0.9);
+  height                    : 100%;
+  overflow                  : hidden;
+  position                  : absolute;
+  top                       : 0;
+  transition-duration       : $default_transition_duration;
+  transition-property       : left;
+  transition-timing-function: ease-in-out;
+  width                     : 100%;
+  z-index                   : 1000;
+
+  &-closed { left: 100%; }
+
+  &-open { left: 12mm; }
 }
 
 .loadingScene {

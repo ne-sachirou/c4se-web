@@ -50,9 +50,14 @@ export class World {
 class LoadingScene extends Scene {
   constructor(world) {
     super(world);
-    this._node        = null;
-    this._nodeLoading = null;
-    this._nodeStart   = null;
+    this._node        = document.importNode(document.getElementById('loadingScene').content, true).firstElementChild;
+    this._nodeLoading = this._node.querySelector('.loadingScene_loading');
+    this._nodeStart   = this._node.querySelector('.loadingScene_start');
+    this._nodeStart.addEventListener('click', async () => {
+      await SoundPlayer.init();
+      this.world.nextScene(FieldScene);
+    });
+    document.body.appendChild(this._node);
     this._init();
   }
 
@@ -62,14 +67,6 @@ class LoadingScene extends Scene {
   }
 
   async _init() {
-    this._node        = document.importNode(document.getElementById('loadingScene').content, true).firstElementChild;
-    this._nodeLoading = this._node.querySelector('.loadingScene_loading');
-    this._nodeStart   = this._node.querySelector('.loadingScene_start');
-    this._nodeStart.addEventListener('click', async () => {
-      await SoundPlayer.init();
-      this.world.nextScene(FieldScene);
-    });
-    document.body.appendChild(this._node);
     await ResourceLoader.loadSet('init');
     await this.world.loadData();
     this._nodeLoading.style.display = 'none';

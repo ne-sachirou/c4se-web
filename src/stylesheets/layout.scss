@@ -1,16 +1,6 @@
 @charset 'utf-8';
-@import '../bower_components/normalize-css/normalize.css';
-@import '_helpers';
-
-@font-face {
-  font-family: UniSeiJi;
-  src        : url("/assets/uniseiji.ttf");
-}
-
-@font-face {
-  font-family: yuraru-sans-serif;
-  src        : url("/assets/Yuraru ru Soin 01'.ttf");
-}
+@import '_settings';
+@import '_base';
 
 %page_topMenu_elm {
   display        : inline-block;
@@ -33,21 +23,6 @@
       text-decoration: none;
     }
   }
-}
-
-body {
-  background        : $bg_color;
-  color             : $front_color;
-  font-family       : 'Source Sans Pro', 'Helvetica Neue', Helvetica, Arial, 'ヒラギノ角ゴ ProN W3', 'Hiragino Kaku Gothic ProN', Meiryo, sans-serif;
-  font-size         : 9pt;
-  font-smoothing    : antialiased;
-  font-weight       : normal;
-  letter-spacing    : 1px;
-  line-height       : 13pt;
-  margin            : 0;
-  osx-font-smoothing: grayscale;
-  overflow-x        : hidden;
-  text-rendering    : optimizeLegibility;
 }
 
 a {
