@@ -213,10 +213,10 @@ gulp.task('deploy', ['build'], async () => {
   if ('' !== await exec('git status --porcelain')) {
     throw new Error('Please commit all changes');
   }
-  if ('Everything up-to-date\n' !== await exec('git push -n origin master')) {
+  if ('Everything up-to-date' !== (await exec('git push -n origin master')).trim()) {
     throw new Error('Please push all changes');
   }
-  if ('master\n' !== await exec("git branch | awk '/^\\*/{print $2}'")) {
+  if ('master' !== (await exec("git branch | awk '/^\\*/{print $2}'")).trim()) {
     throw new Error('Please `git checkout master`');
   }
   await sshExec(
