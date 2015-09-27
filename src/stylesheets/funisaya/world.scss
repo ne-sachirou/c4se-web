@@ -9,31 +9,47 @@ html, body {
 
 body { overflow: hidden; }
 
+.infoBg, .infoToggleBtn, .info {
+  position: absolute;
+  top     : 0;
+  z-index : 1000;
+}
+
+.infoBg {
+  background                : rgba(255, 255, 255, 0.8);
+  filter                    : blur(4px);
+  height                    : 100%;
+  position                  : absolute;
+  top                       : 0;
+  transition-duration       : $default_transition_duration;
+  transition-property       : left;
+  transition-timing-function: ease-in-out;
+  width                     : 100%;
+
+  &-closed { left: 100%; }
+
+  &-open { left: 0; }
+}
+
 .infoToggleBtn {
   cursor                    : pointer;
   font-size                 : 5mm;
+  height                    : 12mm;
   line-height               : 12mm;
-  position                  : absolute;
   right                     : 0;
   text-align                : center;
-  top                       : 0;
   transition-duration       : $default_transition_duration, $default_transition_duration;
   transition-property       : background                  , right;
   transition-timing-function: ease-in-out                 , ease-in-out;
   width                     : 12mm;
-  z-index                   : 1000;
-
-  &:hover { background: rgba(255, 255, 255, 0.9); }
 
   &-closed {
     background: rgba(255, 255, 255, 0.6);
-    height    : 12mm;
     right     : 0;
   }
 
   &-open {
-    background: rgba(255, 255, 255, 0.9);
-    height    : 100%;
+    background: transparent;
     right     : calc(100% - 12mm);
   }
 
@@ -52,16 +68,12 @@ body { overflow: hidden; }
 }
 
 .info {
-  background: rgba(255, 255, 255, 0.9);
   height                    : 100%;
   overflow                  : hidden;
-  position                  : absolute;
-  top                       : 0;
   transition-duration       : $default_transition_duration;
   transition-property       : left;
   transition-timing-function: ease-in-out;
-  width                     : 100%;
-  z-index                   : 1000;
+  width                     : calc(100% - 12mm);
 
   &-closed { left: 100%; }
 
