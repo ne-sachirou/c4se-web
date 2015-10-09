@@ -27,14 +27,14 @@ Dev Server
 
 Build
 --
-`bin/gulp build`
+`gulp build`
 
 Automatic building & testing while editing.
 
-`bin/gulp watch`
+`gulp watch`
 
 Deploy
 --
 You must have an authorized SSH key.
 
-`bin/gulp deploy`
+`gulp deploy`

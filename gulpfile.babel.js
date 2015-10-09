@@ -269,6 +269,6 @@ gulp.task('watch', () => {
   gulp.watch(['index.php', 'lib/**/**.php', 'tests/**/**.php'], ['test:php'           ]);
 });
 
-gulp.task('default', () => exec('gulp --tasks'));
+gulp.task('default', () => exec('bin/gulp --tasks'));
 
 // vim:fdm=marker:

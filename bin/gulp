@@ -1,3 +1,0 @@
-#!/bin/bash
-cat src/bower_components/regenerator/runtime.js gulpfile.esnext.js | babel --no-comments --compact true -o gulpfile.js
-gulp $*
