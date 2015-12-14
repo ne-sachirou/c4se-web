@@ -20,10 +20,10 @@
   "babel": {
     "plugins": [
       "syntax-async-functions",
+      "transform-async-to-generator",
       "transform-es2015-arrow-functions",
       "transform-es2015-parameters",
-      "transform-es2015-spread",
-      "transform-regenerator"
+      "transform-es2015-spread"
     ]
   },
   "devDependencies": {
@@ -31,10 +31,10 @@
     "babel-eslint": "^5.0.0-beta6",
     "babel-loader": "^6.2.0",
     "babel-plugin-syntax-async-functions": "^6.3.13",
+    "babel-plugin-transform-async-to-generator": "^6.3.13",
     "babel-plugin-transform-es2015-arrow-functions": "^6.3.13",
     "babel-plugin-transform-es2015-parameters": "^6.3.13",
     "babel-plugin-transform-es2015-spread": "^6.3.14",
-    "babel-plugin-transform-regenerator": "^6.3.13",
     "del": "^2.2.0",
     "eslint-plugin-babel": "^3.0.0",
     "glob": "^6.0.1",

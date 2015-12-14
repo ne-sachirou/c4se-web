@@ -172,13 +172,6 @@ gulp.task('build:js', () => {
     build('src/javascripts/layout.js'),
     build('src/javascripts/index.js'),
     build('src/javascripts/feed.js'),
-    build(
-      [
-        'src/bower_components/regenerator/runtime.js',
-        'src/javascripts/funisaya/world/main.js',
-      ],
-      'funisaya/world.js'
-    ),
   ]);
 });
 
@@ -269,6 +262,6 @@ gulp.task('watch', () => {
   gulp.watch(['index.php', 'lib/**/**.php', 'tests/**/**.php'], ['test:php'           ]);
 });
 
-gulp.task('default', () => exec('bin/gulp --tasks'));
+gulp.task('default', () => exec('gulp --tasks'));
 
 // vim:fdm=marker:
