@@ -1,29 +1,31 @@
 /*eslint strict: [1, "global"]*/
 'use strict';
-var cp = require('child_process'),
-    fs = require('fs');
-var del          = require('del'),
-    glob         = require('glob'),
-    gulp         = require('gulp'),
-    autoprefixer = require('gulp-autoprefixer'),
-    concat       = require('gulp-concat'),
-    cssBase64    = require('gulp-css-base64'),
-    eslint       = require('gulp-eslint'),
-    imagemin     = require('gulp-imagemin'),
-    plumber      = require('gulp-plumber'),
-    sass         = require('gulp-sass'),
-    uglify       = require('gulp-uglify'),
-    webpack      = require('gulp-webpack'),
-    merge        = require('merge-stream'),
-    runSequence  = require('run-sequence'),
-    Ssh          = require('simple-ssh'),
-    Webpack      = require('webpack');
+require('babel-polyfill');
+var cp           = require('child_process');
+var del          = require('del');
+var fs           = require('fs');
+var glob         = require('glob');
+var gulp         = require('gulp');
+var autoprefixer = require('gulp-autoprefixer');
+var babel        = require('gulp-babel');
+var concat       = require('gulp-concat');
+var cssBase64    = require('gulp-css-base64');
+var eslint       = require('gulp-eslint');
+var imagemin     = require('gulp-imagemin');
+var plumber      = require('gulp-plumber');
+var rollup       = require('gulp-rollup');
+var sass         = require('gulp-sass');
+var uglify       = require('gulp-uglify');
+var merge        = require('merge-stream');
+var runSequence  = require('run-sequence');
+var Ssh          = require('simple-ssh');
+
 var SRCS = {
-      html: 'lib/views/**/**.html',
-      img : 'src/images/**/**',
-      js  : ['gulpfile.esnext.js', 'src/javascripts/**/*.js'],
-      sass: 'src/stylesheets/**/!(_)*.+(sass|scss)',
-    };
+  html: 'lib/views/**/**.html',
+  img : 'src/images/**/**',
+  js  : ['gulpfile.esnext.js', 'src/javascripts/**/*.js'],
+  sass: 'src/stylesheets/**/!(_)*.+(sass|scss)',
+};
 
 glob = promisify(glob);
 
@@ -82,7 +84,7 @@ gulp.task('build', ['clean'], (done) => runSequence(['build:copy-assets', 'build
 
 gulp.task('build:copy-assets', () => {
   function build(src, dest = '') {
-    return gulp.src(src).pipe(gulp.dest('assets' + dest));
+    return gulp.src(src).pipe(gulp.dest(`assets/${dest}`));
   }
 
   return merge([
@@ -98,7 +100,7 @@ gulp.task('build:copy-assets', () => {
         'src/bower_components/font-awsome/css/font-awesome.min.css',
         'src/bower_components/font-awsome/fonts/*',
       ],
-      '/fonts'
+      'fonts'
     ),
   ]);
 });
@@ -125,47 +127,11 @@ gulp.task('build:imagemin', () => {
 });
 
 gulp.task('build:js', () => {
-  function build(src, dest) {
-    var entry = Array.isArray(src) ? src[src.length - 1] : src;
-    if (void 0 === dest) {
-      dest = entry.slice('src/javascripts/'.length);
-    }
+  function build(src, dest = '') {
     return gulp.src(src).
-      pipe(plumber()).
-      pipe(webpack({
-        context: __dirname,
-        // entry  : entry,
-        output : {filename: dest.match(/[^\/]+$/)[0]},
-        module : {
-          loaders: [
-            {
-              test   : /\.js$/,
-              exclude: /node_modules/,
-              loader : 'babel-loader',
-            },
-          ],
-          resolve: {
-            alias             : {},
-            modulesDirectories: ['node_modules', 'bower_components'],
-            extensions        : ['', '.js'],
-          },
-          plugins: [
-            new Webpack.ResolverPlugin(new Webpack.ResolverPlugin.DirectoryDescriptionFilePlugin('bower.json', ['main'])),
-            new Webpack.optimize.DedupePlugin(),
-            new Webpack.ProvidePlugin({
-              jQuery: 'jquery',
-              $     : 'jquery',
-              jquery: 'jquery',
-            }),
-          ],
-        },
-      })).
-      pipe(concat(dest)).
-      pipe(uglify({
-        mangle  : false,
-        compress: {unsafe: true},
-      })).
-      pipe(gulp.dest('assets'));
+      pipe(rollup()).
+      pipe(babel()).
+      pipe(gulp.dest(`assets/${dest}`));
   }
 
   return merge([
