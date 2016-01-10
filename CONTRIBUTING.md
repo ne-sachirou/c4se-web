@@ -2,12 +2,11 @@ CONTRIBUTING
 ==
 Requirments
 --
-- PHP >=5.4
+- PHP >=5.6
 - Composer
 - Latest Node.js & NPM
 - Gulp
 - Bower
-- Babel
 - Linux-like system & bash
 - FontForge
 

@@ -47,9 +47,9 @@ function promisify(func) {
   };
 }
 
-function promiseSequence(defrreds) {
-  return defrreds.reduce(
-    (promise, defrred) => promise.then(defrred),
+function promiseSequence(deferreds) {
+  return deferreds.reduce(
+    (promise, deferred) => promise.then(deferred),
     Promise.resolve(null)
   );
 }
@@ -129,6 +129,7 @@ gulp.task('build:imagemin', () => {
 gulp.task('build:js', () => {
   function build(src, dest = '') {
     return gulp.src(src).
+      pipe(plumber()).
       pipe(rollup()).
       pipe(babel()).
       pipe(gulp.dest(`assets/${dest}`));
