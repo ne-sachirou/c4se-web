@@ -22,8 +22,18 @@ body {
   line-height       : 13pt;
   margin            : 0;
   osx-font-smoothing: grayscale;
-  overflow-x        : hidden;
   text-rendering    : optimizeLegibility;
+}
+
+a {
+  color                     : inherit;
+  transition-duration       : $default_transition_duration;
+  transition-timing-function: ease-in-out;
+
+  &:hover {
+    color          : $widget_active_color;
+    text-decoration: underline overline;
+  }
 }
 
 thead {

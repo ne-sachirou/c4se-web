@@ -25,15 +25,8 @@
   }
 }
 
-a {
-  color                     : inherit;
-  transition-duration       : $default_transition_duration;
-  transition-timing-function: ease-in-out;
-
-  &:hover {
-    color          : $widget_active_color;
-    text-decoration: underline overline;
-  }
+body {
+  overflow-x: hidden;
 }
 
 .yuraru { font-family: yuraru-sans-serif; }

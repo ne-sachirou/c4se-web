@@ -7,6 +7,14 @@
   src        : url("/assets/Vertical_Latin.ttf");
 }
 
+body {
+  overflow-y: hidden;
+}
+
+p {
+  margin: 0 0.6em;
+}
+
 th, td { padding: 3mm 0; }
 
 .verticalLatin {
