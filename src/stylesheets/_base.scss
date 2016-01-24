@@ -25,3 +25,16 @@ body {
   overflow-x        : hidden;
   text-rendering    : optimizeLegibility;
 }
+
+thead {
+  color     : $widget_front_color;
+  background: $widget_bg_color;
+}
+
+tbody {
+  tr:nth-child(2n+1) { background: #eee; }
+}
+
+th { border: 1px solid $widget_front_color - #333; }
+
+td { border: 1px solid $widget_front_color + #333; }

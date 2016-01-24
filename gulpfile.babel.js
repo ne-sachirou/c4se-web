@@ -23,7 +23,7 @@ var Ssh          = require('simple-ssh');
 var SRCS = {
   html: 'lib/views/**/**.html',
   img : 'src/images/**/**',
-  js  : ['gulpfile.esnext.js', 'src/javascripts/**/*.js'],
+  js  : ['gulpfile.babel.js', 'src/javascripts/**/*.js'],
   sass: 'src/stylesheets/**/!(_)*.+(sass|scss)',
 };
 
@@ -80,7 +80,7 @@ function spawn(cmd, options) {
 }
 // }}}
 
-gulp.task('build', ['clean'], (done) => runSequence(['build:copy-assets', 'build:imagemin', 'build:js', 'build:css'], 'seiji', done));
+gulp.task('build', ['clean'], (done) => runSequence(['build:copy-assets', 'build:css', 'build:imagemin', 'build:js', 'build:vertical-latin-font'], 'seiji', done));
 
 gulp.task('build:copy-assets', () => {
   function build(src, dest = '') {
@@ -90,9 +90,7 @@ gulp.task('build:copy-assets', () => {
   return merge([
     build(
       [
-        'src/fonts/Yuraru ru Soin 01\'.ttf',
-        'src/bower_components/TAKETORI-JS/taketori.js',
-        'src/bower_components/TAKETORI-JS/taketori.css',
+        "src/fonts/Yuraru ru Soin 01'.ttf",
       ]
     ),
     build(
@@ -139,8 +137,11 @@ gulp.task('build:js', () => {
     build('src/javascripts/layout.js'),
     build('src/javascripts/index.js'),
     build('src/javascripts/feed.js'),
+    build('src/javascripts/vertical_latin/index.js', 'vertical_latin'),
   ]);
 });
+
+gulp.task('build:vertical-latin-font', () => exec('src/fonts/vertical_latin.pe'));
 
 gulp.task('clean', () => {
   return del(['assets/+(!.keep|**)']).
@@ -224,7 +225,7 @@ gulp.task('seiji:uniseiji-font', () => exec('bin/uniseiji_font'));
 gulp.task('watch', () => {
   gulp.watch(SRCS.html                                        , ['seiji:translate'    ]);
   gulp.watch(SRCS.img                                         , ['build:imagemin'     ]);
-  gulp.watch(SRCS.js                                          , ['build:js', 'test:js']);
+  gulp.watch(SRCS.js                                          , ['build:js'/*, 'test:js'*/]);
   gulp.watch(SRCS.sass                                        , ['build:css'          ]);
   gulp.watch(['index.php', 'lib/**/**.php', 'tests/**/**.php'], ['test:php'           ]);
 });

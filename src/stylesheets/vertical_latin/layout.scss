@@ -1,0 +1,43 @@
+@charset 'utf-8';
+@import '../_settings';
+@import '../_base';
+
+@font-face {
+  font-family: vertical_latin;
+  src        : url("/assets/Vertical_Latin.ttf");
+}
+
+th, td { padding: 3mm 0; }
+
+.verticalLatin {
+  font-family     : vertical_latin;
+  text-orientation: mixed;
+  font-size       : 160%;
+}
+
+.supplement {
+  color    : gray;
+  font-size: smaller;
+}
+
+.breadcrumb {
+  font-size: x-small;
+
+  div[itemscope] { display: inline; }
+
+  div[itemprop="child"]:before { content: '→'; }
+}
+
+.page {
+  height          : calc(100% - 2em);
+  font-size       : 12pt;
+  line-height     : 1.4em;
+  margin          : 1em;
+  //text-orientation: upright;
+  writing-mode    : tb-rl;
+  writing-mode    : vertical-rl;
+
+  h1, h2, h3, h4, h5, h6 {
+    line-height: 1.4em;
+  }
+}

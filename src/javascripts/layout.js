@@ -1,4 +1,3 @@
-/* global Taketori */
 import {EventRouter, h} from './_baselib.js';
 
 class UiLayout {
@@ -149,8 +148,6 @@ class UiBreadcrumb {
 
 window.addEventListener('DOMContentLoaded', () => {
   new UiLayout();
-  var taketori = new Taketori();
-  taketori.set({}).element('div.vertical').toVertical();
   window.requestAnimationFrame(() => {
     document.body.style.fontFamily = 'UniSeiJi, ' + window.getComputedStyle(document.body).fontFamily;
   });

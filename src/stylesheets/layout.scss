@@ -36,8 +36,6 @@ a {
   }
 }
 
-.vertical { text-orientation: upright; }
-
 .yuraru { font-family: yuraru-sans-serif; }
 
 .breadcrumb {
@@ -48,20 +46,7 @@ a {
   div[itemprop="child"]:before { content: ' > '; }
 }
 
-thead {
-  color     : $widget_front_color;
-  background: $widget_bg_color;
-}
-
-tbody {
-  tr:nth-child(2n+1) { background: #eee; }
-}
-
 th, td { padding: 0 3mm; }
-
-th { border: 1px solid $widget_front_color - #333; }
-
-td { border: 1px solid $widget_front_color + #333; }
 
 .page {
   left    : 0;
