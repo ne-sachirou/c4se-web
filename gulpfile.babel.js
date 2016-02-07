@@ -80,7 +80,7 @@ function spawn(cmd, options) {
 }
 // }}}
 
-gulp.task('build', ['clean'], (done) => runSequence(['build:copy-assets', 'build:css', 'build:imagemin', 'build:js', 'build:vertical-latin-font'], 'seiji', done));
+gulp.task('build', ['clean'], (done) => runSequence(['build:copy-assets', 'build:css', 'build:imagemin', 'build:js'], 'seiji', done));
 
 gulp.task('build:copy-assets', () => {
   function build(src, dest = '') {
@@ -90,6 +90,9 @@ gulp.task('build:copy-assets', () => {
   return merge([
     build(
       [
+        "src/bower_components/TAKETORI-JS/taketori.css",
+        "src/bower_components/TAKETORI-JS/taketori.js",
+        "src/fonts/Vertical_Latin_Calligraphic.otf",
         "src/fonts/Yuraru ru Soin 01'.ttf",
       ]
     ),
@@ -137,11 +140,10 @@ gulp.task('build:js', () => {
     build('src/javascripts/layout.js'),
     build('src/javascripts/index.js'),
     build('src/javascripts/feed.js'),
-    build('src/javascripts/vertical_latin/index.js', 'vertical_latin'),
+    build('src/javascripts/vertical_latin/index.js', 'vertical_latin/'),
+    build('src/javascripts/vertical_latin/layout.js', 'vertical_latin/'),
   ]);
 });
-
-gulp.task('build:vertical-latin-font', () => exec('src/fonts/vertical_latin.pe'));
 
 gulp.task('clean', () => {
   return del(['assets/+(!.keep|**)']).
@@ -171,15 +173,15 @@ gulp.task('deploy', ['build'], async () => {
     });
   }
 
-  if ('' !== await exec('git status --porcelain')) {
-    throw new Error('Please commit all changes');
-  }
-  if ('' !== await exec('git push -n origin master')) {
-    throw new Error('Please push all changes');
-  }
-  if ('master\n' !== await exec("git branch | awk '/^\\*/{print $2}'")) {
-    throw new Error('Please `git checkout master`');
-  }
+  // if ('' !== await exec('git status --porcelain')) {
+  //   throw new Error('Please commit all changes');
+  // }
+  // if ('' !== await exec('git push -n origin master')) {
+  //   throw new Error('Please push all changes');
+  // }
+  // if ('master\n' !== await exec("git branch | awk '/^\\*/{print $2}'")) {
+  //   throw new Error('Please `git checkout master`');
+  // }
   await sshExec(
     'cd ~/www;' +
     'git pull --ff-only origin master;' +

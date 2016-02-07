@@ -1,0 +1,10 @@
+#!/usr/bin/env fontforge
+
+Open('src/fonts/Vertical Latin Calligraphic.ttf')
+MergeFonts('src/fonts/centabel.ttf')
+SetFontNames('VerticalLatinCalligraphic', 'Vertical Latin Calligraphic', 'Vertical Latin Calligraphic')
+SetFondName('Vertical Latin Calligraphic')
+SetTTFName(0x409, 1, 'Vertical Latin Calligraphic')
+SetTTFName(0x409, 4, 'Vertical Latin Calligraphic')
+Generate('assets/Vertical Latin Calligraphic.ttf')
+Close()
