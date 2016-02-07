@@ -86,7 +86,7 @@ title: 縱ラテンを使ってみる
 
     function share() {
       var img    = imageNode.toDataURL();
-      var apiUrl = location.protocol + '//' + location.host + '/api/vertical_latin_share_image?d = ' + window.encodeURIComponent(img) + '.png';
+      var apiUrl = location.protocol + '//' + location.host + '/api/vertical_latin_share_image?d=' + window.encodeURIComponent(img) + '.png';
       var tweet  = inputNode.value + HASHTAG_TEXT + apiUrl;
       window.open('https://twitter.com/intent/tweet?text=' + window.encodeURIComponent(tweet));
     }
