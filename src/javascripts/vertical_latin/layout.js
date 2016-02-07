@@ -1,3 +1,5 @@
 window.addEventListener('DOMContentLoaded', () => {
-  new Taketori().set({multiColumnEnabled: true}).element('body.page').toVertical();
+  if (!window.PREVENT_TAKETORI) {
+    new Taketori().set({multiColumnEnabled: true}).element('body.page').toVertical();
+  }
 });

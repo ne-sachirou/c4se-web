@@ -8,7 +8,7 @@
 }
 
 body {
-  overflow-y: hidden;
+  overflow-y: scroll !important; // For TAKETORI-JS on Firefox.
 }
 
 p {

@@ -92,7 +92,7 @@ gulp.task('build:copy-assets', () => {
       [
         "src/bower_components/TAKETORI-JS/taketori.css",
         "src/bower_components/TAKETORI-JS/taketori.js",
-        "src/fonts/Vertical_Latin_Calligraphic.otf",
+        'src/fonts/Vertical_Latin_Calligraphic.otf',
         "src/fonts/Yuraru ru Soin 01'.ttf",
       ]
     ),
