@@ -22,6 +22,6 @@
     "font-awsome": "~4.3.0",
     "normalize-css": "~3.0.2",
     "regenerator": "facebook/regenerator#~0.8.28",
-    "TAKETORI-JS": "https://github.com/cmonos/TAKETORI-JS.git"
+    "TAKETORI-JS": "cmonos/TAKETORI-JS"
   }
 }

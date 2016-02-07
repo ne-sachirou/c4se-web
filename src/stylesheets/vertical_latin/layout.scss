@@ -4,7 +4,7 @@
 
 @font-face {
   font-family: vertical_latin;
-  src        : url("/assets/Vertical_Latin.ttf");
+  src        : url("/assets/Vertical_Latin_Calligraphic.otf");
 }
 
 body {
@@ -15,11 +15,11 @@ p {
   margin: 0 0.6em;
 }
 
-th, td { padding: 3mm 0; }
+th, td { padding: 3mm 1mm; }
 
 .verticalLatin {
   font-family     : vertical_latin;
-  text-orientation: mixed;
+  //text-orientation: mixed;
   font-size       : 160%;
 }
 
@@ -42,10 +42,11 @@ th, td { padding: 3mm 0; }
   line-height     : 1.4em;
   margin          : 1em;
   //text-orientation: upright;
-  writing-mode    : tb-rl;
-  writing-mode    : vertical-rl;
+  //writing-mode    : tb-rl;
+  //writing-mode    : vertical-rl;
 
   h1, h2, h3, h4, h5, h6 {
+    border-top : 1px dashed #ddd;
     line-height: 1.4em;
   }
 }
