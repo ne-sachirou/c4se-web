@@ -6,4 +6,5 @@ if (PHP_SAPI === 'cli-server' && is_file($filename)) {
 
 require 'vendor/autoload.php';
 
+(new Dotenv\Dotenv(__DIR__))->load();
 (new \Web\App())->run();

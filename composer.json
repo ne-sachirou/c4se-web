@@ -15,7 +15,9 @@
         "ranyuen/di": "~0.2",
         "ranyuen/little": "~0.1@dev",
         "twig/twig": "~1.18",
-        "symfony/yaml": "2.*"
+        "symfony/yaml": "2.*",
+        "vlucas/phpdotenv": "^2.2",
+        "aws/aws-sdk-php": "^3.14"
     },
     "require-dev": {
         "fabpot/php-cs-fixer": "~2.0@dev",

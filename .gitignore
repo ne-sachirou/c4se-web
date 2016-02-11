@@ -1,6 +1,7 @@
 /assets/*
 /build/
 !.keep
+.env
 .php_cs.cache
 
 

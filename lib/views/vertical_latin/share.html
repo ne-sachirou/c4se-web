@@ -23,7 +23,6 @@ title: 縱ラテンを使ってみる
 
   .verticalLatin_share_image { border: 1px #ccc dashed; }
   </style>
-  <script src="/assets/pako_deflate.min.js"></script>
   <script>
   window.PREVENT_TAKETORI = true;
   (function () {
@@ -85,9 +84,16 @@ title: 縱ラテンを使ってみる
     }
 
     function share() {
-      var img    = imageNode.toDataURL();
-      var apiUrl = location.protocol + '//' + location.host + '/api/vertical_latin_share_image?d=' + window.encodeURIComponent(img) + '.png';
-      var tweet  = inputNode.value + HASHTAG_TEXT + apiUrl;
+      var text   = inputNode.value;
+      var image  = imageNode.toDataURL();
+      var apiUrl = location.protocol + '//' + location.host + '/api/vertical_latin_share_image.png';
+      var form   = new FormData();
+      form.append('text', text);
+      form.append('image', image);
+      var req = new XMLHttpRequest();
+      req.open('POST', apiUrl);
+      req.send(form);
+      var tweet  = inputNode.value + HASHTAG_TEXT + apiUrl + '?text=' + window.encodeURIComponent(text);
       window.open('https://twitter.com/intent/tweet?text=' + window.encodeURIComponent(tweet));
     }
 
