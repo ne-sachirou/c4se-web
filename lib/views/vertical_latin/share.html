@@ -21,6 +21,25 @@ title: 縱ラテンを使ってみる
     font-weight: bold;
   }
 
+  .verticalLatin_share_submit {
+    background    : #1b95e0;
+    border        : none;
+    border-radius : 3px;
+    box-sizing    : border-box;
+    color         : white;
+    cursor        : pointer;
+    display       : inline-block;
+    font          : normal normal normal 11px/18px 'Helvetica Neue',Arial,sans-serif;
+    height        : 20px;
+    outline       : 0;
+    width         : 67px;
+    vertical-align: top;
+    white-space   : nowrap;
+    zoom          : 1;
+  }
+
+  .verticalLatin_share_submit:hover, .verticalLatin_share_submit:active { background: rgb(12, 122, 191); }
+
   .verticalLatin_share_image { border: 1px #ccc dashed; }
   </style>
   <script>
@@ -83,7 +102,9 @@ title: 縱ラテンを使ってみる
       context.rotate(-Math.PI / 2);
     }
 
-    function share() {
+    function share(evt) {
+      evt.preventDefault();
+      evt.stopPropagation();
       var text   = inputNode.value;
       var image  = imageNode.toDataURL();
       var apiUrl = location.protocol + '//' + location.host + '/api/vertical_latin_share_image.png';
