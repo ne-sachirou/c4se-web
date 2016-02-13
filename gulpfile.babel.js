@@ -173,15 +173,15 @@ gulp.task('deploy', ['build'], async () => {
     });
   }
 
-  // if ('' !== await exec('git status --porcelain')) {
-  //   throw new Error('Please commit all changes');
-  // }
-  // if ('' !== await exec('git push -n origin master')) {
-  //   throw new Error('Please push all changes');
-  // }
-  // if ('master\n' !== await exec("git branch | awk '/^\\*/{print $2}'")) {
-  //   throw new Error('Please `git checkout master`');
-  // }
+  if ('' !== await exec('git status --porcelain')) {
+    throw new Error('Please commit all changes');
+  }
+  if ('' !== await exec('git push -n origin master')) {
+    throw new Error('Please push all changes');
+  }
+  if ('master\n' !== await exec("git branch | awk '/^\\*/{print $2}'")) {
+    throw new Error('Please `git checkout master`');
+  }
   await sshExec(
     'cd ~/www;' +
     'git pull --ff-only origin master;' +

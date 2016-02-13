@@ -30,7 +30,7 @@ class ApiVerticalLatinShareImageController
             throw new UnprocessableEntity();
         }
         header('Content-Type: image/png');
-        throw new Found('https://s3-ap-northeast-1.amazonaws.com/vertical-latin-share-image/'.rawurlencode($text).'.png');
+        throw new Found('https://s3-ap-northeast-1.amazonaws.com/vertical-latin-share-image/'.urlencode(str_replace("\n", "\r\n", $text)).'.png');
     }
 
     /**
