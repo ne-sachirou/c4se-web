@@ -29,6 +29,7 @@ class ApiVerticalLatinShareImageController
         if (strlen($text) > 140) {
             throw new UnprocessableEntity();
         }
+        header('Content-Type: image/png');
         throw new Found('https://s3-ap-northeast-1.amazonaws.com/vertical-latin-share-image/'.rawurlencode($text).'.png');
     }
 

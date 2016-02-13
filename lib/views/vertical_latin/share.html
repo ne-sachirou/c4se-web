@@ -28,8 +28,8 @@ title: 縱ラテンを使ってみる
   (function () {
     'use strict';
 
-    const HASHTAG_TEXT = ' #vertical_latin '
-    const MAX_CHAR_COUNT = 140 - (24 + HASHTAG_TEXT.length);
+    const HASHTAG_TEXT_LENGTH = ' #vertical_latin'.length
+    const MAX_CHAR_COUNT = 140 - (24 + HASHTAG_TEXT_LENGTH);
 
     var restCharCountNode, inputNode, submitNode, imageNode;
     var prevInput = void 0;
@@ -93,8 +93,11 @@ title: 縱ラテンを使ってみる
       var req = new XMLHttpRequest();
       req.open('POST', apiUrl);
       req.send(form);
-      var tweet  = inputNode.value + HASHTAG_TEXT + apiUrl + '?text=' + window.encodeURIComponent(text);
-      window.open('https://twitter.com/intent/tweet?text=' + window.encodeURIComponent(tweet));
+      window.open('https://twitter.com/intent/tweet' +
+          '?text=' + window.encodeURIComponent(text) +
+          '&url=' + window.encodeURIComponent(apiUrl + '?text=' + window.encodeURIComponent(text)) +
+          '&hashtags=vertical_latin'
+          );
     }
 
     document.addEventListener('DOMContentLoaded', () => {
