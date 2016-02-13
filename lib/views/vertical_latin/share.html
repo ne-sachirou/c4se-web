@@ -8,131 +8,131 @@ title: 縱ラテンを使ってみる
   /vertical_latin/share 縱ラテンを使ってみる
 </nav>
 
+<style>
+.verticalLatin_share_input, .verticalLatin_share_image { display: block; }
+
+.verticalLatin_share_restCharCount-error {
+  color      : red;
+  font-weight: bold;
+}
+
+.verticalLatin_share_submit {
+  background    : #1b95e0;
+  border        : none;
+  border-radius : 3px;
+  box-sizing    : border-box;
+  color         : white;
+  cursor        : pointer;
+  display       : inline-block;
+  font          : normal normal normal 11px/18px 'Helvetica Neue',Arial,sans-serif;
+  height        : 20px;
+  outline       : 0;
+  width         : 67px;
+  vertical-align: top;
+  white-space   : nowrap;
+  zoom          : 1;
+}
+
+.verticalLatin_share_submit:hover, .verticalLatin_share_submit:active { background: rgb(12, 122, 191); }
+
+.verticalLatin_share_image { border: 1px #ccc dashed; }
+</style>
 <div class="verticalLatin_share">
   <div class="verticalLatin_share_restCharCount"></div>
   <textarea class="verticalLatin_share_input" placeholder="ラテン文字を入力してください" cols="70" rows="4"></textarea>
   <button class="verticalLatin_share_submit">Tweet</button>
   <canvas class="verticalLatin_share_image" width="60" height="600"></canvas>
-  <style>
-  .verticalLatin_share_input, .verticalLatin_share_image { display: block; }
-
-  .verticalLatin_share_restCharCount-error {
-    color      : red;
-    font-weight: bold;
-  }
-
-  .verticalLatin_share_submit {
-    background    : #1b95e0;
-    border        : none;
-    border-radius : 3px;
-    box-sizing    : border-box;
-    color         : white;
-    cursor        : pointer;
-    display       : inline-block;
-    font          : normal normal normal 11px/18px 'Helvetica Neue',Arial,sans-serif;
-    height        : 20px;
-    outline       : 0;
-    width         : 67px;
-    vertical-align: top;
-    white-space   : nowrap;
-    zoom          : 1;
-  }
-
-  .verticalLatin_share_submit:hover, .verticalLatin_share_submit:active { background: rgb(12, 122, 191); }
-
-  .verticalLatin_share_image { border: 1px #ccc dashed; }
-  </style>
-  <script>
-  window.PREVENT_TAKETORI = true;
-  (function () {
-    'use strict';
-
-    const HASHTAG_TEXT_LENGTH = ' #vertical_latin'.length
-    const MAX_CHAR_COUNT = 140 - (24 + HASHTAG_TEXT_LENGTH);
-
-    var restCharCountNode, inputNode, submitNode, imageNode;
-    var prevInput = void 0;
-
-    function changeInput() {
-      var text = inputNode.value;
-      if (prevInput === text) {
-        return;
-      }
-      restCharCountNode.textContent = (MAX_CHAR_COUNT - text.length) + '/' + MAX_CHAR_COUNT;
-      if (text.length > MAX_CHAR_COUNT) {
-        submitNode.disabled = true;
-        restCharCountNode.classList.add('verticalLatin_share_restCharCount-error');
-      } else {
-        submitNode.disabled = (text.trim() === '');
-        restCharCountNode.classList.remove('verticalLatin_share_restCharCount-error');
-      }
-      drawText(text);
-      prevInput = text;
-    }
-
-    function drawText(text) {
-      const padding    = 6;
-      const lineHeight = 42 + 12;
-      const fontStyle  = 'normal 400 36pt/1.4 vertical_latin, sans-serif';
-      var imageWidth  = imageNode.width;
-      var imageHeight = imageNode.height;
-      var context     = imageNode.getContext('2d');
-      context.fillStyle = 'white';
-      context.fillRect(0, 0, imageWidth, imageHeight);
-      context.font = fontStyle;
-      var lines = [];
-      for (let i = 0, line = '', chrs = text.split(''), iz = text.split('').length; i < iz; ++i) {
-        let chr = chrs[i];
-        if (context.measureText(line + chr).width > imageHeight - padding - 2) {
-          lines.push(line);
-          line = '';
-        }
-        line += chr;
-        if (i === iz - 1 && line !== '') {
-          lines.push(line);
-        }
-      }
-      imageNode.width = lineHeight * Math.max(lines.length, 1) + padding;
-      context.fillStyle = 'black';
-      context.font      = fontStyle;
-      context.rotate(Math.PI / 2);
-      for (let i = 0, iz = lines.length; i < iz; ++i) {
-        context.fillText(lines[i], padding, -imageWidth + (lineHeight * (i + 1)) - padding);
-      }
-      context.rotate(-Math.PI / 2);
-    }
-
-    function share(evt) {
-      evt.preventDefault();
-      evt.stopPropagation();
-      var text   = inputNode.value;
-      var image  = imageNode.toDataURL();
-      var apiUrl = location.protocol + '//' + location.host + '/api/vertical_latin_share_image.png';
-      var form   = new FormData();
-      form.append('text', text);
-      form.append('image', image);
-      var req = new XMLHttpRequest();
-      req.open('POST', apiUrl);
-      req.send(form);
-      window.open('https://twitter.com/intent/tweet' +
-          '?text=' + window.encodeURIComponent(text) +
-          '&url=' + window.encodeURIComponent(apiUrl + '?text=' + window.encodeURIComponent(text)) +
-          '&hashtags=vertical_latin'
-          );
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-      restCharCountNode = document.getElementsByClassName('verticalLatin_share_restCharCount')[0];
-      inputNode         = document.getElementsByClassName('verticalLatin_share_input')[0];
-      submitNode        = document.getElementsByClassName('verticalLatin_share_submit')[0];
-      imageNode         = document.getElementsByClassName('verticalLatin_share_image')[0];
-      inputNode.addEventListener('change', changeInput);
-      inputNode.addEventListener('keydown', changeInput);
-      inputNode.addEventListener('keypress', changeInput);
-      inputNode.addEventListener('keyup', changeInput);
-      submitNode.addEventListener('click', share);
-      changeInput();
-    });
-  }());
-  </script>
 </div>
+<script>
+window.PREVENT_TAKETORI = true;
+(function () {
+  'use strict';
+
+  const HASHTAG_TEXT_LENGTH = ' #vertical_latin'.length
+  const MAX_CHAR_COUNT = 140 - (24 + HASHTAG_TEXT_LENGTH);
+
+  var restCharCountNode, inputNode, submitNode, imageNode;
+  var prevInput = void 0;
+
+  function changeInput() {
+    var text = inputNode.value;
+    if (prevInput === text) {
+      return;
+    }
+    restCharCountNode.textContent = (MAX_CHAR_COUNT - text.length) + '/' + MAX_CHAR_COUNT;
+    if (text.length > MAX_CHAR_COUNT) {
+      submitNode.disabled = true;
+      restCharCountNode.classList.add('verticalLatin_share_restCharCount-error');
+    } else {
+      submitNode.disabled = (text.trim() === '');
+      restCharCountNode.classList.remove('verticalLatin_share_restCharCount-error');
+    }
+    drawText(text);
+    prevInput = text;
+  }
+
+  function drawText(text) {
+    const padding    = 6;
+    const lineHeight = 42 + 12;
+    const fontStyle  = 'normal 400 36pt/1.4 vertical_latin, sans-serif';
+    var imageWidth  = imageNode.width;
+    var imageHeight = imageNode.height;
+    var context     = imageNode.getContext('2d');
+    context.fillStyle = 'white';
+    context.fillRect(0, 0, imageWidth, imageHeight);
+    context.font = fontStyle;
+    var lines = [];
+    for (let i = 0, line = '', chrs = text.split(''), iz = text.split('').length; i < iz; ++i) {
+      let chr = chrs[i];
+      if (context.measureText(line + chr).width > imageHeight - padding - 2) {
+        lines.push(line);
+        line = '';
+      }
+      line += chr;
+      if (i === iz - 1 && line !== '') {
+        lines.push(line);
+      }
+    }
+    imageNode.width = lineHeight * Math.max(lines.length, 1) + padding;
+    context.fillStyle = 'black';
+    context.font      = fontStyle;
+    context.rotate(Math.PI / 2);
+    for (let i = 0, iz = lines.length; i < iz; ++i) {
+      context.fillText(lines[i], padding, -imageWidth + (lineHeight * (i + 1)) - padding);
+    }
+    context.rotate(-Math.PI / 2);
+  }
+
+  function share(evt) {
+    evt.preventDefault();
+    evt.stopPropagation();
+    var text   = inputNode.value;
+    var image  = imageNode.toDataURL();
+    var apiUrl = location.protocol + '//' + location.host + '/api/vertical_latin_share_image.png';
+    var form   = new FormData();
+    form.append('text', text);
+    form.append('image', image);
+    var req = new XMLHttpRequest();
+    req.open('POST', apiUrl);
+    req.send(form);
+    window.open('https://twitter.com/intent/tweet' +
+        '?text=' + window.encodeURIComponent(text) +
+        '&url=' + window.encodeURIComponent(apiUrl + '?text=' + window.encodeURIComponent(text)) +
+        '&hashtags=vertical_latin'
+        );
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    restCharCountNode = document.getElementsByClassName('verticalLatin_share_restCharCount')[0];
+    inputNode         = document.getElementsByClassName('verticalLatin_share_input')[0];
+    submitNode        = document.getElementsByClassName('verticalLatin_share_submit')[0];
+    imageNode         = document.getElementsByClassName('verticalLatin_share_image')[0];
+    inputNode.addEventListener('change', changeInput);
+    inputNode.addEventListener('keydown', changeInput);
+    inputNode.addEventListener('keypress', changeInput);
+    inputNode.addEventListener('keyup', changeInput);
+    submitNode.addEventListener('click', share);
+    changeInput();
+  });
+}());
+</script>
