@@ -186,6 +186,7 @@ gulp.task('deploy', ['build'], async () => {
     'cd ~/www;' +
     'git pull --ff-only origin master;' +
     'composer install --no-dev;' +
+    'touch .env;' +
     '' // 'set SERVER_ENV=production; vendor/bin/phpmig migrate';
   );
   return exec('rsync -azh --delete --stats assets c4se2@c4se2.sakura.ne.jp:/home/c4se2/www');
