@@ -141,7 +141,6 @@ gulp.task('build:js', () => {
     build('src/javascripts/layout.js'),
     build('src/javascripts/index.js'),
     build('src/javascripts/feed.js'),
-    build('src/javascripts/vertical_latin/index.js', 'vertical_latin/'),
     build('src/javascripts/vertical_latin/layout.js', 'vertical_latin/'),
   ]);
 });

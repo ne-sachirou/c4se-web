@@ -12,9 +12,7 @@ body {
   overflow-y: scroll !important; // For TAKETORI-JS on Firefox.
 }
 
-p {
-  margin: 0 0.6em;
-}
+p { margin: 0 0.6em; }
 
 th, td { padding: 3mm 1mm; }
 
@@ -34,7 +32,7 @@ th, td { padding: 3mm 1mm; }
 
   div[itemscope] { display: inline; }
 
-  div[itemprop="child"]:before { content: '→'; }
+  div[itemprop="child"]:before { content: '/'; }
 }
 
 .page {
