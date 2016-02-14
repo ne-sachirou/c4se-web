@@ -83,7 +83,7 @@ gulp.task('build:css', () =&gt; {
 <p>IEは古くから縦書きやルビに対応してゐました。WebKit系のブラウザは、携帯端末で電子書籍を表示する必要から其れ爲りに高度に縦書きに対応してゐます。現在ではEdgeやGeckoやBlinkも程々に縦書きに対応してゐますから、殆どの閲覧者のWebブラウザにてCSSで縦書き表示を行へます。然し其れ等全てのWebブラウザで、全ての画面 size で、大量の文章を正しく縦書きに配置するのは長大な根氣が必要でせう。IE (Tridentを言ふ。Tasmanは含まない) は兎も角、Blink (Google Chrome、Opera、Vivaldi等) と Gecko (Firefox等) と WebKit (Safari等) と Edge には対応する必要が有るでせう。携帯端末の遅れた version や独自改造されたWebブラウザも考慮する必要が有ります。またGoogleやBing等 (Askとかも在ります。TwitterやFacebook等も一應は取得しに来ます) のbotを邪魔しない樣にもしなければなりません。コツは実際に test し続ける事だけでせう。</p>
 <p>CSSでは <code>writing-mode</code> 属性で字竝びの方向を變へられます。加えて <code>text-orientation</code> 属性で字の回転方向を設定出來ます。</p>
 <pre><code>.vertical {
-  text-orientation: upright;
+  text-orientation: sideways;
   writing-mode    : tb-rl;
   writing-mode    : vertical-rl;
 }</code></pre>
