@@ -114,7 +114,7 @@ gulp.task('build:css', () => {
     pipe(autoprefixer({browsers: ['last 2 version']})).
     pipe(cssBase64({
       baseDir          : '.',
-      maxWeightResource: 32768 * 4,
+      maxWeightResource: 32768 * 5,
     })).
     pipe(gulp.dest('assets'));
 });
