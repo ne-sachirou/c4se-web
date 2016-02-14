@@ -22,7 +22,7 @@ var Ssh          = require('simple-ssh');
 
 var SRCS = {
   html: 'lib/views/**/**.html',
-  img : 'src/images/**/**',
+  img : 'src/images/**/*.+(jpg|jpeg|png|gif|webp)',
   js  : ['gulpfile.babel.js', 'src/javascripts/**/*.js'],
   sass: 'src/stylesheets/**/!(_)*.+(sass|scss)',
 };
@@ -80,7 +80,7 @@ function spawn(cmd, options) {
 }
 // }}}
 
-gulp.task('build', ['clean'], (done) => runSequence(['build:copy-assets', 'build:css', 'build:imagemin', 'build:js'], 'seiji', done));
+gulp.task('build', ['clean'], (done) => runSequence(['build:copy-assets', 'build:imagemin'], ['build:css', 'build:js'], 'seiji', done));
 
 gulp.task('build:copy-assets', () => {
   function build(src, dest = '') {
