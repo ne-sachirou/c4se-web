@@ -51,6 +51,10 @@ gulp.task('build:css', () =&gt; {
 </code></pre>
 
 <h2>ページを橫書きの儘使ふ</h2>
+<div class="supplement">
+  Use in horizontal Web page
+  <span class="verticalLatin">Use in horizontal Web page</span>
+</div>
 <p>右記Web Fontの設定をしただけで其の儘使へます。先程の例では <code>verticalLatin</code> と云ふ class 属性値を持つ要素に縱ラテン字體が設定される樣記載しましたから、</p>
 <pre><code>&lt;p&gt;Vertical Latin. &lt;span class="verticalLatin"&gt;Vertical Latin&lt;/span&gt;&lt;/p&gt;</code></pre>
 <p>とすると、</p>
@@ -58,8 +62,37 @@ gulp.task('build:css', () =&gt; {
 <p>と横書きで反時計囘りに直角に倒した縱ラテンを記載できます。</p>
 
 <h2>ページを縱書きにして使ふ</h2>
+<div class="supplement">
+  Use in vertical Web page
+  <span class="verticalLatin">Use in vertical Web page</span>
+</div>
+<p>Webページを縦書きにする前に、縦書きの Web design をする必要が有ります。縦書きの design 技法は、今迄主に印刷物の業界に在ったのでせう。</p>
+<ol>
+  <li>一般書籍。縦書きを基本とした design です。洋本以前からの手書きする縦書き design を其の儘発展させ、活字に親和する様にされたものです。ほぼ文章で構成され、本文のほぼ全てを縱書きします。右から左へ横 scroll し、縱には scroll しません。図の挿入には段を下げて空白を作り挿入します。大きな図は、ページの概念が在る場合はページまるごと使ひ、さうでない場合は行を空けて空白を作り挿入します。</li>
+  <li>雑誌。横書きに親和する design です。短い段に區切り、所謂段組みをします。上から下へ縱 scroll し、第一義としては横には scroll しません。ページの概念が在る場合は右から左にページを送ります。図は行を空けて挿入します。大きな図は數段分の右か左を切り取り、空白を作って挿入します。</li>
+  <li>ポスター。基本的には巨大な画像です。文章は自由な位置に自由な方向で配置されます。scroll する事は基本的には考へられません。scroll を時間軸と見做し、animation 効果を伴ひ scroll させる事も有ります。雑誌の design を併用する事も多く有ります。</li>
+  <li>漫画。画像を時間と空間に配置する技法です。文章はコマの中に空白を作って配置されます。セリフと云ふ特別な文は特別な空白を割り振られ載せられる事が殆どです。但し洋本漫画は異なった伝統を持ちます。scroll する事は考へられてゐず、ページ送りが基本です。</li>
+</ol>
+<p>先ずは洞の種の縦書き design を手本とするか、Webページの内容を鑑みつつ決めるのが簡便でせう。scroll の方針は特に注意してください。又、画面の広いPC、tablet の縦置きと横置き、画面の小さい携帯端末の縦置きと横置きの最低五種の表示形式に対応する事を考慮してください。縦置きと横置きはページ表示中にも切り替はります。操作体系も考慮してください。PCはマウスとキーボード、tablet と小型携帯端末は指に依るフリックと假想キーボードにより操作されます。</p>
 
 <h3>CSSで縦書きを設定する</h3>
+<div class="supplement">
+  CSS writing-mode
+  <span class="verticalLatin">CSS writing-mode</span>
+</div>
+<p>IEは古くから縦書きやルビに対応してゐました。WebKit系のブラウザは、携帯端末で電子書籍を表示する必要から其れ爲りに高度に縦書きに対応してゐます。現在ではEdgeやGeckoやBlinkも程々に縦書きに対応してゐますから、殆どの閲覧者のWebブラウザにてCSSで縦書き表示を行へます。然し其れ等全てのWebブラウザで、全ての画面 size で、大量の文章を正しく縦書きに配置するのは長大な根氣が必要でせう。IE (Tridentを言ふ。Tasmanは含まない) は兎も角、Blink (Google Chrome、Opera、Vivaldi等) と Gecko (Firefox等) と WebKit (Safari等) と Edge には対応する必要が有るでせう。携帯端末の遅れた version や独自改造されたWebブラウザも考慮する必要が有ります。またGoogleやBing等 (Askとかも在ります。TwitterやFacebook等も一應は取得しに来ます) のbotを邪魔しない樣にもしなければなりません。コツは実際に test し続ける事だけでせう。</p>
+<p>CSSでは <code>writing-mode</code> 属性で字竝びの方向を變へられます。加えて <code>text-orientation</code> 属性で字の回転方向を設定出來ます。</p>
+<pre><code>.vertical {
+  text-orientation: upright;
+  writing-mode    : tb-rl;
+  writing-mode    : vertical-rl;
+}</code></pre>
+<p>此れが縦書きの基本 style です。行長等は別途適切に設定しなければなりません。</p>
+<p>縱ラテンは左記のWeb Fontを使用すれば表示できます。</p>
 
 <h3>竹取JSに頼る</h3>
-
+<div class="supplement">
+  TAKETORI-JS
+  <span class="verticalLatin">TAKETORI-JS</span>
+</div>
+<p>ページの大部分を縦書きにする場合は、<a href="https://github.com/cmonos/TAKETORI-JS">竹取JS</a>を使ふのが簡便です。左記CSSで作成する場合の設定の大半を行ってくれます。non-designerとしては充分な品質のページを作製できるでせう。縦書きCSSに対応したWebブラウザでは出來る丈CSSにて縦書きにしてくれます。此の點が他の縦書きJavaScript library とは違ふ利点です。大変簡便なので、<a href="https://github.com/cmonos/TAKETORI-JS">README</a>を御読みください。</p>
