@@ -90,8 +90,9 @@ gulp.task('build:copy-assets', () => {
   return merge([
     build(
       [
-        "src/bower_components/TAKETORI-JS/taketori.css",
-        "src/bower_components/TAKETORI-JS/taketori.js",
+        'node_modules/Base64/base64.min.js',
+        'src/bower_components/TAKETORI-JS/taketori.css',
+        'src/bower_components/TAKETORI-JS/taketori.js',
         'src/fonts/Vertical_Latin_Calligraphic.otf',
         "src/fonts/Yuraru ru Soin 01'.ttf",
       ]

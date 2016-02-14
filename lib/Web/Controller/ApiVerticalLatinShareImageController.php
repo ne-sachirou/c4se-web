@@ -25,7 +25,7 @@ class ApiVerticalLatinShareImageController
      */
     public function show($text)
     {
-        $text = rawurldecode($text);
+        $text = base64_decode($text);
         if (strlen($text) > 140) {
             throw new UnprocessableEntity();
         }

@@ -43,6 +43,7 @@ title: 縱ラテンを使ってみる
   <button class="verticalLatin_share_submit">Tweet</button>
   <canvas class="verticalLatin_share_image" width="60" height="600"></canvas>
 </div>
+<script src="/assets/base64.min.js"></script>
 <script>
 window.PREVENT_TAKETORI = true;
 (function () {
@@ -117,7 +118,7 @@ window.PREVENT_TAKETORI = true;
     req.send(form);
     window.open('https://twitter.com/intent/tweet' +
         '?text=' + window.encodeURIComponent(text) +
-        '&url=' + window.encodeURIComponent(apiUrl + '?text=' + window.encodeURIComponent(text)) +
+        '&url=' + window.encodeURIComponent(apiUrl + '?text=' + window.btoa(text)) +
         '&hashtags=vertical_latin'
         );
   }

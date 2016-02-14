@@ -24,6 +24,7 @@
     ]
   },
   "devDependencies": {
+    "Base64": "^0.3.0",
     "babel-core": "6.3.13",
     "babel-eslint": "^5.0.0-beta6",
     "babel-polyfill": "^6.3.14",
