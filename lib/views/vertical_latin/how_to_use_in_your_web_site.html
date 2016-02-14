@@ -16,6 +16,10 @@ title: Webページに縱ラテンを使ふ
 <p>Webページ中に縱ラテンを使ふ方法を紹介します。CSSを設定できるWebページには簡単に導入出來ます。</p>
 
 <h2>Web Fontとして設定する</h2>
+<div class="supplement">
+  Web Font
+  <span class="verticalLatin">Web Font</span>
+</div>
 <p>Web Fontを使用すれば縱ラテンを簡単にWebページで使へます。CSSでは <code>font-family</code> 属性に依り文字に字體を指定できます。Web Fontに依れば、自前の font-family を指定したり、閲覧者がOSに install しなくても表示する字體をWebページ作成者が用意し指定出來ます。<code>@font-face</code> directive で自前の font-family を定義できます。</p>
 <pre><code>@font-face {
   font-family: vertical_latin;
@@ -47,7 +51,11 @@ gulp.task('build:css', () =&gt; {
 </code></pre>
 
 <h2>ページを橫書きの儘使ふ</h2>
-<p>右記Web Fontの設定をしただけで其の儘使へます。</p>
+<p>右記Web Fontの設定をしただけで其の儘使へます。先程の例では <code>verticalLatin</code> と云ふ class 属性値を持つ要素に縱ラテン字體が設定される樣記載しましたから、</p>
+<pre><code>&lt;p&gt;Vertical Latin. &lt;span class="verticalLatin"&gt;Vertical Latin&lt;/span&gt;&lt;/p&gt;</code></pre>
+<p>とすると、</p>
+<p><img src="/api/image/vertical_latin/how_to_use_in_your_web_site_yokogaki.png" alt="縱ラテンを横書きのWebページに表示する" height="35" width="250"/></p>
+<p>と横書きで反時計囘りに直角に倒した縱ラテンを記載できます。</p>
 
 <h2>ページを縱書きにして使ふ</h2>
 
